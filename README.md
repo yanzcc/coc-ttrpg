@@ -73,6 +73,22 @@ coc-ttrpg/
 pytest
 ```
 
+## 推送到 GitHub
+
+1. 在 GitHub 新建仓库（不要勾选「Initialize with README」，避免与本地冲突）。
+2. 在本项目根目录执行（将 `YOUR_USER` / `YOUR_REPO` 换成你的账号与仓库名）：
+
+```bash
+git remote add origin https://github.com/YOUR_USER/YOUR_REPO.git
+git push -u origin main
+```
+
+若已安装 [GitHub CLI](https://cli.github.com/) 且已登录，也可：
+
+```bash
+gh repo create YOUR_REPO --public --source=. --remote=origin --push
+```
+
 ## 许可证
 
 未默认指定许可证；如需开源请自行添加 `LICENSE` 并更新本说明。
