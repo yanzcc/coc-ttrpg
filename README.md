@@ -1,5 +1,7 @@
 # coc-ttrpg
 
+**GitHub**：[https://github.com/yanzcc/coc-ttrpg](https://github.com/yanzcc/coc-ttrpg)
+
 基于《克苏鲁的呼唤》桌游思路的 **多 Agent 驱动 TTRPG 框架**：FastAPI + WebSocket 实时叙事、Anthropic Claude 扮演守密人、技能与理智检定、战斗轮、模组导入与角色卡等。
 
 ## 功能概览
@@ -20,6 +22,7 @@
 ## 安装
 
 ```bash
+git clone https://github.com/yanzcc/coc-ttrpg.git
 cd coc-ttrpg
 python -m venv .venv
 
@@ -88,18 +91,14 @@ pytest
 
 ## 推送到 GitHub
 
-若本地尚未添加远程仓库：
+本仓库远程为 **`https://github.com/yanzcc/coc-ttrpg.git`**。若你 fork 或新建了副本，可：
 
 ```bash
 git remote add origin https://github.com/<你的用户名>/<仓库名>.git
 git push -u origin main
 ```
 
-若已安装 [GitHub CLI](https://cli.github.com/) 并已登录：
-
-```bash
-gh repo create <仓库名> --public --source=. --remote=origin --push
-```
+已安装 [GitHub CLI](https://cli.github.com/) 时也可使用 `gh repo create ... --push`。
 
 ## 许可证
 
