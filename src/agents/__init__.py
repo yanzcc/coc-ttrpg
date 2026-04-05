@@ -4,13 +4,15 @@
 """
 
 from .base import BaseAgent
-from .skill_check import SkillCheckAgent
-from .combat import CombatAgent
 from .character_mgr import CharacterManagerAgent
+from .combat import CombatAgent
+from .hierarchical_keeper import UnifiedKP
+from .skill_check import SkillCheckAgent
 
 __all__ = [
     "BaseAgent",
-    "SkillCheckAgent",
-    "CombatAgent",
     "CharacterManagerAgent",
+    "CombatAgent",
+    "SkillCheckAgent",
+    "UnifiedKP",
 ]

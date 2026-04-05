@@ -38,6 +38,10 @@ agents:
   story_gen: 20000
   # 模组文档导入为结构化 StoryModule
   module_loader: 20000
+  # 总 KP 监督路由：用 Haiku 判断本轮走旁白还是 NPC 专线（解析失败则回退规则）
+  keeper_supervisor_enabled: true
+  keeper_supervisor_model: claude-haiku-4-5-20251001
+  keeper_supervisor_max_tokens: 256
 
 # ---- 上下文窗口与摘要（与守密人 system 外的拼装、历史压缩相关）----
 context:

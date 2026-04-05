@@ -12,8 +12,7 @@ from typing import Optional
 from ..agents.game_master import GameMasterAgent, build_context_prompt
 from ..agents.base import BaseAgent
 from ..agents.combat import CombatAgent
-from ..agents.dual_keepers import NPCKeeperAgent, SceneKeeperAgent
-from ..agents.keeper_router import detect_npc_dialogue_target
+from ..agents.hierarchical_keeper import UnifiedKP
 from ..agents.skill_check import SkillCheckAgent
 from ..middleware.token_tracker import TokenTracker
 from ..models.game_state import NarrativeEntry, GamePhase, CombatState, CombatParticipant
@@ -104,22 +103,20 @@ async def gm_narrate_node(state: GraphState) -> dict:
     session_stub = _state_to_session_stub(state)
     investigators = list(state.investigators.values())
     recent = state.narrative_log[-15:] if state.narrative_log else []
-    npc_hit = detect_npc_dialogue_target(state.current_action, session_stub)
+    kp = UnifiedKP(token_tracker=tracker)
+    target_npc = await kp.route_player_action(state.current_action, session_stub, recent)
 
     try:
-        if npc_hit:
-            _nid, npc = npc_hit
-            nk = NPCKeeperAgent(token_tracker=tracker)
-            text, usage = await nk.narrate(
+        if target_npc:
+            text, usage = await kp.npc_actor.narrate(
                 player_action=state.current_action,
                 session=session_stub,
                 investigators=investigators,
                 recent_narrative=recent,
-                npc=npc,
+                npc=target_npc,
             )
         else:
-            sk = SceneKeeperAgent(token_tracker=tracker)
-            text, usage = await sk.narrate(
+            text, usage = await kp.narration.narrate(
                 player_action=state.current_action,
                 session=session_stub,
                 investigators=investigators,

@@ -1,9 +1,13 @@
 """守密人路由：判断玩家是否在直接对 NPC 对话。
 
 判断逻辑（按优先级）：
-1. 显式对话：玩家文本包含对话关键词 + NPC名字
-2. 问句对话：玩家输入是问句，且有在场NPC最近说过话
-3. 上下文延续：上一轮NPC说过话，且玩家输入不含明确行动词
+1. 显式对话：玩家文本包含对话关键词 + NPC 名字
+2. 明确环境行动：含行动类动词 → 场景守密人（不跟 NPC 专线）
+3. 问句对话：输入像问句，且近期叙事中最近发言的是在场 NPC
+4. 短句接话：仅当输入较短、且不像转去调查/移动时，才延续与最近 NPC 的对话
+
+说明：旧版「路径 3」在检测到最近 NPC 发言后无条件走 NPC Agent，会导致对话结束后
+调查、移动等仍一直被路由到 NPC；因此必须限制长度并排除明显的场景行动语义。
 """
 
 from __future__ import annotations
@@ -22,12 +26,24 @@ _DIALOGUE_HINTS = (
     "开口", "搭话", "质问", "追问", "说",
 )
 
-# 问句特征词（中文问句几乎都包含这些）
+# 问句特征（避免过宽：如单独「知道」会误判「我知道该怎么做」）
 _QUESTION_HINTS = (
-    "吗", "吗？", "？", "什么", "怎么", "为什么", "哪", "哪里", "哪些",
-    "几", "多少", "谁", "是否", "有没有", "能不能", "可不可以",
-    "知道", "了解", "记得", "听说",
+    "吗", "？", "什么", "怎么", "为什么", "哪里", "哪些", "哪位", "哪儿",
+    "多少", "谁", "是否", "有没有", "能不能", "可不可以", "会不会", "是不是", "要不要",
 )
+# 「几」作疑问时多为「几个」「几位」等，避免单字「几」误触「几乎」
+_QUESTION_NUMBER = ("几个", "几位", "几天", "几人", "几层", "几条", "几次", "几米", "几岁")
+
+# 接话场景下，出现这些更像「转去行动/探索」而非继续盘问 NPC → 交场景守密人
+_SCENE_PIVOT_PHRASES = (
+    "我去", "我先", "我到", "走向", "前往", "离开", "走开", "转身",
+    "四处", "周围", "附近", "楼上", "楼下", "外面", "屋里", "门口", "门外", "窗前",
+    "看看", "瞧瞧", "搜查", "搜索", "寻找", "翻找", "检查", "调查",
+    "打开", "蹲下", "站起", "靠近", "退后", "捡起", "拿起",
+)
+
+# 与 NPC 口头接话允许的最大字数（中文约 2～3 短句）；超出则默认走场景叙事
+_CONTINUATION_MAX_CHARS = 72
 
 # 玩家文本中明确的行动意图（出现这些词则优先走场景守密人）
 _ACTION_HINTS = (
@@ -37,6 +53,25 @@ _ACTION_HINTS = (
     "射击", "开枪", "施放", "阅读", "研究", "破解", "修理",
     "开车", "驾驶", "游泳", "攀爬",
 )
+
+
+def _looks_like_question(t: str) -> bool:
+    """识别「在向对方发问」；长段里的「有没有」多为环境描写，不归为问句。"""
+    if "？" in t or "吗" in t:
+        return True
+    # 不含句末疑问标记时，仅对较短输入把「有没有/能不能…」当作口语问句（避免长探索描述误判）
+    weak_interrogative = (
+        "有没有", "能不能", "可不可以", "会不会", "是不是", "要不要",
+    )
+    if any(w in t for w in weak_interrogative):
+        if len(t) <= _CONTINUATION_MAX_CHARS:
+            return True
+        return False
+    if any(h in t for h in _QUESTION_HINTS):
+        return True
+    if any(h in t for h in _QUESTION_NUMBER):
+        return True
+    return False
 
 
 def detect_npc_dialogue_target(
@@ -60,16 +95,21 @@ def detect_npc_dialogue_target(
         return None
 
     # --- 路径2：问句检测 —— 玩家在提问，且最近有NPC在场说话 ---
-    is_question = any(h in t for h in _QUESTION_HINTS)
-    if is_question and recent_narrative:
+    if _looks_like_question(t) and recent_narrative:
         last_npc = _find_last_speaking_npc(recent_narrative, session)
         if last_npc:
             return last_npc
 
-    # --- 路径3：上下文对话延续 —— 短输入 + 最近NPC说话 ---
+    # --- 路径3：仅「短句接话」延续 NPC 线；长段叙述或明显转场景一律走叙事 Agent ---
     if recent_narrative:
         last_npc = _find_last_speaking_npc(recent_narrative, session)
         if last_npc:
+            if len(t) > _CONTINUATION_MAX_CHARS:
+                return None
+            if any(h in t for h in _ACTION_HINTS):
+                return None
+            if any(p in t for p in _SCENE_PIVOT_PHRASES):
+                return None
             return last_npc
 
     return None
@@ -125,14 +165,6 @@ def _find_last_speaking_npc(
                     if nid not in session.current_scene.npcs_present:
                         continue
                 return (nid, npc)
-
-        # 也检查叙事内容中是否包含NPC的「」对话（场景守密人违规写的NPC台词）
-        if entry.source == "守密人" and "「" in entry.content:
-            for nid, npc in session.npcs.items():
-                if not npc.name or not npc.is_alive:
-                    continue
-                if npc.name in entry.content:
-                    return (nid, npc)
 
         checked += 1
 

@@ -47,6 +47,10 @@ class AgentsConfig(BaseModel):
     character_mgr: int = 1024
     story_gen: int = 8192
     module_loader: int = 8192
+    # KP 监督路由（Claude Haiku 等）：判断本轮旁白 vs NPC 专线；失败时回退规则
+    keeper_supervisor_enabled: bool = False
+    keeper_supervisor_model: str = "claude-haiku-4-5-20251001"
+    keeper_supervisor_max_tokens: int = 256
 
 
 class ContextConfig(BaseModel):

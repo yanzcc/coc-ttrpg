@@ -3,6 +3,9 @@
 处理玩家行动的完整流程。支持两种模式：
 1. 流式模式（默认）：守密人叙事直接流式输出，机制检定在叙事后触发
 2. 图模式：通过LangGraph状态机处理（用于复杂的多Agent交互）
+
+守密人侧采用分层结构：`UnifiedKP`（总 KP）持有下属 `narration`（旁白）、`npc_actor`（NPC 扮演），
+`GameLoop` 只通过 `self.kp` 访问，路由由 `UnifiedKP.route_player_action` 统一入口。
 """
 
 from __future__ import annotations
@@ -14,8 +17,7 @@ from datetime import datetime
 from typing import AsyncGenerator
 
 from ..agents.combat import CombatAgent
-from ..agents.dual_keepers import NPCKeeperAgent, SceneKeeperAgent
-from ..agents.keeper_router import detect_npc_dialogue_target
+from ..agents.hierarchical_keeper import UnifiedKP
 from ..agents.memory_curator import merge_narration_into_session_memory
 from ..agents.skill_check import SkillCheckAgent
 from ..graph.game_graph import get_game_graph
@@ -87,8 +89,7 @@ class GameLoop:
     def __init__(self, session_id: str):
         self.session_id = session_id
         self.token_tracker = TokenTracker(session_id)
-        self.scene_keeper = SceneKeeperAgent(token_tracker=self.token_tracker)
-        self.npc_keeper = NPCKeeperAgent(token_tracker=self.token_tracker)
+        self.kp = UnifiedKP(token_tracker=self.token_tracker)
         self.skill_narrator = SkillCheckAgent(token_tracker=self.token_tracker)
         self.combat_narrator = CombatAgent(token_tracker=self.token_tracker)
         self.session_repo = SessionRepository()
@@ -160,7 +161,7 @@ class GameLoop:
                 yield {"type": "token_warning", "content": warning}
             return
 
-        npc_dialogue_target = detect_npc_dialogue_target(action_text, session, recent)
+        routed_npc = await self.kp.route_player_action(action_text, session, recent)
 
         # ���取模组上下文（���续注入守密人）
         module_context = await self._get_module_context(session)
@@ -174,9 +175,9 @@ class GameLoop:
         # 多段叙事循环
         #
         # 整体流程（单次玩家行动可能触发多轮守密人输出）：
-        #   1. 场景守密人叙事（或NPC守密人，若玩家直接对话NPC）
+        #   1. KP 路由：旁白下属（Scene）或 NPC 下属（直接对话时）
         #   2. 解析输出中的标记：
-        #      - 【NPC发言：X】→ 调用NPC守密人 → 流式输出
+        #      - 【NPC发言：X】→ KP 委托 NPC 下属 → 流式输出
         #      - 【技���检定：X】→ 掷骰 → yield结果 → 场景守密人基于结果续写
         #      - 【理智检定】→ 同上
         #      - 【进入战斗】/【场景转换】/��模组结束】→ 处理后结束循环
@@ -193,12 +194,12 @@ class GameLoop:
             segment_text = ""
             had_check = False
 
-            if npc_dialogue_target and not is_continuation:
-                # 玩家明确与NPC对话——直接NPC守密人
-                _nid, _npc = npc_dialogue_target
-                logger.info("路由到 NPC 守密人：%s", _npc.name)
+            if routed_npc and not is_continuation:
+                # KP 路由：玩家本轮由 NPC 下属直接回应
+                _npc = routed_npc
+                logger.info("KP 路由 → NPC 下属：%s", _npc.name)
                 try:
-                    async for chunk in self.npc_keeper.narrate_stream(
+                    async for chunk in self.kp.npc_actor.narrate_stream(
                         player_action=current_action,
                         session=session,
                         investigators=investigators,
@@ -219,7 +220,7 @@ class GameLoop:
                 # 场景守密人叙事 —— 检测到标记时立即截断
                 try:
                     yielded_len = 0  # 已发送给前端的字符数
-                    async for chunk in self.scene_keeper.narrate_stream(
+                    async for chunk in self.kp.narration.narrate_stream(
                         player_action=current_action,
                         session=session,
                         investigators=investigators,
@@ -281,37 +282,15 @@ class GameLoop:
                     logger.warning("NPC发言标记找不到NPC：%s", npc_name)
                     continue
 
-                # 检测场景守密人是否已写了该NPC的「」对白
-                marker_pos = npc_match.start()
-                text_before = segment_text[:marker_pos]
-                scene_has_dialogue = (
-                    "「" in text_before and npc_name in text_before
-                )
-                if scene_has_dialogue:
-                    logger.info(
-                        "场景守密人已写 %s 的对白，跳过NPC守密人避免重复",
-                        npc_name,
-                    )
-                    # 仍保存一条NPC记录便于路由
-                    import re as _re
-                    _quotes = _re.findall(r'「([^」]+)」', text_before)
-                    _npc_line = _quotes[-1] if _quotes else ""
-                    if _npc_line:
-                        await self.narrative_repo.append(
-                            self.session_id,
-                            NarrativeEntry(
-                                source=npc_name,
-                                content=f"「{_npc_line}」",
-                                entry_type="narration",
-                            ),
-                        )
-                    continue
-
+                # 场景守密人应为纯旁白；若违规写了对白，仍由 NPC 守密人统一生成
                 logger.info("场景守密人触发 NPC 发言：%s", npc_name)
-                npc_action = f"���场景叙述中{npc_name}需要开口说话。前文叙述：{segment_text[-600:]}）"
+                npc_action = (
+                    f"（场景旁白已停在你的发言点。请作为{npc_name}开口说话。"
+                    f"前文叙述：{segment_text[-600:]}）"
+                )
                 npc_text = ""
                 try:
-                    async for chunk in self.npc_keeper.narrate_stream(
+                    async for chunk in self.kp.npc_actor.narrate_stream(
                         player_action=npc_action,
                         session=session,
                         investigators=investigators,
@@ -390,6 +369,8 @@ class GameLoop:
                     f"你之前已经写到（请勿重复以下内容，直接从检定结果开始继续）：\n"
                     f"「{prev_context}」\n"
                     f"请紧接上文，根据检定结果继续叙事。"
+                    f"仍须遵守：你是纯旁白，不要写任何 NPC 台词或「」对白；"
+                    f"需要角色开口时只写【NPC发言：全名】。"
                 )
                 is_continuation = True
                 # 将当前叙事段和检定结果记入recent以便续写时有上下文
@@ -428,9 +409,8 @@ class GameLoop:
         if clean_unsaved:
             # 如果本轮是NPC直接回应，source记为NPC名字（便于后续路由识别对话延续）
             narration_source = "守密人"
-            if npc_dialogue_target:
-                _nid, _npc = npc_dialogue_target
-                narration_source = _npc.name
+            if routed_npc:
+                narration_source = routed_npc.name
             gm_entry = NarrativeEntry(
                 source=narration_source,
                 content=clean_unsaved,
@@ -448,8 +428,8 @@ class GameLoop:
             await merge_narration_into_session_memory(
                 clean_full, session, self.token_tracker,
             )
-            if npc_dialogue_target:
-                nid, npc = npc_dialogue_target
+            if routed_npc:
+                nid = routed_npc.id
                 session.keeper_memory.npc_memories.setdefault(nid, [])
                 excerpt = clean_full.replace("\n", " ").strip()[:380]
                 line = f"玩家：{action_text[:140]}… → 回应摘要：{excerpt}"
@@ -496,7 +476,7 @@ class GameLoop:
 
             full_text = ""
             try:
-                async for chunk in self.scene_keeper.narrate_stream(
+                async for chunk in self.kp.narration.narrate_stream(
                     player_action=OPENING_PLAYER_PROMPT,
                     session=session,
                     investigators=investigators,
@@ -522,10 +502,13 @@ class GameLoop:
                     logger.warning("开场NPC发言标记找不到NPC：%s", npc_name)
                     continue
                 logger.info("开场触发 NPC 发言：%s", npc_name)
-                npc_action = f"（场景叙述中{npc_name}需要开口说话。前文叙述：{full_text[-600:]}）"
+                npc_action = (
+                    f"（场景旁白已停在你的发言点。请作为{npc_name}开口说话。"
+                    f"前文叙述：{full_text[-600:]}）"
+                )
                 npc_text = ""
                 try:
-                    async for chunk in self.npc_keeper.narrate_stream(
+                    async for chunk in self.kp.npc_actor.narrate_stream(
                         player_action=npc_action,
                         session=session,
                         investigators=investigators,
@@ -1449,9 +1432,12 @@ class GameLoop:
                 await merge_narration_into_session_memory(
                     clean_text, session, self.token_tracker,
                 )
-                npc_hit = detect_npc_dialogue_target(action_text, session)
-                if npc_hit:
-                    nid, _npc = npc_hit
+                recent_for_route = await self._get_recent_narrative()
+                routed_npc_graph = await self.kp.route_player_action(
+                    action_text, session, recent_for_route,
+                )
+                if routed_npc_graph:
+                    nid = routed_npc_graph.id
                     session.keeper_memory.npc_memories.setdefault(nid, [])
                     excerpt = clean_text.replace("\n", " ").strip()[:380]
                     line = f"玩家：{action_text[:140]}… → 回应摘要：{excerpt}"
