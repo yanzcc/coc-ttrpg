@@ -1,0 +1,398 @@
+{% extends "base.html" %}
+{% block title %}游戏大厅 - 克苏鲁的呼唤{% endblock %}
+
+{% block head %}
+<style>
+.hub { max-width: 960px; margin: 0 auto; }
+.hub h1 { font-size: 1.8rem; margin-bottom: 0.3rem; }
+.hub .subtitle { color: var(--text-secondary); margin-bottom: 1.5rem; }
+
+/* 步骤指示器 */
+.steps { display: flex; gap: 0; margin-bottom: 1.5rem; }
+.step {
+    flex: 1; text-align: center; padding: 0.7rem 0.5rem;
+    background: var(--bg-secondary); border: 1px solid var(--border);
+    color: var(--text-muted); font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; position: relative;
+}
+.step:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+.step:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
+.step.active { background: rgba(88,166,255,0.1); color: var(--accent); border-color: var(--accent); }
+.step.done { background: rgba(63,185,80,0.1); color: var(--success); border-color: var(--success); }
+.step-num {
+    display: inline-block; width: 22px; height: 22px; line-height: 22px;
+    border-radius: 50%; background: var(--border); color: var(--text-primary);
+    font-size: 0.75rem; margin-right: 0.3rem;
+}
+.step.active .step-num { background: var(--accent); color: #fff; }
+.step.done .step-num { background: var(--success); color: #fff; }
+
+/* 模组卡片 */
+.mod-card {
+    border: 2px solid var(--border); border-radius: var(--radius);
+    padding: 1rem 1.2rem; margin-bottom: 0.75rem; cursor: pointer;
+    transition: all 0.2s; background: var(--bg-card);
+}
+.mod-card:hover { border-color: var(--text-muted); }
+.mod-card.selected { border-color: var(--accent); background: rgba(88,166,255,0.05); }
+.mod-title { font-weight: 700; font-size: 1rem; margin-bottom: 0.3rem; }
+.mod-meta { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.3rem; }
+.mod-meta .badge { font-size: 0.72rem; }
+.mod-desc { color: var(--text-secondary); font-size: 0.85rem; }
+
+/* 角色卡片 */
+.char-card {
+    border: 2px solid var(--border); border-radius: var(--radius);
+    padding: 0.8rem 1rem; margin-bottom: 0.6rem; cursor: pointer;
+    transition: all 0.2s; background: var(--bg-card);
+    display: flex; align-items: center; justify-content: space-between;
+}
+.char-card:hover { border-color: var(--text-muted); }
+.char-card.selected { border-color: var(--accent); background: rgba(88,166,255,0.05); }
+.char-info { display: flex; align-items: center; gap: 0.8rem; }
+.char-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--bg-secondary); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+}
+.char-name { font-weight: 600; }
+.char-detail { font-size: 0.8rem; color: var(--text-secondary); }
+.char-actions { display: flex; gap: 0.4rem; }
+
+/* 会话配置 */
+.config-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* 继续游戏区 */
+.session-list { margin-top: 1.5rem; }
+.session-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.7rem 0; border-bottom: 1px solid var(--border);
+}
+.session-row:last-child { border-bottom: none; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hub" x-data="gameHub()" x-init="init()"
+     x-effect="if(step===2 && playerName.trim()) loadCharacters()">
+    <h1>克苏鲁的呼唤</h1>
+    <p class="subtitle">选择模组、准备调查员，开始你的调查</p>
+
+    <!-- 步骤指示器 -->
+    <div class="steps">
+        <div class="step" :class="{active: step===1, done: step>1}" @click="step>1 && (step=1)">
+            <span class="step-num">1</span> 选择模组
+        </div>
+        <div class="step" :class="{active: step===2, done: step>2}" @click="step>2 && (step=2)">
+            <span class="step-num">2</span> 准备调查员
+        </div>
+        <div class="step" :class="{active: step===3}">
+            <span class="step-num">3</span> 开始游戏
+        </div>
+    </div>
+
+    <!-- ====== 步骤1：选择模组 ====== -->
+    <div x-show="step === 1">
+        <div class="card">
+            <h2 style="margin-bottom:0.8rem;">选择模组</h2>
+
+            <div x-show="loadingModules" style="color:var(--text-muted);padding:1rem 0;">加载中...</div>
+
+            <template x-for="mod in modules" :key="mod.name">
+                <div class="mod-card" :class="{selected: selectedModule?.name === mod.name}"
+                     @click="selectedModule = mod">
+                    <div class="mod-title" x-text="mod.title"></div>
+                    <div class="mod-meta">
+                        <span class="badge" x-text="mod.era || '1920s'"></span>
+                        <span class="badge" x-text="'难度: ' + (mod.difficulty || '普通')"></span>
+                        <span class="badge" x-show="mod.author" x-text="'作者: ' + mod.author"></span>
+                    </div>
+                    <div class="mod-desc" x-text="mod.summary || '暂无描述'"></div>
+                </div>
+            </template>
+
+            <div x-show="!loadingModules && modules.length === 0" class="empty-state">
+                <p>暂无可用模组</p>
+            </div>
+
+            <!-- 无模组自由模式 -->
+            <div class="mod-card" :class="{selected: selectedModule?.name === '__free__'}"
+                 @click="selectedModule = {name:'__free__', title:'自由模式', summary:'不使用预设模组，守密人即兴叙事'}">
+                <div class="mod-title">自由模式</div>
+                <div class="mod-desc">不使用预设模组，由AI守密人即兴叙事</div>
+            </div>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;margin-top:0.75rem;">
+            <button class="btn btn-primary" :disabled="!selectedModule" @click="step=2">
+                下一步：准备调查员 →
+            </button>
+        </div>
+    </div>
+
+    <!-- ====== 步骤2：准备调查员 ====== -->
+    <div x-show="step === 2">
+        <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;">
+                <h2>选择或创建调查员</h2>
+                <button class="btn btn-small" @click="goCreateCharacter()">+ 新建调查员</button>
+            </div>
+
+            <!-- 玩家名 -->
+            <div class="form-group" style="max-width:300px;margin-bottom:1rem;">
+                <label>你的名字</label>
+                <input type="text" x-model="playerName" placeholder="输入你的名字...">
+            </div>
+
+            <div x-show="loadingChars" style="color:var(--text-muted);">加载调查员列表...</div>
+
+            <template x-for="ch in myCharacters" :key="ch.id">
+                <div class="char-card" :class="{selected: selectedCharId === ch.id}"
+                     @click="selectedCharId = ch.id">
+                    <div class="char-info">
+                        <div class="char-avatar">🔍</div>
+                        <div>
+                            <div class="char-name" x-text="ch.name"></div>
+                            <div class="char-detail">
+                                <span x-text="ch.occupation || '未知职业'"></span> /
+                                <span x-text="(ch.age||30) + '岁'"></span>
+                                <span x-show="ch.era" x-text="' / ' + ch.era"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="char-actions">
+                        <button class="btn btn-small" @click.stop="editCharacter(ch.id)"
+                                title="编辑">编辑</button>
+                        <button class="btn btn-danger btn-small" @click.stop="deleteCharacter(ch.id)"
+                                title="删除">删除</button>
+                    </div>
+                </div>
+            </template>
+
+            <div x-show="!loadingChars && myCharacters.length === 0" class="empty-state">
+                <p>还没有调查员，创建一个吧</p>
+                <button class="btn btn-primary" style="margin-top:0.5rem;" @click="goCreateCharacter()">
+                    创建调查员
+                </button>
+            </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;margin-top:0.75rem;">
+            <button class="btn" @click="step=1">← 返回选择模组</button>
+            <button class="btn btn-primary" :disabled="!selectedCharId || !playerName.trim()" @click="step=3">
+                下一步：开始游戏 →
+            </button>
+        </div>
+    </div>
+
+    <!-- ====== 步骤3：确认并开始 ====== -->
+    <div x-show="step === 3">
+        <div class="card">
+            <h2 style="margin-bottom:1rem;">确认并开始</h2>
+            <div class="config-row">
+                <div class="form-group">
+                    <label>会话名称</label>
+                    <input type="text" x-model="sessionName" placeholder="给这次冒险起个名字">
+                </div>
+                <div class="form-group">
+                    <label>玩家名</label>
+                    <input type="text" x-model="playerName" disabled
+                           style="opacity:0.7;">
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                <div class="card" style="margin-bottom:0;">
+                    <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.3rem;">选定模组</div>
+                    <div style="font-weight:600;" x-text="selectedModule?.title || '无'"></div>
+                    <div style="font-size:0.83rem;color:var(--text-secondary);margin-top:0.2rem;"
+                         x-text="selectedModule?.summary || ''"></div>
+                </div>
+                <div class="card" style="margin-bottom:0;">
+                    <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.3rem;">选定调查员</div>
+                    <div style="font-weight:600;" x-text="selectedCharName"></div>
+                </div>
+            </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;margin-top:0.75rem;">
+            <button class="btn" @click="step=2">← 返回准备调查员</button>
+            <button class="btn btn-primary" :disabled="starting" @click="startGame()"
+                    style="font-size:1rem;padding:0.6rem 2rem;">
+                <span x-show="!starting">开始冒险</span>
+                <span x-show="starting">创建中...</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ====== 继续已有游戏 ====== -->
+    <div class="session-list" x-show="sessions.length > 0 && step === 1">
+        <div class="card">
+            <h2 style="margin-bottom:0.5rem;">继续已有游戏</h2>
+            <template x-for="s in sessions" :key="s.id">
+                <div class="session-row">
+                    <div>
+                        <span style="font-weight:600;" x-text="s.name"></span>
+                        <span class="badge" style="margin-left:0.5rem;" x-text="s.phase"></span>
+                    </div>
+                    <div style="display:flex;gap:0.5rem;align-items:center;">
+                        <input type="text" x-model="playerName" placeholder="你的名字"
+                               class="input-small" style="width:100px;">
+                        <button class="btn btn-small btn-primary"
+                                @click="resumeGame(s.id)">继续</button>
+                        <button class="btn btn-small btn-danger"
+                                @click="deleteSession(s.id)">删除</button>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+</div>
+
+<script>
+function gameHub() {
+    return {
+        step: 1,
+        /* 模组 */
+        modules: [],
+        loadingModules: true,
+        selectedModule: null,
+        /* 调查员 */
+        myCharacters: [],
+        loadingChars: false,
+        selectedCharId: null,
+        playerName: localStorage.getItem('coc_player_name') || '',
+        /* 会话 */
+        sessions: [],
+        sessionName: '',
+        starting: false,
+
+        get selectedCharName() {
+            const ch = this.myCharacters.find(c => c.id === this.selectedCharId);
+            return ch ? ch.name : '未选择';
+        },
+
+        async init() {
+            await Promise.all([this.loadModules(), this.loadSessions()]);
+            // 自动生成会话名
+            this.sessionName = '冒险 #' + (this.sessions.length + 1);
+        },
+
+        /* --- 模组 --- */
+        async loadModules() {
+            this.loadingModules = true;
+            try {
+                const res = await fetch('/api/game/modules/samples');
+                if (res.ok) this.modules = await res.json();
+            } catch(e) { console.warn('加载模组失败', e); }
+            this.loadingModules = false;
+        },
+
+        /* --- 调查员 --- */
+        async loadCharacters() {
+            if (!this.playerName.trim()) { this.myCharacters = []; return; }
+            this.loadingChars = true;
+            try {
+                const res = await fetch(`/api/character/list/player/${encodeURIComponent(this.playerName.trim())}`);
+                if (res.ok) {
+                    this.myCharacters = await res.json();
+                }
+            } catch(e) { console.warn('加载调查员失败', e); }
+            this.loadingChars = false;
+        },
+
+        goCreateCharacter() {
+            localStorage.setItem('coc_player_name', this.playerName);
+            // 用空session创建角色
+            window.location.href = `/character/create/_standalone?player=${encodeURIComponent(this.playerName)}`;
+        },
+
+        editCharacter(id) {
+            localStorage.setItem('coc_player_name', this.playerName);
+            window.location.href = `/character/edit/${id}?player=${encodeURIComponent(this.playerName)}`;
+        },
+
+        async deleteCharacter(id) {
+            if (!confirm('确定删除这个调查员？')) return;
+            await fetch(`/api/character/${id}`, {method: 'DELETE'});
+            await this.loadCharacters();
+        },
+
+        /* --- 会话 --- */
+        async loadSessions() {
+            try {
+                const res = await fetch('/api/game/list');
+                if (res.ok) this.sessions = await res.json();
+            } catch(e) {}
+        },
+
+        async deleteSession(id) {
+            if (!confirm('确定删除？')) return;
+            await fetch(`/api/game/${id}`, {method: 'DELETE'});
+            await this.loadSessions();
+        },
+
+        resumeGame(sessionId) {
+            if (!this.playerName.trim()) { alert('请输入你的名字'); return; }
+            localStorage.setItem('coc_player_name', this.playerName);
+            window.location.href = `/game/${sessionId}?player=${encodeURIComponent(this.playerName)}`;
+        },
+
+        /* --- 开始游戏 --- */
+        async startGame() {
+            if (!this.playerName.trim()) return;
+            localStorage.setItem('coc_player_name', this.playerName);
+            this.starting = true;
+            try {
+                // 1. 创建会话
+                const res = await fetch('/api/game/create', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({name: this.sessionName || '未命名会话'}),
+                });
+                const session = await res.json();
+
+                // 2. 加载模组（非自由模式）
+                if (this.selectedModule && this.selectedModule.name !== '__free__') {
+                    await fetch(`/api/game/${session.id}/load-module`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({sample_name: this.selectedModule.name}),
+                    });
+                }
+
+                // 3. 分配调查员到会话（依赖服务端把 investigators.session_id 写回数据库）
+                if (this.selectedCharId) {
+                    const assignRes = await fetch(
+                        `/api/character/${this.selectedCharId}/assign/${session.id}`,
+                        { method: 'POST' },
+                    );
+                    if (!assignRes.ok) {
+                        const errText = await assignRes.text();
+                        throw new Error(errText || `分配调查员失败 (${assignRes.status})`);
+                    }
+                }
+
+                // 4. 进入游戏
+                window.location.href = `/game/${session.id}?player=${encodeURIComponent(this.playerName)}`;
+            } catch(e) {
+                alert('启动失败: ' + e.message);
+            }
+            this.starting = false;
+        },
+    };
+}
+
+// 监听步骤2时自动加载角色列表
+document.addEventListener('alpine:init', () => {
+    Alpine.effect(() => {
+        const hub = Alpine.store('hub');
+    });
+});
+</script>
+
+{% endblock %}

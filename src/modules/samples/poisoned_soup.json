@@ -1,0 +1,363 @@
+{
+  "metadata": {
+    "title": "有毒的汤",
+    "author": "泥紳士（翻译：西螺酱油）",
+    "era": "自由（可设为任何时代）",
+    "player_count_min": 1,
+    "player_count_max": 3,
+    "estimated_sessions": 1,
+    "difficulty": "普通",
+    "summary": "某天夜晚你突然惊醒，发现自己被困在一个水泥密室中。桌上放着一碗深红色的汤和一张纸条：'想回去的话，便在一小时内喝下有毒的汤。'四面各有一扇门通向不同的房间。你必须在有限时间内探索所有房间、找到毒药、毒入汤中并喝下——否则沉睡的邪神查烏葛那·馮根将会苏醒。一个充满道德困境的密室解谜模组。",
+    "tags": [
+      "密室",
+      "解谜",
+      "短篇",
+      "道德困境",
+      "查烏葛那·馮根",
+      "限时"
+    ]
+  },
+  "npcs": [
+    {
+      "id": "npc_slave_girl",
+      "name": "奴隶少女",
+      "age": 17,
+      "occupation": "无",
+      "description": "白化症少女，眼神空洞，穿着沾满血渍的白袍，手握22口径手枪。对探索者绝对忠实。不会说话，只用点头摇头交流。",
+      "personality": "不会说话但有感情表达。对探索者非常忠实且依赖，像小猫一样亲近人。被命令做可能致死的事会明显害怕但不一定拒绝。",
+      "motivation": "服从探索者的一切命令。",
+      "secret": "她是查烏葛那·馮根创造的存在，用来迷惑探索者。她知道一些关键信息但不会主动说出。如果命令她喝毒汤……她也会服从。",
+      "dialogue_style": "不说话。用点头、摇头、歪头表示困惑。害怕时会微微颤抖，依赖时会靠近探索者。",
+      "stats": {
+        "STR": 20,
+        "CON": 30,
+        "SIZ": 40,
+        "DEX": 25,
+        "INT": 50,
+        "POW": 50
+      },
+      "skills": {
+        "侦查": 55,
+        "聆听": 55,
+        "潜行": 40,
+        "急救": 50,
+        "追踪": 50
+      },
+      "initial_attitude": "忠诚"
+    }
+  ],
+  "locations": [
+    {
+      "id": "loc_center",
+      "name": "中央房间（汤的房间）",
+      "description": "水泥四方形密室，天花板吊着灯泡，中央木桌上放着一碗深红色的汤（人血），椅子上有两张纸条。四面各有一扇门。",
+      "atmosphere": "昏暗的灯泡勉强照亮房间。空气沉闷，弥漫着微微的铁锈味。汤还是温热的——但它正在慢慢变凉。",
+      "clue_ids": [
+        "clue_warning_note",
+        "clue_map_note"
+      ],
+      "npc_ids": [],
+      "connections": {
+        "东门": "loc_east",
+        "西门": "loc_west",
+        "北门": "loc_north",
+        "南门": "loc_south"
+      },
+      "events": [
+        "灯泡随时间推移逐渐变暗",
+        "汤从热变温再到凉，反映剩余时间"
+      ],
+      "is_starting_location": true
+    },
+    {
+      "id": "loc_east",
+      "name": "东边房间（奴隶的房间）",
+      "description": "生锈的铁门，里面漆黑一片。奴隶少女蜷缩在角落。还有一具无头男尸和一张纸条。",
+      "atmosphere": "完全黑暗，只有打开门后中央房间的微光勉强渗入。空气中有淡淡的血腥味。",
+      "clue_ids": [],
+      "npc_ids": [
+        "npc_slave_girl"
+      ],
+      "connections": {
+        "回中央": "loc_center"
+      },
+      "events": [
+        "打开门时奴隶少女会因光线而畏缩",
+        "无头男尸身上可能藏有信息"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_west",
+      "name": "西边房间（书库）",
+      "description": "华丽装饰的木门。中央四脚桌上有蜡烛照明。四壁满是书架。有一本漆黑之书沾附黑蓮毒。书不能拿出房间（否则门会变成液狀生物攻击）。",
+      "atmosphere": "蜡烛微弱的光芒映照在无数书脊上，书页散发着古老的气息。",
+      "clue_ids": [
+        "clue_black_book"
+      ],
+      "npc_ids": [],
+      "connections": {
+        "回中央": "loc_center"
+      },
+      "events": [
+        "尝试将书带出房间时，门会变成液狀生物并攻击探索者",
+        "蜡烛在45分钟后可能熄灭"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_north",
+      "name": "北边房间（厨房）",
+      "description": "白色推拉门。干净的厨房，有橱柜、瓦斯炉、流理台。大铁锅里是切散的尸体和备用人血。橱柜里全是银餐具（可试毒）。",
+      "atmosphere": "日光灯管照得如同白天般明亮，与其他房间的阴暗形成诡异对比。",
+      "clue_ids": [
+        "clue_poison_hint"
+      ],
+      "npc_ids": [],
+      "connections": {
+        "回中央": "loc_center"
+      },
+      "events": [
+        "发现大铁锅内容物时需要理智检定",
+        "银餐具可用于检测毒药"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_south",
+      "name": "南边房间（礼堂）",
+      "description": "巨大厚重铁门，有小窗。内有恐惧猎人（单翼巨蛇怪）守卫。深处是查烏葛那·馮根的沉睡雕像和记录石板。",
+      "atmosphere": "透过小窗可以模糊看到苍白房间中有巨大的蛇形怪物缓慢移动。空气中传来沉重的呼吸声。",
+      "clue_ids": [
+        "clue_stone_tablet",
+        "clue_hall_note"
+      ],
+      "npc_ids": [],
+      "connections": {
+        "回中央": "loc_center"
+      },
+      "events": [
+        "进入时需要面对恐惧猎人的威胁",
+        "看到查烏葛那·馮根的雕像需要理智检定",
+        "解读石板需要花费5分钟游戏内时间"
+      ],
+      "is_starting_location": false
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene_awakening",
+      "title": "密室苏醒",
+      "description": "探索者在中央房间醒来，发现汤和纸条。阅读警告信息后，需要决定如何行动。守密人应介绍四扇门和房间的基本布局。纸条上的信息是关键——一小时内喝下有毒的汤，否则'祂'将苏醒。探索者此时穿着白袍，身上没有任何物品。",
+      "read_aloud": "你猛然惊醒。冰冷的水泥地面贴着你的背。天花板上的灯泡发出昏暗而不稳定的光，照亮了这个四方形的房间。你穿着一件破旧的白袍，口袋空空如也——钱包、手机、甚至你平时戴的饰品，全部消失了。\n\n房间正中央，一张古旧的木桌上放着一碗深红色的汤，热气还在缓缓升腾。旁边的椅子上有两张破旧的纸条。\n\n四面墙壁各有一扇门。",
+      "location_id": "loc_center",
+      "npc_ids": [],
+      "clue_ids": [
+        "clue_warning_note",
+        "clue_map_note"
+      ],
+      "likely_skill_checks": [
+        "侦查",
+        "灵感",
+        "医学"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_exploration",
+          "condition": "探索者阅读纸条后开始探索任何一扇门",
+          "required_clues": [],
+          "auto_trigger": false
+        }
+      ],
+      "is_opening": true,
+      "is_climax": false,
+      "is_ending": false
+    },
+    {
+      "id": "scene_exploration",
+      "title": "密室探索",
+      "description": "探索者自由探索四个房间。东边房间可找到奴隶少女和无头尸体；西边书库有沾附黑蓮毒的漆黑之书（毒药来源之一），但书不能带出房间；北边厨房有银餐具（可试毒）和恐怖的人体残骸；南边礼堂有恐惧猎人守卫、查烏葛那·馮根的雕像和记录石板。探索者需要找到毒药（黑书上的黑蓮毒或灯泡中的毒粉）、将毒药加入汤中、然后喝下。守密人应注意时间推进——30分钟后汤变温，45分钟后蜡烛可能熄灭，55分钟后灯泡熄灭。",
+      "read_aloud": "",
+      "location_id": "",
+      "npc_ids": [
+        "npc_slave_girl"
+      ],
+      "clue_ids": [
+        "clue_black_book",
+        "clue_stone_tablet",
+        "clue_poison_hint",
+        "clue_hall_note"
+      ],
+      "likely_skill_checks": [
+        "侦查",
+        "图书馆使用",
+        "聆听",
+        "力量",
+        "医学",
+        "药学",
+        "历史"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_decision",
+          "condition": "探索者找到毒药并准备将其加入汤中，或时间即将耗尽",
+          "required_clues": [],
+          "auto_trigger": false
+        },
+        {
+          "target_scene_id": "scene_decision",
+          "condition": "游戏内时间到达55分钟——灯泡熄灭，最后的警告",
+          "required_clues": [],
+          "auto_trigger": true
+        }
+      ],
+      "is_opening": false,
+      "is_climax": false,
+      "is_ending": false
+    },
+    {
+      "id": "scene_decision",
+      "title": "最终抉择",
+      "description": "高潮与结局场景。探索者必须做出最终决定：将毒药加入汤中并喝下，或让时间耗尽面对苏醒的邪神。这里存在多种道德困境：探索者可以自己喝毒汤（需要体质检定决定存活）、命令奴隶少女喝毒汤（她会服从但会害怕颤抖）、或拒绝喝汤面对查烏葛那·馮根的苏醒。喝下毒汤后探索者会陷入昏迷，醒来时回到现实世界。如果让奴隶少女喝下，她会死亡，探索者同样可以回去但将背负良心的重担。如果时间耗尽，查烏葛那·馮根苏醒，探索者面临极高的理智检定和可能的死亡。",
+      "read_aloud": "灯泡的光芒已经微弱到几乎看不见了。碗中的汤不再冒着热气——它已经变得冰凉。\n\n你感觉到空气中有什么在变化。地面开始微微震动，从南边房间的方向传来了低沉的、令人牙酸的声响——那不是恐惧猎人的声音，而是更加古老、更加庞大的什么东西正在苏醒。\n\n时间不多了。\n\n碗就在你面前。汤还在。选择也还在。",
+      "location_id": "loc_center",
+      "npc_ids": [
+        "npc_slave_girl"
+      ],
+      "clue_ids": [],
+      "likely_skill_checks": [
+        "意志",
+        "体质"
+      ],
+      "transitions": [],
+      "is_opening": false,
+      "is_climax": true,
+      "is_ending": true
+    }
+  ],
+  "clues": [
+    {
+      "id": "clue_warning_note",
+      "name": "警告纸条",
+      "description": "椅子上的第一张纸条，写着令人不安的警告。这是推动整个模组的核心指令——探索者必须在一小时内找到毒药、毒入汤中并喝下。",
+      "core": true,
+      "location_id": "loc_center",
+      "discovery_method": "侦查",
+      "discovery_difficulty": "简单",
+      "leads_to": [
+        "clue_map_note"
+      ],
+      "handout_text": "「想回去的话，便在一小时内喝下有毒的汤。喝完之前你无法离开。一小时内没有喝完的话，祂便会来迎接你。」"
+    },
+    {
+      "id": "clue_map_note",
+      "name": "密室地图",
+      "description": "椅子上的第二张纸条，标注了五个房间的位置：汤的房间（中央）、厨房（北）、书库（西）、奴隶的房间（东）、礼堂（南）。背面有一行小字。",
+      "core": true,
+      "location_id": "loc_center",
+      "discovery_method": "侦查",
+      "discovery_difficulty": "简单",
+      "leads_to": [
+        "clue_poison_hint",
+        "clue_black_book"
+      ],
+      "handout_text": "「（正面是简易的五房间地图，标注了各房间名称和方位）\n\n（背面写着）热腾腾的人血汤，请在凉掉之前尽早享用」"
+    },
+    {
+      "id": "clue_black_book",
+      "name": "《关于汤之梦》",
+      "description": "书库中一本表面沾附黑色粉末的漆黑书籍。书上记载了各房间的线索和提示，包括毒药的位置。书页上沾附的黑蓮毒是毒药来源之一。书不能带出书库房间，否则门会变成液狀生物攻击。探索者可以用手指刮下书上的黑色粉末（黑蓮毒）带走。",
+      "core": true,
+      "location_id": "loc_west",
+      "discovery_method": "图书馆使用",
+      "discovery_difficulty": "普通",
+      "leads_to": [
+        "clue_stone_tablet"
+      ],
+      "handout_text": "「（这本漆黑的书散发着不祥的气息，封面沾满了黑色的细腻粉末。翻开书页，其中记载着：）\n\n此梦境乃查烏葛那·馮根之设。汤为人血所制，需以毒调味方可完成仪式。\n\n毒隐于二处：一在正中间孱弱之太阳中（灯泡），二在此书之表面（黑蓮毒）。\n\n饮下毒汤者，将从梦中归还。拒绝者，将成为祂醒来时的第一份祭品。」"
+    },
+    {
+      "id": "clue_stone_tablet",
+      "name": "石板铭文",
+      "description": "礼堂深处查烏葛那·馮根雕像前的石板。记录了关于这位邪神的信息。解读需要花费5分钟游戏内时间，成功解读可获得克苏鲁神话技能点数。",
+      "core": false,
+      "location_id": "loc_south",
+      "discovery_method": "克苏鲁神话",
+      "discovery_difficulty": "困难",
+      "leads_to": [],
+      "handout_text": "「查烏葛那·馮根，沉睡于梦与现实的夹缝之中。祂以人类的恐惧和犹豫为食。此密室乃祂之梦境，被困者即祂之猎物。\n\n唯有以毒汤完成仪式，梦境方可瓦解。若猎物在恐惧中耗尽时间，祂将借由猎物的绝望苏醒于世间。\n\n（石板下方刻着一个复杂的符号，凝视过久会感到眩晕）」"
+    },
+    {
+      "id": "clue_poison_hint",
+      "name": "调味料纸条",
+      "description": "厨房橱柜中发现的一张小纸条，暗示汤还缺少关键的'调味料'——即毒药。这为探索者指明了需要在其他房间寻找毒药的方向。",
+      "core": true,
+      "location_id": "loc_north",
+      "discovery_method": "侦查",
+      "discovery_difficulty": "普通",
+      "leads_to": [
+        "clue_hall_note"
+      ],
+      "handout_text": "「重要的调味料，现在缺货」"
+    },
+    {
+      "id": "clue_hall_note",
+      "name": "礼堂纸条",
+      "description": "礼堂入口处发现的纸条，用隐晦的语言暗示了毒药的两个藏匿位置：灯泡中（'孱弱之太阳'）和漆黑之书上（'漆黑的梦之知识'）。",
+      "core": true,
+      "location_id": "loc_south",
+      "discovery_method": "侦查",
+      "discovery_difficulty": "普通",
+      "leads_to": [
+        "clue_black_book"
+      ],
+      "handout_text": "「在正中间孱弱之太阳中，抑或是一抹漆黑的梦之知识上，调味料便隐藏在那里」"
+    }
+  ],
+  "timeline": [
+    {
+      "id": "timeline_start",
+      "description": "开始：汤是热的，灯泡明亮。探索者在中央房间醒来，一切刚刚开始。",
+      "trigger_condition": "游戏开始，0分钟",
+      "consequences": "汤冒着热气，灯泡正常照明。探索者有充足的时间开始探索。"
+    },
+    {
+      "id": "timeline_30min",
+      "description": "30分钟：汤变温，灯泡开始减弱。时间已经过了一半，气氛开始紧张。",
+      "trigger_condition": "游戏内时间到达30分钟",
+      "consequences": "汤不再冒热气，变得温凉。灯泡的光芒明显减弱，房间变得更昏暗。守密人应提醒探索者时间的流逝。"
+    },
+    {
+      "id": "timeline_45min",
+      "description": "45分钟：汤快凉了，书库蜡烛可能熄灭。紧迫感加剧。",
+      "trigger_condition": "游戏内时间到达45分钟",
+      "consequences": "汤已接近冰凉。书库的蜡烛开始摇曳，随时可能熄灭——如果探索者还没从书上取得毒药，时间更加紧迫。灯泡的光芒进一步减弱。"
+    },
+    {
+      "id": "timeline_55min",
+      "description": "55分钟：灯泡完全熄灭，中央房间陷入黑暗。最后警告。",
+      "trigger_condition": "游戏内时间到达55分钟",
+      "consequences": "中央房间的灯泡彻底熄灭，陷入完全黑暗。南边礼堂方向传来低沉的震动。探索者如果还没准备好毒汤，将面临极大困难——在黑暗中找到碗并喝下。自动触发最终抉择场景。"
+    },
+    {
+      "id": "timeline_60min",
+      "description": "60分钟：查烏葛那·馮根苏醒。游戏结束。",
+      "trigger_condition": "游戏内时间到达60分钟，探索者未喝下毒汤",
+      "consequences": "查烏葛那·馮根从沉睡中苏醒。礼堂方向传来震耳欲聋的咆哮，密室的墙壁开始崩裂。所有探索者面临1D10/1D100的理智检定。未能逃脱者将被邪神吞噬。这是最坏的结局——探索者极有可能死亡或永久疯狂。"
+    }
+  ],
+  "ending_conditions": [
+    {
+      "id": "ending_drink",
+      "description": "调查员在时限内做出喝汤或不喝汤的最终抉择",
+      "type": "normal",
+      "trigger_hint": "当调查员决定是否喝下毒汤时，叙述结局和后果"
+    },
+    {
+      "id": "ending_timeout",
+      "description": "60分钟耗尽查烏葛那馮根苏醒",
+      "type": "bad",
+      "trigger_hint": "若游戏内时间到达60分钟且调查员未喝汤，邪神苏醒，叙述灾难性结局"
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}模组库 - 克苏鲁的呼唤{% endblock %}
+
+{% block content %}
+<div class="lobby" x-data="moduleBrowser()">
+    <h1>模组库</h1>
+    <p class="subtitle">浏览内置模组或前往生成自定义模组</p>
+
+    <!-- Tab 切换 -->
+    <div class="card" style="padding: 0.5rem 1rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; gap: 1rem;">
+            <button class="btn" :class="tab === 'builtin' ? 'btn-primary' : 'btn-secondary'"
+                    @click="tab = 'builtin'">内置模组</button>
+            <button class="btn" :class="tab === 'generated' ? 'btn-primary' : 'btn-secondary'"
+                    @click="tab = 'generated'">生成模组</button>
+        </div>
+    </div>
+
+    <!-- 内置模组列表 -->
+    <div x-show="tab === 'builtin'">
+        <div x-show="loading" class="card">
+            <p style="color: var(--text-secondary);">正在加载模组列表...</p>
+        </div>
+        <div x-show="!loading && modules.length === 0" class="card empty-state">
+            <p>暂无可用的内置模组</p>
+        </div>
+        <template x-for="mod in modules" :key="mod.name">
+            <div class="card" style="cursor: pointer;"
+                 @click="expanded === mod.name ? expanded = null : expanded = mod.name">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div style="flex: 1;">
+                        <h2 x-text="mod.title" style="margin-bottom: 0.5rem;"></h2>
+                        <div style="display: flex; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+                            <span class="badge" x-text="'时代: ' + (mod.era || '未知')"></span>
+                            <span class="badge" x-show="mod.difficulty"
+                                  x-text="'难度: ' + mod.difficulty"></span>
+                            <span class="badge" x-show="mod.author"
+                                  x-text="'作者: ' + mod.author"></span>
+                        </div>
+                        <p x-text="mod.summary || '暂无描述'"
+                           style="color: var(--text-secondary); font-size: 0.9rem;"></p>
+                    </div>
+                    <a href="/" class="btn btn-primary btn-small"
+                       style="white-space: nowrap; margin-left: 1rem;">
+                        从大厅开始游戏
+                    </a>
+                </div>
+
+                <!-- 模组详情展开区 -->
+                <div x-show="expanded === mod.name"
+                     style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+                    <div style="color: var(--text-secondary); font-size: 0.9rem;">
+                        <p>详细信息请从大厅选择此模组后开始游戏查看。</p>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+
+    <!-- 生成模组 tab -->
+    <div x-show="tab === 'generated'">
+        <div class="card">
+            <p style="color: var(--text-secondary);">
+                前往 <a href="/module-generate" style="color: var(--accent);">模组生成器</a> 创建自定义模组
+            </p>
+        </div>
+    </div>
+
+    <!-- 操作结果提示 -->
+    <div x-show="message" x-transition
+         class="card" :style="'border-color: ' + (messageType === 'success' ? 'var(--success)' : 'var(--danger)')">
+        <p x-text="message" :style="'color: ' + (messageType === 'success' ? 'var(--success)' : 'var(--danger)')"></p>
+    </div>
+</div>
+
+<script>
+function moduleBrowser() {
+    return {
+        tab: 'builtin',
+        modules: [],
+        loading: true,
+        expanded: null,
+        message: '',
+        messageType: 'success',
+
+        async init() {
+            await this.loadModules();
+        },
+
+        async loadModules() {
+            this.loading = true;
+            try {
+                const res = await fetch('/api/game/modules/samples');
+                if (res.ok) {
+                    this.modules = await res.json();
+                } else {
+                    this.showMessage('加载模组列表失败: ' + res.statusText, 'error');
+                }
+            } catch (e) {
+                this.showMessage('加载模组列表失败: ' + e.message, 'error');
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        showMessage(msg, type) {
+            this.message = msg;
+            this.messageType = type;
+            setTimeout(() => { this.message = ''; }, 4000);
+        },
+    };
+}
+</script>
+{% endblock %}

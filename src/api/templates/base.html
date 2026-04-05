@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}克苏鲁的呼唤 TTRPG{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    <script src="https://unpkg.com/htmx-ext-ws@2.0.2/ws.js"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.14.8/dist/cdn.min.js"></script>
+    {% block head %}{% endblock %}
+</head>
+<body class="dark">
+    <header>
+        <nav>
+            <a href="/" class="logo">&#x1f419; 克苏鲁的呼唤</a>
+            <div class="nav-links">
+                <a href="/">游戏大厅</a>
+                <a href="/module-browser">模组库</a>
+                <a href="/usage">Token监控</a>
+            </div>
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

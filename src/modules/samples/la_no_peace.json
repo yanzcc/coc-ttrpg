@@ -1,0 +1,1087 @@
+{
+  "metadata": {
+    "title": "洛城无宁日",
+    "author": "烧饼·尼古拉斯",
+    "era": "1954",
+    "player_count_min": 2,
+    "player_count_max": 6,
+    "estimated_sessions": 3,
+    "difficulty": "困难",
+    "summary": "1954年8月9日的洛杉矶，长滩贝茨旅馆4号小屋发生一起骇人惨案——一场权贵子弟的聚会因禁忌咒语召唤出夜魔而血腥收场。调查员们有三天时间追查真凶，却发现市长之子埃里克·韦斯特已在疯狂中不断制造新的恐怖'雕塑'。最终的真相指向市长宅邸地下的黑暗深处，那里潜伏着比杀手更可怕的存在。",
+    "tags": [
+      "多人",
+      "调查",
+      "黑色电影",
+      "1950s",
+      "洛杉矶",
+      "夜魔",
+      "食尸鬼",
+      "暴力",
+      "限时",
+      "城市冒险"
+    ]
+  },
+  "npcs": [
+    {
+      "id": "npc_eric_west",
+      "name": "埃里克·韦斯特",
+      "age": 26,
+      "occupation": "市长之子/学者",
+      "description": "一个安静的书生气质的青年，戴眼镜，面容污秽不堪。因召唤夜魔而彻底疯狂，如今沉迷于用人体制作'夜魔雕塑'。",
+      "personality": "原本安静内敛、热爱历史研究，现已完全疯狂，沉迷于对夜魔的崇拜和模仿。",
+      "motivation": "为他崇拜的夜魔建造'美丽'的纪念雕塑，服侍夜魔。",
+      "secret": "他在贝茨旅馆用从父亲图书馆找到的咒语和旧印召唤了夜魔，导致惨案发生。之后他不断绑架并'雕刻'受害者。他最终藏身于父亲宅邸地下的洞穴中与夜魔为伴。",
+      "dialogue_style": "疯狂的喃喃自语，间或发出歇斯底里的尖叫和大笑。语无伦次地赞美夜魔的'美丽'。",
+      "stats": {
+        "STR": 50,
+        "CON": 60,
+        "SIZ": 50,
+        "DEX": 50,
+        "INT": 85,
+        "POW": 30,
+        "EDU": 70,
+        "APP": 35
+      },
+      "skills": {
+        "隐藏": 67,
+        "神秘学": 45,
+        "历史": 60,
+        "图书馆使用": 55
+      },
+      "initial_attitude": "敌对"
+    },
+    {
+      "id": "npc_john_carter",
+      "name": "约翰·卡特",
+      "age": 44,
+      "occupation": "LAPD探员",
+      "description": "一个固执、毫无幽默感的中年探员，面容严肃，穿着标准的侦探西装。",
+      "personality": "固执、敬业、诚实、嫉恶如仇，但对新手调查员充满鄙夷。",
+      "motivation": "尽职完成案件调查，维护自己的专业声誉。",
+      "secret": "他认为这是一个精神病人单独犯下的谋杀案，不知道超自然因素的存在。他对越来越多的'半吊子'接手调查深恶痛绝。",
+      "dialogue_style": "用简短的句子说话，泼冷水、传播负能量，让人知道他打心底看不起对方。",
+      "stats": {
+        "STR": 60,
+        "CON": 55,
+        "SIZ": 65,
+        "DEX": 50,
+        "INT": 60,
+        "POW": 55,
+        "EDU": 60,
+        "APP": 40
+      },
+      "skills": {
+        "侦查": 70,
+        "法医": 55,
+        "心理学": 45,
+        "手枪": 60,
+        "法律": 50
+      },
+      "initial_attitude": "冷淡"
+    },
+    {
+      "id": "npc_exley",
+      "name": "埃克斯利局长",
+      "age": 55,
+      "occupation": "洛杉矶警察局长",
+      "description": "来自警察世家的精英警探，性格冷淡，不苟言笑，带有浓重的官腔。",
+      "personality": "冷淡、高傲、精明、条理分明，像夏洛克·福尔摩斯一般理性严谨。",
+      "motivation": "表面上追查案件真相，实际上在掩盖自己正在变成食尸鬼的秘密，并保护市长和市议会的食尸鬼同伙。",
+      "secret": "他正在逐渐转变为食尸鬼，与市长及市议会其他成员一起在市长宅邸地下啃食人肉。他会暗中阻止调查员触及与神秘学相关的线索。",
+      "dialogue_style": "板着正直的脸，长话短说，带有官腔，条理明晰，有话直说，明确表达自己是上级。",
+      "stats": {
+        "STR": 55,
+        "CON": 50,
+        "SIZ": 60,
+        "DEX": 45,
+        "INT": 80,
+        "POW": 60,
+        "EDU": 75,
+        "APP": 50
+      },
+      "skills": {
+        "侦查": 80,
+        "心理学": 70,
+        "法律": 65,
+        "说服": 60,
+        "聆听": 55
+      },
+      "initial_attitude": "冷淡"
+    },
+    {
+      "id": "npc_dudley_smith",
+      "name": "达德利·史密斯",
+      "age": 50,
+      "occupation": "洛杉矶警局高级警官",
+      "description": "非常高大的男人，年轻时参与过拳击运动，是警署中最有个人魅力的人。",
+      "personality": "表面友好、亲切、有魅力，实际上痛恨黑人和共产党人，支持用毒品控制贫民窟。",
+      "motivation": "维持自己在警局的实权地位，保持对洛杉矶地下秩序的控制。",
+      "secret": "他支持向黑人贫民窟康普顿倾销廉价海洛因以'维持安定'，是洛杉矶腐败体制的核心人物之一。",
+      "dialogue_style": "全程保持友好和微笑，亲切地喊人'朋友'、'伙计'，说话时起立，看起来很高大。像蝙蝠侠里的戈登警长。",
+      "stats": {
+        "STR": 75,
+        "CON": 65,
+        "SIZ": 80,
+        "DEX": 50,
+        "INT": 55,
+        "POW": 60,
+        "EDU": 55,
+        "APP": 65
+      },
+      "skills": {
+        "拳击": 70,
+        "威吓": 75,
+        "说服": 65,
+        "手枪": 60,
+        "侦查": 50
+      },
+      "initial_attitude": "友好"
+    },
+    {
+      "id": "npc_nicholas_franklin",
+      "name": "尼古拉斯·富兰克林",
+      "age": 41,
+      "occupation": "洛杉矶警局警察/保镖",
+      "description": "一个坏警察，左臂被整条撕下，躺在重症监护室中，面色苍白，精神恍惚。",
+      "personality": "绝望、贪婪、无底线。以前表面严厉打击毒品犯罪，实际自己是瘾君子和制毒者。",
+      "motivation": "避免进监狱，愿意当污点证人换取减刑，但不愿一次全盘托出。",
+      "secret": "案发时他和洛斯卡在一起与两个应召女郎发生关系。他在遭攻击前开了两枪命中了夜魔。他亲眼目睹了漆黑无眼的飞行生物撕开屋顶、扯裂伯尼。",
+      "dialogue_style": "喘着粗气，加入咕哝和呻吟，拿纸杯挡嘴消音。谈话约两分钟后陷入无意识。",
+      "stats": {
+        "STR": 60,
+        "CON": 40,
+        "SIZ": 65,
+        "DEX": 50,
+        "INT": 45,
+        "POW": 35,
+        "EDU": 45,
+        "APP": 35
+      },
+      "skills": {
+        "手枪": 55,
+        "潜行": 40,
+        "威吓": 50
+      },
+      "initial_attitude": "敌对"
+    },
+    {
+      "id": "npc_kirk_riosca",
+      "name": "克里克·洛斯卡",
+      "age": 60,
+      "occupation": "过气好莱坞明星/撒旦崇拜教主",
+      "description": "大腹便便，戴棕色假发的老男人，穿黑色长袍，戴各种撒旦崇拜饰物。",
+      "personality": "邪恶做作、戏剧化、虚张声势，受威胁时立刻变得胆小懦弱、谄媚讨好。",
+      "motivation": "通过假撒旦崇拜从好莱坞名人处敛财，同时用邪教仪式照片进行敲诈。",
+      "secret": "他的撒旦崇拜纯粹是商业骗局。他与儿子戴维关系不好，对其失踪或死亡不会悲伤。他对4号小屋发生的事情并不知情。",
+      "dialogue_style": "学贝拉·卢戈西：邪恶、戏剧化的大笑、夸张的手势，自称所有信徒之王。受威胁后语气立刻软化。",
+      "stats": {
+        "STR": 40,
+        "CON": 45,
+        "SIZ": 70,
+        "DEX": 35,
+        "INT": 55,
+        "POW": 40,
+        "EDU": 50,
+        "APP": 30
+      },
+      "skills": {
+        "话术": 60,
+        "说服": 50,
+        "威吓": 35,
+        "表演": 65
+      },
+      "initial_attitude": "中立"
+    },
+    {
+      "id": "npc_simon_west",
+      "name": "西蒙·韦斯特",
+      "age": 60,
+      "occupation": "洛杉矶市长",
+      "description": "洛杉矶现任市长，外表体面，实际已堕落为食尸鬼的一员。",
+      "personality": "表面道貌岸然，实际早已被黑暗吞噬，在地下洞穴中与食尸鬼一起啃食人肉。",
+      "motivation": "维持权力的同时满足食尸鬼的本能，掩盖自己和同伙的真面目。",
+      "secret": "他拥有一座暗黑图书馆藏有禁忌咒文，长期在宅邸地下与食尸鬼为伍、啃食人肉。正是他将儿子埃里克引上了邪恶之路。",
+      "dialogue_style": "若遭遇时已非正常状态，发出混杂英语的野蛮咆哮，眯着眼睛啃咬人类头颅。",
+      "stats": {
+        "STR": 70,
+        "CON": 60,
+        "SIZ": 65,
+        "DEX": 45,
+        "INT": 65,
+        "POW": 55,
+        "EDU": 70,
+        "APP": 25
+      },
+      "skills": {
+        "克苏鲁神话": 15,
+        "神秘学": 40
+      },
+      "initial_attitude": "敌对"
+    },
+    {
+      "id": "npc_randy_blackwell",
+      "name": "兰迪·布莱克维尔",
+      "age": 14,
+      "occupation": "应召女郎（来自圣玛丽孤儿院）",
+      "description": "一个极度年幼的白人女孩，裹着毯子在警车里瑟瑟发抖，抽泣不止。",
+      "personality": "极度恐惧、创伤后精神崩溃，完全无法言语。",
+      "motivation": "无——她已经精神崩溃，直到70年代才恢复。",
+      "secret": "她目睹了夜魔袭击的全过程，但创伤太深以至于说不出话来。询问她是在浪费时间。",
+      "dialogue_style": "只有抽泣和颤抖，无法进行任何对话。",
+      "stats": {
+        "STR": 25,
+        "CON": 30,
+        "SIZ": 35,
+        "DEX": 45,
+        "INT": 40,
+        "POW": 15,
+        "EDU": 20,
+        "APP": 45
+      },
+      "skills": {},
+      "initial_attitude": "恐惧"
+    },
+    {
+      "id": "npc_simon_bates",
+      "name": "西蒙·贝茨",
+      "age": 60,
+      "occupation": "汽车旅馆老板",
+      "description": "60岁的鳏夫，贝茨旅馆的产权所有者，案件可能毁了他的生意。",
+      "personality": "普通市民，对案件感到惊恐和无奈。",
+      "motivation": "希望案件尽快解决，挽救自己的旅馆生意。",
+      "secret": "他能指认玛格丽特·斯蒂芬（赛迪）是偶尔把客人带来此处的应召女郎。",
+      "dialogue_style": "焦虑不安地说话，反复提到自己的生意要完了。",
+      "stats": {
+        "STR": 35,
+        "CON": 40,
+        "SIZ": 55,
+        "DEX": 30,
+        "INT": 45,
+        "POW": 40,
+        "EDU": 40,
+        "APP": 35
+      },
+      "skills": {
+        "聆听": 40,
+        "侦查": 35
+      },
+      "initial_attitude": "中立"
+    }
+  ],
+  "locations": [
+    {
+      "id": "loc_bates_motel",
+      "name": "贝茨汽车旅馆4号小屋",
+      "description": "长滩的一家普通汽车旅馆中的一间小屋，现已成为惨案现场。屋顶东南角被撕开巨大的裂口，墙壁和天花板上留有粗糙的平行爪痕，空气中弥漫着浓重的血腥味。",
+      "atmosphere": "血腥、恐怖、混乱。散落的毒品、破碎的家具、被撕裂的屋顶，一切都表明这里发生了超出人类认知的暴力事件。地板上有干涸的黑色不明液体。",
+      "clue_ids": [
+        "clue_claw_marks",
+        "clue_black_liquid",
+        "clue_bullet",
+        "clue_drugs",
+        "clue_bedroom_evidence",
+        "clue_lab_report"
+      ],
+      "npc_ids": [
+        "npc_john_carter",
+        "npc_simon_bates"
+      ],
+      "connections": {
+        "城市方向": "loc_police_station"
+      },
+      "events": [
+        "调查员到达现场进行勘察",
+        "实验室报告在下午1:30送达"
+      ],
+      "is_starting_location": true
+    },
+    {
+      "id": "loc_hospital",
+      "name": "洛杉矶市立医院",
+      "description": "富兰克林被送往此处的重症监护室，左臂被整条撕下。主治医师杰夫·瓦特负责看护。",
+      "atmosphere": "消毒水的气味，白色的病房，富兰克林痛苦的呻吟声回荡在走廊中。",
+      "clue_ids": [
+        "clue_franklin_testimony"
+      ],
+      "npc_ids": [
+        "npc_nicholas_franklin"
+      ],
+      "connections": {
+        "城市方向": "loc_police_station"
+      },
+      "events": [
+        "询问富兰克林，获取关于攻击者的关键信息"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_police_station",
+      "name": "洛杉矶警察局",
+      "description": "洛杉矶警局总部，埃克斯利局长的办公室在此。调查员需要在此接受任务指令并可以使用24小时档案查询专线。",
+      "atmosphere": "官僚气息浓重，烟雾缭绕的办公室，打字机的咔嗒声和电话铃声此起彼伏。权力的气息无处不在。",
+      "clue_ids": [
+        "clue_background_checks"
+      ],
+      "npc_ids": [
+        "npc_exley",
+        "npc_dudley_smith"
+      ],
+      "connections": {
+        "城市各处": "loc_bates_motel"
+      },
+      "events": [
+        "与埃克斯利和达德利会面",
+        "接受调查任务",
+        "使用档案查询"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_riosca_house",
+      "name": "洛斯卡宅邸",
+      "description": "过气好莱坞明星克里克·洛斯卡的住所，充满假撒旦崇拜用具，后院养着祭祀用的鸡。",
+      "atmosphere": "充斥着廉价的哥特式装饰和假魔法道具，空气中有焚香和鸡粪的混合气味。戏剧化的邪恶氛围实际上只是商业骗局的伪装。",
+      "clue_ids": [
+        "clue_satan_cult_fake"
+      ],
+      "npc_ids": [
+        "npc_kirk_riosca"
+      ],
+      "connections": {
+        "隔壁": "loc_warehouse"
+      },
+      "events": [
+        "调查洛斯卡的撒旦崇拜活动",
+        "发现这只是商业骗局"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_warehouse",
+      "name": "埃里克的仓库",
+      "description": "埃里克以约翰·马丁的名义租下的仓库，位于洛斯卡家隔壁。里面是他制作恐怖'雕塑'的工作间。",
+      "atmosphere": "空旷阴暗的仓库，弥漫着血腥和烧焦的气味。天花板上悬吊着约翰·马丁被'雕刻'过的残躯，工具散落各处。",
+      "clue_ids": [
+        "clue_warehouse_tools",
+        "clue_john_martin_body",
+        "clue_eric_fingerprints"
+      ],
+      "npc_ids": [],
+      "connections": {
+        "隔壁": "loc_riosca_house"
+      },
+      "events": [
+        "发现埃里克的'工作室'",
+        "发现约翰·马丁的尸体"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_mayor_mansion",
+      "name": "市长宅邸",
+      "description": "看起来像被遗弃的豪宅，所有的灯都无法点亮，佣人都被遣散。地下室通往一连串黑暗的洞穴隧道。",
+      "atmosphere": "死寂、黑暗、压抑。唯一的光线指引向阴暗潮湿的地下室。飞掠而过的声音和喃喃的低语从深处传来。整座宅邸弥漫着腐烂和死亡的气息。",
+      "clue_ids": [
+        "clue_dark_library",
+        "clue_cave_ghouls"
+      ],
+      "npc_ids": [
+        "npc_eric_west",
+        "npc_simon_west"
+      ],
+      "connections": {
+        "地下": "loc_underground_caves"
+      },
+      "events": [
+        "搜查宅邸",
+        "发现地下室入口",
+        "最终对决"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_underground_caves",
+      "name": "宅邸地下洞穴",
+      "description": "市长宅邸地下的一连串洞穴隧道，栖息着夜魔和正在啃食人肉的食尸鬼群体——包括市长、警察局长和市议会成员。",
+      "atmosphere": "彻底的黑暗与恐惧，骨头被啃断的声音，混杂英语的野蛮咆哮，手电光照出的是一群赤裸肮脏的人形生物拥挤在一起的恐怖场景。",
+      "clue_ids": [
+        "clue_cave_ghouls"
+      ],
+      "npc_ids": [
+        "npc_simon_west",
+        "npc_exley"
+      ],
+      "connections": {
+        "上方": "loc_mayor_mansion"
+      },
+      "events": [
+        "发现食尸鬼群体的真面目",
+        "揭示埃里克黑化的真正原因"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_la_zoo",
+      "name": "洛杉矶动物园",
+      "description": "第二天早晨，在动物园后面发现了莫莉·兰茨泰纳被'雕刻'成的恐怖雕塑。",
+      "atmosphere": "清晨的动物园本应宁静祥和，但恐怖的人体雕塑打破了一切——被石膏覆盖的面容、被烧毁的躯体、钉在背上的闪亮翅膀。",
+      "clue_ids": [
+        "clue_sculpture_1"
+      ],
+      "npc_ids": [],
+      "connections": {},
+      "events": [
+        "发现第一座'夜魔雕塑'"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_art_museum",
+      "name": "洛杉矶美术馆",
+      "description": "第三天早上，在美术馆外面发现了兰德尔·霍恩被'雕刻'成的第二座恐怖雕塑。",
+      "atmosphere": "艺术殿堂的门前摆放着一件真正的'人体艺术品'——被喷灯烧毁的面容、被去除的器官、纸翅膀——讽刺而恐怖。",
+      "clue_ids": [
+        "clue_sculpture_2"
+      ],
+      "npc_ids": [],
+      "connections": {},
+      "events": [
+        "发现第二座'夜魔雕塑'"
+      ],
+      "is_starting_location": false
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene_crime_scene",
+      "title": "4号小屋惨案现场",
+      "description": "调查员们在凌晨3点被各自的上司指派赶往长滩贝茨旅馆，这是他们第一次听说4号小屋的事件。LAPD探员约翰·卡特将进行简单描述，调查员被允许勘察现场。",
+      "read_aloud": "凌晨的长滩被闷热的空气笼罩着，当你们的车驶入贝茨汽车旅馆的停车场时，闪烁的警灯将周围映成一片刺目的红蓝。旅馆院子里站满了穿着制服的警员和白大褂的鉴证人员。空气中弥漫着一种说不清的腥臭味。一个面容严肃的中年男人朝你们走来——他就是约翰·卡特探员，而他脸上的表情告诉你们，今晚发生的事情远比你们想象的要糟糕。",
+      "location_id": "loc_bates_motel",
+      "npc_ids": [
+        "npc_john_carter",
+        "npc_simon_bates",
+        "npc_randy_blackwell"
+      ],
+      "clue_ids": [
+        "clue_claw_marks",
+        "clue_black_liquid",
+        "clue_bullet",
+        "clue_drugs",
+        "clue_bedroom_evidence"
+      ],
+      "likely_skill_checks": [
+        "侦查",
+        "法医",
+        "聆听",
+        "心理学"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_police_meeting",
+          "condition": "完成现场勘察后，下午前往警局",
+          "required_clues": [],
+          "auto_trigger": false
+        },
+        {
+          "target_scene_id": "scene_hospital_visit",
+          "condition": "调查员决定先去医院探访富兰克林",
+          "required_clues": [],
+          "auto_trigger": false
+        }
+      ],
+      "is_opening": true,
+      "is_climax": false,
+      "is_ending": false
+    },
+    {
+      "id": "scene_police_meeting",
+      "title": "警局高层会面",
+      "description": "调查员被带到埃克斯利局长的办公室，与局长、达德利·史密斯警官和当地检察官克罗斯会面。埃克斯利下达调查命令并提出保密要求，达德利补充说明可调用的资源。",
+      "read_aloud": "你们被领进一间宽敞的办公室，桌上摆着一面小型美国国旗。传来一阵抽水马桶的冲水声，当地检察官一边系着皮带一边从私人盥洗室走出来。一个面无表情的男人坐在老板桌后方——他就是埃克斯利局长。他示意你们坐下，目光如鹰隼般锐利。一个异常高大的男人走了进来，面带微笑——'朋友们，我是达德利·史密斯。'",
+      "location_id": "loc_police_station",
+      "npc_ids": [
+        "npc_exley",
+        "npc_dudley_smith"
+      ],
+      "clue_ids": [
+        "clue_background_checks"
+      ],
+      "likely_skill_checks": [
+        "心理学",
+        "说服",
+        "聆听"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_hospital_visit",
+          "condition": "会面结束后前往医院",
+          "required_clues": [],
+          "auto_trigger": false
+        },
+        {
+          "target_scene_id": "scene_investigation_day1",
+          "condition": "开始背景调查和追踪失踪人员",
+          "required_clues": [],
+          "auto_trigger": false
+        }
+      ],
+      "is_opening": false,
+      "is_climax": false,
+      "is_ending": false
+    },
+    {
+      "id": "scene_hospital_visit",
+      "title": "探访富兰克林",
+      "description": "调查员前往洛杉矶市立医院重症监护室，尝试询问幸存者尼古拉斯·富兰克林。他绝望地想当污点证人但不愿全盘托出，谈话约两分钟后就会陷入无意识。",
+      "read_aloud": "重症监护室的消毒水味刺鼻。帘子后面，一个失去左臂的男人躺在病床上，面色灰白。他的眼睛因恐惧而睁得很大，嘴唇不停颤抖。当他看到你们时，他用还能动的那只手抓起一个纸杯挡在嘴前，发出含混不清的声音：'那些东西……它们没有眼睛……'",
+      "location_id": "loc_hospital",
+      "npc_ids": [
+        "npc_nicholas_franklin"
+      ],
+      "clue_ids": [
+        "clue_franklin_testimony"
+      ],
+      "likely_skill_checks": [
+        "说服",
+        "威吓",
+        "心理学",
+        "急救"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_investigation_day1",
+          "condition": "富兰克林失去意识后被请出房间",
+          "required_clues": [
+            "clue_franklin_testimony"
+          ],
+          "auto_trigger": false
+        }
+      ],
+      "is_opening": false,
+      "is_climax": false,
+      "is_ending": false
+    },
+    {
+      "id": "scene_investigation_day1",
+      "title": "第一天调查——追踪线索",
+      "description": "调查员开始背景调查、寻找失踪人员。简·霍尔斯特德的尸体在第一天被发现。调查员可能会去调查洛斯卡家族（因为戴维的犯罪记录最多）。实验室报告在下午1:30送达。当晚埃里克绑架莫莉·兰茨泰纳。",
+      "read_aloud": "洛杉矶的八月热浪像一堵无形的墙压在每个人身上。广播里传来又一起暴力事件的报道。你们手中的线索指向多个方向——失踪人员的背景各有蹊跷，而实验室的报告刚刚送到手中。这座城市的每一个角落似乎都在溃烂。",
+      "location_id": "loc_police_station",
+      "npc_ids": [
+        "npc_kirk_riosca"
+      ],
+      "clue_ids": [
+        "clue_lab_report",
+        "clue_background_checks",
+        "clue_satan_cult_fake",
+        "clue_jane_body"
+      ],
+      "likely_skill_checks": [
+        "图书馆使用",
+        "侦查",
+        "说服",
+        "驾驶",
+        "法律"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_sculptures_day2",
+          "condition": "第一天结束，进入第二天",
+          "required_clues": [],
+          "auto_trigger": true
+        }
+      ],
+      "is_opening": false,
+      "is_climax": false,
+      "is_ending": false
+    },
+    {
+      "id": "scene_sculptures_day2",
+      "title": "第二天——恐怖雕塑出现",
+      "description": "第二天早上，莫莉·兰茨泰纳的'雕塑'在洛杉矶动物园被发现。大多数失踪者的尸体陆续被发现。调查员可能会去会见洛斯卡，追查各种线索。当晚兰德尔·霍恩被害。",
+      "read_aloud": "第二天清晨，你们还没来得及喘口气，电话就响了。动物园后面发现了一个……'东西'。当你们赶到现场时，几个巡警正背过身去干呕。一个人形物体被钉在长杆上直立着——戴着太阳镜，面部被石膏覆盖，背后钉着一对闪亮的翅膀。这不是雕塑。这曾经是一个活人。",
+      "location_id": "loc_la_zoo",
+      "npc_ids": [],
+      "clue_ids": [
+        "clue_sculpture_1",
+        "clue_eric_glasses",
+        "clue_chuck_body",
+        "clue_sadie_body"
+      ],
+      "likely_skill_checks": [
+        "法医",
+        "侦查",
+        "聆听",
+        "心理学",
+        "神秘学"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_closing_in_day3",
+          "condition": "第二天结束，进入第三天",
+          "required_clues": [],
+          "auto_trigger": true
+        }
+      ],
+      "is_opening": false,
+      "is_climax": false,
+      "is_ending": false
+    },
+    {
+      "id": "scene_closing_in_day3",
+      "title": "第三天——锁定真凶",
+      "description": "第三天凌晨第二座雕塑出现在美术馆。戴维·洛斯卡的尸体被最后发现，调查员意识到唯一下落不明的只有埃里克·韦斯特。调查员发现仓库和约翰·马丁的尸体，确认埃里克就是凶手。",
+      "read_aloud": "又一座'雕塑'。这次在美术馆前。你们翻看手中的失踪名单——简、查克、赛迪的尸体都已找到，今天洛斯卡的尸体也被冲上了海滩。名单上只剩下一个名字：埃里克·韦斯特，市长的独子。一个之前不曾引起你们注意的安静书生。而在洛斯卡家隔壁的那间仓库里，你们找到了他的指纹、他的工具，以及他最新的'作品'——挂在天花板上的约翰·马丁。",
+      "location_id": "loc_warehouse",
+      "npc_ids": [],
+      "clue_ids": [
+        "clue_sculpture_2",
+        "clue_riosca_body",
+        "clue_warehouse_tools",
+        "clue_john_martin_body",
+        "clue_eric_fingerprints"
+      ],
+      "likely_skill_checks": [
+        "侦查",
+        "法医",
+        "追踪",
+        "心理学"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_mayor_mansion",
+          "condition": "确认埃里克是凶手后前往市长宅邸",
+          "required_clues": [
+            "clue_eric_fingerprints"
+          ],
+          "auto_trigger": false
+        }
+      ],
+      "is_opening": false,
+      "is_climax": false,
+      "is_ending": false
+    },
+    {
+      "id": "scene_mayor_mansion",
+      "title": "市长宅邸——最终对决",
+      "description": "调查员前往市长宅邸逮捕埃里克。宅邸一片死寂，灯全灭了，佣人被遣散。地下室通向洞穴，埃里克与夜魔在此等待。击败或杀死埃里克后，更深处传来躁动之声——食尸鬼群体的巢穴。",
+      "read_aloud": "市长的宅邸矗立在黑暗中，像一座死去的巨兽。所有的窗户都是黑的，没有一盏灯亮着。大门虚掩着。你们走进去，唯一的一道微弱光线从地下室的方向传来。脚下的台阶越来越潮湿，空气中弥漫着腐烂的甜腻气味。你们听到了——飞掠而过的簌簌声，和某种似乎是英语的低沉呢喃。灯光的尽头，一个蓬头垢面的年轻人坐在幽灯旁，他转过头来——在他的周围，几个漆黑的、没有眼睛的身影正展开它们的翅膀。",
+      "location_id": "loc_mayor_mansion",
+      "npc_ids": [
+        "npc_eric_west"
+      ],
+      "clue_ids": [
+        "clue_dark_library"
+      ],
+      "likely_skill_checks": [
+        "手枪",
+        "闪避",
+        "潜行",
+        "聆听",
+        "理智检定"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_final_horror",
+          "condition": "击败埃里克后听到隧道深处的声音",
+          "required_clues": [],
+          "auto_trigger": true
+        }
+      ],
+      "is_opening": false,
+      "is_climax": true,
+      "is_ending": false
+    },
+    {
+      "id": "scene_final_horror",
+      "title": "深渊之下——食尸鬼的巢穴",
+      "description": "埃里克死后，调查员听到更深处隧道传来急促的躁动。循声前进，他们发现一个洞穴中挤满了赤裸肮脏的人形生物——市长、埃克斯利局长、市议会成员，他们正在啃食人类头颅。面对20-30只食尸鬼，调查员只能选择逃跑。这揭示了埃里克黑化的真正原因。",
+      "read_aloud": "埃里克倒下了。但从更深的隧道中，传来轻微急促的躁动声和骨头被啃断的脆响。你们的手电光照进了一个巨大的洞穴——一群赤裸的、肮脏的人形生物拥挤在一起，发出混杂着英语的野蛮咆哮。其中一个转过头来，你们认出了那张脸——那是市长。旁边那个正眯着眼啃咬一颗人类头颅耳朵的，是埃克斯利局长。还有市议会的其他成员。他们的嘴角都挂着黑色的血液。你们突然明白了——正是这些人，将年轻的埃里克·韦斯特送上了那条邪恶可怖之路。而现在，所有血红的眼睛都转向了你们。",
+      "location_id": "loc_underground_caves",
+      "npc_ids": [
+        "npc_simon_west",
+        "npc_exley"
+      ],
+      "clue_ids": [
+        "clue_cave_ghouls"
+      ],
+      "likely_skill_checks": [
+        "理智检定",
+        "闪避",
+        "潜行",
+        "攀爬",
+        "体质检定"
+      ],
+      "transitions": [],
+      "is_opening": false,
+      "is_climax": false,
+      "is_ending": true
+    }
+  ],
+  "clues": [
+    {
+      "id": "clue_claw_marks",
+      "name": "墙壁和屋顶上的爪痕",
+      "description": "小屋东南面屋顶边沿被掀走，墙壁和屋顶上残留着粗糙的平行爪痕。天花板上有两组，屋顶上有一条。实验室无法辨别这些爪痕是如何造成的。",
+      "core": true,
+      "location_id": "loc_bates_motel",
+      "discovery_method": "侦查",
+      "discovery_difficulty": "普通",
+      "leads_to": [
+        "clue_black_liquid",
+        "clue_franklin_testimony"
+      ],
+      "handout_text": "每组抓痕都相互平行，深深嵌入墙面和天花板。无论是什么造成了这些痕迹，它都拥有非人的力量。"
+    },
+    {
+      "id": "clue_black_liquid",
+      "name": "黑色不明液体",
+      "description": "在屋顶大洞下面的地板上发现少量黑色粘稠的不明液体，已干透。实验室报告显示其成分与鱿鱼血相似，但无法解释来源。",
+      "core": true,
+      "location_id": "loc_bates_motel",
+      "discovery_method": "侦查/法医",
+      "discovery_difficulty": "普通",
+      "leads_to": [
+        "clue_lab_report"
+      ],
+      "handout_text": null
+    },
+    {
+      "id": "clue_bullet",
+      "name": "嵌入墙壁的.45口径子弹",
+      "description": "爪痕边的墙壁上嵌着一颗.45口径子弹，来自富兰克林的枪。证明富兰克林曾向攻击者开枪。",
+      "core": false,
+      "location_id": "loc_bates_motel",
+      "discovery_method": "侦查",
+      "discovery_difficulty": "普通",
+      "leads_to": [
+        "clue_franklin_testimony"
+      ],
+      "handout_text": null
+    },
+    {
+      "id": "clue_drugs",
+      "name": "散落的毒品",
+      "description": "大量可卡因、大麻、兴奋剂、镇定剂和乙醚散落在案发现场，表明当晚参与者大量使用毒品。",
+      "core": false,
+      "location_id": "loc_bates_motel",
+      "discovery_method": "侦查",
+      "discovery_difficulty": "普通",
+      "leads_to": [],
+      "handout_text": null
+    },
+    {
+      "id": "clue_bedroom_evidence",
+      "name": "卧室物证",
+      "description": "东北面卧室发现布莱克维尔的头发和洛斯卡的指纹及AB血型精液。东南面卧室发现简·霍尔斯特德的晚礼服、多人指纹和O型精液。这揭示了聚会参与者的关系。",
+      "core": false,
+      "location_id": "loc_bates_motel",
+      "discovery_method": "法医/实验室报告",
+      "discovery_difficulty": "普通",
+      "leads_to": [
+        "clue_background_checks"
+      ],
+      "handout_text": null
+    },
+    {
+      "id": "clue_lab_report",
+      "name": "实验室调查报告",
+      "description": "下午1:30送达的完整实验室报告，包含指纹比对、血型分析、体液鉴定等结果。确认八人（包括此前未知的戴维·洛斯卡）均在现场。",
+      "core": true,
+      "location_id": "loc_bates_motel",
+      "discovery_method": "等待实验室送达",
+      "discovery_difficulty": "普通",
+      "leads_to": [
+        "clue_background_checks"
+      ],
+      "handout_text": "实验室报告确认现场共有八人的痕迹，包括此前未被卡特提及的第八人——戴维·洛斯卡，24岁，好莱坞前明星克里克·洛斯卡之子。"
+    },
+    {
+      "id": "clue_franklin_testimony",
+      "name": "富兰克林的证词",
+      "description": "富兰克林供述：攻击者是漆黑、会飞、没有眼睛的东西，它们撕开屋顶把伯尼扯成两半。洛斯卡在聚会上谈论过巫毒魔法和他父亲的教堂。简在被拖走时在哈哈大笑。案发时众人都嗑了大量毒品。",
+      "core": true,
+      "location_id": "loc_hospital",
+      "discovery_method": "说服/威吓",
+      "discovery_difficulty": "困难",
+      "leads_to": [
+        "clue_background_checks",
+        "clue_satan_cult_fake"
+      ],
+      "handout_text": "'那些东西……漆黑的……会飞。它们没有眼睛。它们扯开了屋顶，把伯尼……撕成了两半。洛斯卡说过巫毒……他爸爸的教堂……简在笑……她被拖走的时候一直在笑……'"
+    },
+    {
+      "id": "clue_background_checks",
+      "name": "聚会参与者背景调查",
+      "description": "通过警局档案查到所有参与者的背景：简无案底；伯尼有猥亵记录；兰迪14岁因卖淫被捕8次；查克有醉驾和吸毒记录；埃里克无犯罪记录；洛斯卡有大量猥亵、吸毒、强奸记录；赛迪因卖淫被捕19次。",
+      "core": true,
+      "location_id": "loc_police_station",
+      "discovery_method": "图书馆使用/档案查询",
+      "discovery_difficulty": "普通",
+      "leads_to": [
+        "clue_satan_cult_fake"
+      ],
+      "handout_text": null
+    },
+    {
+      "id": "clue_satan_cult_fake",
+      "name": "洛斯卡的假撒旦崇拜",
+      "description": "克里克·洛斯卡的撒旦崇拜纯粹是商业骗局——靠收费让名人'入教'和用仪式照片敲诈来敛财。所有道具都是假的。这条线索是死胡同，排除了洛斯卡家族的超自然嫌疑。",
+      "core": false,
+      "location_id": "loc_riosca_house",
+      "discovery_method": "侦查/说服/威吓",
+      "discovery_difficulty": "普通",
+      "leads_to": [],
+      "handout_text": null
+    },
+    {
+      "id": "clue_jane_body",
+      "name": "简·霍尔斯特德的尸体",
+      "description": "简的尸体在第一天被发现于垃圾箱中，全身骨头断裂，赤裸，身上有结痂的细小疤痕（夜魔尾巴造成）。从高空坠落身亡。",
+      "core": false,
+      "location_id": "loc_bates_motel",
+      "discovery_method": "警方通报",
+      "discovery_difficulty": "普通",
+      "leads_to": [],
+      "handout_text": null
+    },
+    {
+      "id": "clue_eric_glasses",
+      "name": "埃里克的眼镜",
+      "description": "消防员在圣莫妮卡山的树上发现一副沾有O型血的眼镜，上面有埃里克的指纹。这使调查员以为埃里克也遇害了，但实际上他活着回到了家。",
+      "core": false,
+      "location_id": "loc_bates_motel",
+      "discovery_method": "警方通报",
+      "discovery_difficulty": "普通",
+      "leads_to": [],
+      "handout_text": null
+    },
+    {
+      "id": "clue_chuck_body",
+      "name": "查克·戴特林的尸体",
+      "description": "查克被发现在一座摩天大楼顶层，尸体需要用铲子铲起，只能通过牙医记录和血型辨认身份。",
+      "core": false,
+      "location_id": "loc_bates_motel",
+      "discovery_method": "警方通报",
+      "discovery_difficulty": "普通",
+      "leads_to": [],
+      "handout_text": null
+    },
+    {
+      "id": "clue_sadie_body",
+      "name": "赛迪（玛格丽特）的尸体",
+      "description": "赛迪的尸体在洛杉矶港口区仓库被发现，从屋顶撞穿落入，面目全非，通过指纹勉强辨认。",
+      "core": false,
+      "location_id": "loc_bates_motel",
+      "discovery_method": "警方通报",
+      "discovery_difficulty": "普通",
+      "leads_to": [],
+      "handout_text": null
+    },
+    {
+      "id": "clue_riosca_body",
+      "name": "戴维·洛斯卡的尸体",
+      "description": "洛斯卡的尸体最后被发现——被冲上洛杉矶海滩，身上有与简相同的疤痕。他的死亡排除了他作为嫌疑人，使调查员意识到唯一失踪的只有埃里克·韦斯特。",
+      "core": true,
+      "location_id": "loc_bates_motel",
+      "discovery_method": "警方通报",
+      "discovery_difficulty": "普通",
+      "leads_to": [
+        "clue_eric_fingerprints"
+      ],
+      "handout_text": null
+    },
+    {
+      "id": "clue_sculpture_1",
+      "name": "动物园夜魔雕塑（莫莉）",
+      "description": "莫莉·兰茨泰纳的尸体被'雕刻'成夜魔形态：眼角鼻子被切除，面部覆盖石膏，乳房被喷灯烧毁，两根中指被切断，背上钉着闪亮翅膀。被钉在长杆上直立放置在动物园后面。",
+      "core": true,
+      "location_id": "loc_la_zoo",
+      "discovery_method": "警方通报/媒体",
+      "discovery_difficulty": "普通",
+      "leads_to": [
+        "clue_sculpture_2",
+        "clue_warehouse_tools"
+      ],
+      "handout_text": null
+    },
+    {
+      "id": "clue_sculpture_2",
+      "name": "美术馆夜魔雕塑（兰德尔）",
+      "description": "兰德尔·霍恩的尸体被'雕刻'成夜魔形态：面部被喷灯烧毁，生殖器被去除，肛门插入油浸绳子做成'尾巴'，手指被切除，背后钉着纸翅膀。放置在美术馆外面。",
+      "core": true,
+      "location_id": "loc_art_museum",
+      "discovery_method": "警方通报/媒体",
+      "discovery_difficulty": "普通",
+      "leads_to": [
+        "clue_warehouse_tools"
+      ],
+      "handout_text": null
+    },
+    {
+      "id": "clue_warehouse_tools",
+      "name": "仓库中的工具和线索",
+      "description": "仓库中发现大号雕刻刀、喷灯和其他工具，以及埃里克和约翰·马丁的指纹。这些工具与雕塑的制作手法完全吻合。",
+      "core": true,
+      "location_id": "loc_warehouse",
+      "discovery_method": "侦查/追踪线索",
+      "discovery_difficulty": "困难",
+      "leads_to": [
+        "clue_john_martin_body",
+        "clue_eric_fingerprints"
+      ],
+      "handout_text": null
+    },
+    {
+      "id": "clue_john_martin_body",
+      "name": "约翰·马丁的尸体",
+      "description": "约翰·马丁——被埃里克恐吓的智障邻居——被电线穿过身体悬吊在仓库天花板上，戴太阳镜，眼睑被缝死，生殖器被烧毁，中指被切除，背上钉着精灵翅膀。",
+      "core": true,
+      "location_id": "loc_warehouse",
+      "discovery_method": "侦查",
+      "discovery_difficulty": "普通",
+      "leads_to": [
+        "clue_eric_fingerprints"
+      ],
+      "handout_text": null
+    },
+    {
+      "id": "clue_eric_fingerprints",
+      "name": "埃里克的指纹确认",
+      "description": "在仓库中发现的指纹与埃里克·韦斯特匹配，结合所有失踪者尸体均已找到（除埃里克外），确认埃里克就是制造'雕塑'的凶手。",
+      "core": true,
+      "location_id": "loc_warehouse",
+      "discovery_method": "法医/指纹比对",
+      "discovery_difficulty": "普通",
+      "leads_to": [
+        "clue_dark_library"
+      ],
+      "handout_text": null
+    },
+    {
+      "id": "clue_dark_library",
+      "name": "市长的暗黑图书馆",
+      "description": "市长宅邸中藏有一座暗黑图书馆，里面有禁忌咒文和神秘学典籍。埃里克正是从这里找到了召唤夜魔的断章咒语。",
+      "core": false,
+      "location_id": "loc_mayor_mansion",
+      "discovery_method": "侦查/图书馆使用",
+      "discovery_difficulty": "困难",
+      "leads_to": [
+        "clue_cave_ghouls"
+      ],
+      "handout_text": null
+    },
+    {
+      "id": "clue_cave_ghouls",
+      "name": "地下洞穴的食尸鬼真相",
+      "description": "市长宅邸地下的洞穴中栖息着20-30只食尸鬼，其中包括市长西蒙·韦斯特、埃克斯利局长和市议会成员。他们正在啃食人类尸体。正是市长将埃里克带上了邪恶之路。",
+      "core": true,
+      "location_id": "loc_underground_caves",
+      "discovery_method": "直接目击",
+      "discovery_difficulty": "普通",
+      "leads_to": [],
+      "handout_text": null
+    }
+  ],
+  "timeline": [
+    {
+      "id": "event_cabin_incident",
+      "description": "8月9日凌晨12:14，贝茨旅馆4号小屋惨案发生。埃里克·韦斯特使用旧印和咒语召唤出五只夜魔，夜魔撕开屋顶、杀死伯尼、将四人拖入高空坠亡。",
+      "trigger_condition": "8月9日 12:14 AM（故事开始前）",
+      "consequences": "伯尼当场死亡，四人被抛至高空坠亡，两人幸存但重伤/精神崩溃，埃里克被旧印保护带到安全地点。"
+    },
+    {
+      "id": "event_investigators_called",
+      "description": "8月9日凌晨3:00，调查员接到各自上司指派，火速赶往长滩。",
+      "trigger_condition": "8月9日 3:00 AM",
+      "consequences": "调查正式开始。"
+    },
+    {
+      "id": "event_eric_returns_home",
+      "description": "8月9日早上5:00，埃里克悄悄回家，从父亲处偷走大量现金，并恐吓智障邻居约翰·马丁以其名义租下仓库。",
+      "trigger_condition": "8月9日 5:00 AM",
+      "consequences": "埃里克获得了犯罪基地，开始准备'雕刻'工作。"
+    },
+    {
+      "id": "event_lab_report",
+      "description": "实验室调查报告于下午1:30送达调查员手中，揭示第八名参与者戴维·洛斯卡的存在。",
+      "trigger_condition": "8月9日 1:30 PM",
+      "consequences": "调查员得知现场共有八人，洛斯卡成为新的调查线索。"
+    },
+    {
+      "id": "event_jane_body_found",
+      "description": "简·霍尔斯特德的尸体在第一天被发现于垃圾箱中，全身骨折，赤裸。",
+      "trigger_condition": "8月9日 白天",
+      "consequences": "排除简的嫌疑，确认高空坠落死因。"
+    },
+    {
+      "id": "event_eric_kills_molly",
+      "description": "8月9日深夜，埃里克召来应召女郎莫莉·兰茨泰纳，对她下药并花一整晚将她'雕刻'成夜魔形态。",
+      "trigger_condition": "8月9日深夜至8月10日凌晨",
+      "consequences": "第一座恐怖'雕塑'被制作完成。"
+    },
+    {
+      "id": "event_sculpture_1_placed",
+      "description": "8月10日凌晨5:00，埃里克将莫莉的'雕塑'放置在洛杉矶动物园后面。",
+      "trigger_condition": "8月10日 5:00 AM",
+      "consequences": "当天早上雕塑被发现，引发新一轮恐慌和调查。"
+    },
+    {
+      "id": "event_most_bodies_found",
+      "description": "第二天（8月10日），查克·戴特林和赛迪的尸体先后被发现。",
+      "trigger_condition": "8月10日 白天",
+      "consequences": "进一步缩小失踪名单，但洛斯卡仍未找到。"
+    },
+    {
+      "id": "event_eric_kills_randal",
+      "description": "8月10日晚上，埃里克召来同性恋男妓兰德尔·霍恩，用同样手法将其'雕刻'。",
+      "trigger_condition": "8月10日晚上",
+      "consequences": "第二座'雕塑'被制作完成。"
+    },
+    {
+      "id": "event_sculpture_2_placed",
+      "description": "8月11日凌晨，埃里克将兰德尔的'雕塑'放置在洛杉矶美术馆外面。",
+      "trigger_condition": "8月11日凌晨",
+      "consequences": "当天早上雕塑被发现。"
+    },
+    {
+      "id": "event_riosca_body_found",
+      "description": "第三天（8月11日），戴维·洛斯卡的尸体被海水冲上洛杉矶海滩，最后一个被发现。",
+      "trigger_condition": "8月11日",
+      "consequences": "调查员意识到唯一下落不明的只有埃里克·韦斯特，锁定真凶。"
+    },
+    {
+      "id": "event_warehouse_discovered",
+      "description": "调查员发现埃里克使用的仓库，找到约翰·马丁的尸体和埃里克的指纹。",
+      "trigger_condition": "8月11日（追踪雕塑线索或在洛斯卡家隔壁发现）",
+      "consequences": "确认埃里克就是'雕塑'制作者，调查员决定前往市长宅邸。"
+    },
+    {
+      "id": "event_eric_flees_home",
+      "description": "一旦埃里克发现调查员盯上了他，他逃入市长宅邸地下洞穴，与夜魔为伴。",
+      "trigger_condition": "调查员锁定埃里克为嫌疑人后",
+      "consequences": "最终对决的舞台转移到市长宅邸地下。"
+    },
+    {
+      "id": "event_final_confrontation",
+      "description": "调查员搜查市长宅邸，在地下室发现埃里克和夜魔。击败埃里克后，更深处发现市长、埃克斯利和市议会成员组成的食尸鬼群体。",
+      "trigger_condition": "调查员进入市长宅邸地下",
+      "consequences": "揭示最终真相——洛杉矶权力核心已被食尸鬼侵蚀。调查员面对20-30只食尸鬼只能选择逃跑。"
+    }
+  ],
+  "ending_conditions": [
+    {
+      "id": "ending_eric_stopped",
+      "description": "调查员阻止埃里克韦斯特的食尸鬼计划",
+      "type": "normal",
+      "trigger_hint": "当调查员发现并阻止埃里克韦斯特时，叙述结局"
+    },
+    {
+      "id": "ending_time_up",
+      "description": "三天时限耗尽更多受害者出现",
+      "type": "bad",
+      "trigger_hint": "若三天内调查员未阻止韦斯特，更多谋杀发生，叙述失败结局"
+    }
+  ]
+}

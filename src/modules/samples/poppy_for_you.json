@@ -1,0 +1,719 @@
+{
+  "metadata": {
+    "title": "献给虞美人般的你",
+    "author": "日吉秀介（翻译：Sameck）",
+    "era": "现代",
+    "player_count_min": 3,
+    "player_count_max": 5,
+    "estimated_sessions": 2,
+    "difficulty": "困难",
+    "summary": "调查员们收到一件神秘的纯白连衣裙礼物，穿上后便被拉入睡神许普诺斯所编织的梦境之中。在梦境的各个层次中，她们必须面对以挚爱之人为外形的傀儡敌人，利用黑棘剑斩破空间，同时承受不断攀升的污秽度带来的代价，最终找到逃离梦境的方法。",
+    "tags": [
+      "梦境",
+      "许普诺斯",
+      "旧神",
+      "女性限定",
+      "污秽度",
+      "黑棘剑",
+      "虞美人",
+      "克苏鲁神话"
+    ]
+  },
+  "npcs": [
+    {
+      "id": "npc_hypnos",
+      "name": "许普诺斯（睡神）",
+      "age": 0,
+      "occupation": "旧神",
+      "description": "睡眠大帝，存在于现实世界与幻梦境的旧神。形象不明，在最终场景中会化身为调查员最珍视之人的模样出现。被拒绝后会显现为可怕幻影与恐怖的混合体。",
+      "personality": "表面温柔体贴，实则冷酷贪婪，渴望占有调查员的灵魂。会用甜言蜜语和梦境中的幸福幻象来诱惑调查员。",
+      "motivation": "将调查员永远囚禁在梦境中，占有她们高洁的灵魂。",
+      "secret": "整个梦境世界都是他制造的牢笼。他会在最终场景化身为调查员最珍视的人，试图让调查员自愿留下。POW值为85。",
+      "dialogue_style": "初始以信件形式优雅交流；化身为珍视之人时温柔体贴；被拒绝后言辞冰冷恶毒，如：'矮小的人类小姑娘……那就只好把你像小鸟一样关笼子里了。'",
+      "stats": {
+        "STR": 50,
+        "CON": 99,
+        "SIZ": 50,
+        "INT": 95,
+        "POW": 85,
+        "DEX": 50,
+        "APP": 80
+      },
+      "skills": {
+        "梦境操控": 99,
+        "幻术": 95,
+        "心理学": 90
+      },
+      "initial_attitude": "伪善"
+    },
+    {
+      "id": "npc_vorvados",
+      "name": "沃瓦道斯（黑猫）",
+      "age": 0,
+      "occupation": "旧神（向导）",
+      "description": "一只拥有赤色眼睛的黑猫，是旧神沃瓦道斯的化身。会在梦境中指引被许普诺斯困住的调查员，但不会直接透露解决方案，只给予提示。",
+      "personality": "高深莫测，态度从容，像是知晓一切却不愿多说。给予帮助时带着某种超然的优雅。",
+      "motivation": "帮助调查员逃离许普诺斯的梦境牢笼，对抗许普诺斯的力量。",
+      "secret": "POW值为75，在最终对抗中会与许普诺斯进行POW对抗。拥抱这只猫会导致连衣裙出现烧焦痕迹（污秽度+1）。最终可从口中吐出暗红色宝石'蔷薇之眼'赠予调查员。",
+      "dialogue_style": "以高深莫测的方式说话，给予暗示而非直接答案。语气从容淡定，像是看透了一切的智者。",
+      "stats": {
+        "STR": 10,
+        "CON": 50,
+        "SIZ": 5,
+        "INT": 90,
+        "POW": 75,
+        "DEX": 80,
+        "APP": 60
+      },
+      "skills": {
+        "潜行": 90,
+        "聆听": 85,
+        "侦查": 80
+      },
+      "initial_attitude": "友善"
+    },
+    {
+      "id": "npc_puppet",
+      "name": "许普诺斯操控的人偶",
+      "age": 0,
+      "occupation": "傀儡",
+      "description": "拥有调查员珍视之人容貌的傀儡。在其他调查员眼中只是一团黑色的影子，听不到它说的话。只有黑棘剑能杀死它们，物理攻击和魔法攻击对其无效。",
+      "personality": "起初模仿珍视之人的举止和说话方式，但很快就会露出敌意，拔出武器攻击调查员。",
+      "motivation": "执行许普诺斯的命令，攻击与之有关系的调查员。如果有人庇护目标，会转移攻击对象。",
+      "secret": "只是许普诺斯制造的傀儡，被击破后会变成黑色木制人偶。破坏梦境深层的球体也可以使人偶停止活动。",
+      "dialogue_style": "模仿调查员珍视之人的说话方式，但会说出'这种东西是无法打倒我的'之类的挑衅。",
+      "stats": {
+        "STR": 13,
+        "CON": 14,
+        "SIZ": 14,
+        "INT": 11,
+        "POW": 9,
+        "DEX": 10
+      },
+      "skills": {
+        "匕首": 60,
+        "回避": 30
+      },
+      "initial_attitude": "敌对"
+    }
+  ],
+  "locations": [
+    {
+      "id": "loc_real_world",
+      "name": "现实世界",
+      "description": "调查员们各自的住所。某日收到了一个神秘包裹，内含纯白连衣裙、蜡封信件和一朵白色虞美人。穿上连衣裙后便会陷入沉睡。",
+      "atmosphere": "日常的安全感与包裹带来的神秘气息形成对比。连衣裙有着不可思议的触感和淡淡的虞美人花香。",
+      "clue_ids": [
+        "clue_white_dress",
+        "clue_sealed_letter",
+        "clue_white_poppy"
+      ],
+      "npc_ids": [],
+      "connections": {
+        "入睡": "loc_bud_room"
+      },
+      "events": [
+        "收到神秘包裹",
+        "连衣裙的魅惑效果——需与POW21进行意志对抗",
+        "穿上连衣裙后信件内容发生变化",
+        "陷入沉睡进入梦境"
+      ],
+      "is_starting_location": true
+    },
+    {
+      "id": "loc_bud_room",
+      "name": "蕾之房间",
+      "description": "白色色调的整洁小房间。只有一张白色床罩的床、白色圆形茶桌和一面巨大的镜子。镜子边缘缠绕着黑色荆棘。窗户无法打开，没有门。",
+      "atmosphere": "纯白整洁，宛如密室。白色的一切给人一种不真实的洁净感，而镜中缠绕的黑色荆棘则暗示着危险。",
+      "clue_ids": [
+        "clue_black_thorn_sword",
+        "clue_belongings"
+      ],
+      "npc_ids": [],
+      "connections": {
+        "切开空间": "loc_white_corridor"
+      },
+      "events": [
+        "从镜中荆棘获得黑棘剑（理智检定0/1）",
+        "用黑棘剑切开空间（污秽度+1）"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_flower_room",
+      "name": "花之房间",
+      "description": "由白色地板和天花板组成的纯白广阔空间，没有墙壁等边界的存在。幸运检定失败时，调查员珍视的人物会出现并在交谈后突然袭击。",
+      "atmosphere": "无边无际的纯白空间，空旷到令人不安。没有边界的感觉让人感到渺小和暴露。",
+      "clue_ids": [
+        "clue_black_thorn_sword"
+      ],
+      "npc_ids": [
+        "npc_puppet"
+      ],
+      "connections": {
+        "切开空间": "loc_white_corridor"
+      },
+      "events": [
+        "幸运检定决定是否遭遇人偶",
+        "人偶只能被黑棘剑击杀",
+        "击杀人偶后理智检定1/1D6+1"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_white_corridor",
+      "name": "白色走廊",
+      "description": "一片纯白的走廊，尽头通向一个大空间。远远地可以看到无数个白色柜子。",
+      "atmosphere": "单调的纯白色延伸向远方，尽头隐约可见的白色柜子暗示着前方是一个藏有知识的地方。",
+      "clue_ids": [],
+      "npc_ids": [],
+      "connections": {
+        "前进": "loc_white_library"
+      },
+      "events": [],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_white_library",
+      "name": "雷姆的白色书库",
+      "description": "巨大的图书馆般的空间。数米高的白色书架密密麻麻地并排，五颜六色的书籍为纯白空间增添色彩。正中间有一个大白色方桌和数张椅子。",
+      "atmosphere": "像是一个由书构成的迷宫，白色书架上五颜六色的书籍形成了奇异的美感。安静而庄严，仿佛蕴含着无穷的知识。",
+      "clue_ids": [
+        "clue_white_book",
+        "clue_black_booklet"
+      ],
+      "npc_ids": [],
+      "connections": {
+        "撕裂空间": "loc_shallow_garden"
+      },
+      "events": [
+        "图书馆使用检定找到白色书本——习得梦知识技能",
+        "图书馆使用检定找到黑色小册子——了解黑棘剑和睡梦大帝",
+        "用黑棘剑撕裂空间（污秽度+1）"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_shallow_garden",
+      "name": "浅眠之庭",
+      "description": "美丽宽广的白色庭院，周围长满无边无际的白色虞美人。可以发现赤色眼睛的黑猫。远处有一棵不协调的黑色树木，树皮如焦油般流动。",
+      "atmosphere": "梦幻般的虞美人花海，浓郁的花香充满庭园。在美丽中暗藏危险——那棵黑色树木是通往更深层噩梦的入口。",
+      "clue_ids": [
+        "clue_poppy_dew"
+      ],
+      "npc_ids": [
+        "npc_vorvados"
+      ],
+      "connections": {
+        "触碰黑树": "loc_nightmare_abyss"
+      },
+      "events": [
+        "发现赤色眼睛的黑猫（侦查）",
+        "污秽度最低的调查员可能获得虞美人花露",
+        "触碰黑色树木被拉入深层"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_nightmare_abyss",
+      "name": "噩梦之底·深眠之层",
+      "description": "一片黑暗，弥漫着与黑色树木相似的臭味。中央有个沼泽，周围是广阔的湿地。沼泽中央有一个半透明球体，微弱的光芒像心脏一样有规律地跳动。",
+      "atmosphere": "压抑的黑暗与恶臭笼罩一切。沼泽散发着不祥的气息，远处传来熟悉之人的呼唤声——但那不过是陷阱。",
+      "clue_ids": [
+        "clue_sphere"
+      ],
+      "npc_ids": [
+        "npc_puppet"
+      ],
+      "connections": {
+        "通过门扉": "loc_hypnos_dream"
+      },
+      "events": [
+        "幸运/2检定——失败则与同伴走散",
+        "听到珍视之人的声音引发战斗",
+        "黑棘剑靠近沼泽时沼泽会分开",
+        "破坏球体可使人偶停止活动（污秽度+1）",
+        "污秽度最高者被拉入沼泽"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_hypnos_dream",
+      "name": "许普诺斯的梦境",
+      "description": "污秽度最高的调查员会在此苏醒，身边是她最珍视的人（实际上是许普诺斯本人的伪装）。这是一个按照调查员心愿构建的完美世界。",
+      "atmosphere": "温馨而美好，一切都如同调查员心中所愿。但这虚假的幸福之下隐藏着睡神的贪婪——他要的是调查员的全部。",
+      "clue_ids": [],
+      "npc_ids": [
+        "npc_hypnos"
+      ],
+      "connections": {},
+      "events": [
+        "3次POW×5检定判断是否回忆起梦境经历",
+        "接受许普诺斯→BAD END（永眠）",
+        "拒绝许普诺斯→黑棘剑出现，许普诺斯显露真身",
+        "全员POW总和/2+沃瓦道斯POW75 对抗 许普诺斯POW85"
+      ],
+      "is_starting_location": false
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene_introduction",
+      "title": "神秘的包裹",
+      "description": "调查员收到神秘包裹，内含纯白连衣裙、蜡封信和白色虞美人。连衣裙有魅惑效果（POW21意志对抗），穿上后信件内容变化，随后陷入沉睡。",
+      "read_aloud": "某日，你收到了一个包裹。这是一个四方形的，用白色布包装的木制箱子。打开箱子，指尖传来不可思议的触感。箱子中有：一件非常美丽的纯白连衣裙，一封用红色蜡密封的信，以及一朵白色的虞美人花。",
+      "location_id": "loc_real_world",
+      "npc_ids": [],
+      "clue_ids": [
+        "clue_white_dress",
+        "clue_sealed_letter",
+        "clue_white_poppy"
+      ],
+      "likely_skill_checks": [
+        "侦查",
+        "聆听",
+        "博物学",
+        "意志对抗"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_bud_room",
+          "condition": "调查员穿上连衣裙并入睡（被分配到蕾之房间的调查员）",
+          "required_clues": [
+            "clue_white_dress"
+          ],
+          "auto_trigger": false
+        },
+        {
+          "target_scene_id": "scene_flower_room",
+          "condition": "调查员穿上连衣裙并入睡（被分配到花之房间的调查员）",
+          "required_clues": [
+            "clue_white_dress"
+          ],
+          "auto_trigger": false
+        }
+      ],
+      "is_opening": true,
+      "is_climax": false,
+      "is_ending": false
+    },
+    {
+      "id": "scene_bud_room",
+      "title": "蕾之房间——白色密室",
+      "description": "调查员在纯白小房间醒来，只穿着连衣裙和内衣。房间中有床、茶桌和巨大镜子。镜中缠绕黑色荆棘，触碰后获得黑棘剑。用黑棘剑切开空间可进入白色走廊。",
+      "read_aloud": "穿上裙子后突然睡着的你们，醒来之后看到的是一个整洁干净、充满白色色调的小房间。房间里只有一张铺着白色床罩的床，一张白色的圆形茶桌，以及一面巨大的镜子。没有门，白色的窗户无法打开——窗外只有一片白茫茫的虚空。",
+      "location_id": "loc_bud_room",
+      "npc_ids": [],
+      "clue_ids": [
+        "clue_black_thorn_sword",
+        "clue_belongings"
+      ],
+      "likely_skill_checks": [
+        "侦查",
+        "聆听",
+        "博物学",
+        "灵感"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_white_corridor",
+          "condition": "用黑棘剑切开空间（污秽度+1）",
+          "required_clues": [
+            "clue_black_thorn_sword"
+          ],
+          "auto_trigger": false
+        }
+      ],
+      "is_opening": false,
+      "is_climax": false,
+      "is_ending": false
+    },
+    {
+      "id": "scene_flower_room",
+      "title": "花之房间——无尽白色",
+      "description": "调查员在方形大理石地板上醒来，四周是无边无际的纯白空间。幸运检定失败后，许普诺斯操控的人偶会出现并攻击。人偶拥有调查员珍视之人的容貌，只有黑棘剑能将其击杀。",
+      "read_aloud": "穿上裙子后突然睡着的你们，在一整块方形大理石地板上醒来了。环视周围，这是一个由白色地板、白色天花板组成的纯白空间。这个空间广阔无比，你们看不到像是墙壁等象征'边界'的存在。",
+      "location_id": "loc_flower_room",
+      "npc_ids": [
+        "npc_puppet"
+      ],
+      "clue_ids": [
+        "clue_black_thorn_sword"
+      ],
+      "likely_skill_checks": [
+        "幸运",
+        "战斗技能",
+        "黑棘剑",
+        "侦查",
+        "灵感"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_white_corridor",
+          "condition": "击败人偶后用黑棘剑切开空间（污秽度+1）",
+          "required_clues": [
+            "clue_black_thorn_sword"
+          ],
+          "auto_trigger": false
+        }
+      ],
+      "is_opening": false,
+      "is_climax": false,
+      "is_ending": false
+    },
+    {
+      "id": "scene_white_corridor",
+      "title": "白色走廊",
+      "description": "连接各房间与白色书库的过渡走廊。纯白色调，尽头可以看到无数白色柜子。",
+      "read_aloud": "眼前出现了一片纯白的走廊。在走廊的尽头通向一个大空间，远远地可以看到无数个白色柜子，似乎是又一个以白色为主题的地方。",
+      "location_id": "loc_white_corridor",
+      "npc_ids": [],
+      "clue_ids": [],
+      "likely_skill_checks": [],
+      "transitions": [
+        {
+          "target_scene_id": "scene_white_library",
+          "condition": "沿走廊前进",
+          "required_clues": [],
+          "auto_trigger": true
+        }
+      ],
+      "is_opening": false,
+      "is_climax": false,
+      "is_ending": false
+    },
+    {
+      "id": "scene_white_library",
+      "title": "雷姆的白色书库——知识的迷宫",
+      "description": "巨大的白色图书馆。通过图书馆使用技能可找到两本关键书籍：白色书本（习得梦知识技能，POW×3为基础值）和黑色小册子（记载黑棘剑和睡梦大帝的信息）。阅读白色书本会看到幻梦境的影像——双太阳、有翼生物、凭空造物的人们。",
+      "read_aloud": "你们从走廊走入了一个如同巨大图书馆般的地方。数米高的书架密密麻麻地并排着，简直像是一个由书构成的迷宫。纯白的书架上整齐放着闻所未闻的各类书籍，五颜六色的封面为这充满纯白的书库增添了许多色彩。正中间有一个大大的白色方桌与数张椅子。",
+      "location_id": "loc_white_library",
+      "npc_ids": [],
+      "clue_ids": [
+        "clue_white_book",
+        "clue_black_booklet"
+      ],
+      "likely_skill_checks": [
+        "图书馆使用",
+        "克苏鲁神话"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_shallow_garden",
+          "condition": "用黑棘剑撕裂空间（污秽度+1）",
+          "required_clues": [],
+          "auto_trigger": false
+        }
+      ],
+      "is_opening": false,
+      "is_climax": false,
+      "is_ending": false
+    },
+    {
+      "id": "scene_shallow_garden",
+      "title": "浅眠之庭——虞美人花海",
+      "description": "美丽的白色庭院，遍布白色虞美人。可发现赤色眼睛的黑猫（沃瓦道斯），跟随它前进会发现一棵格外不协调的黑色树木。污秽度最低的调查员可能从熟悉人影处获得虞美人花露。触碰黑树将被拉入深层。",
+      "read_aloud": "出现在你们眼前的是一个美丽宽广的白色庭院，周围长满了无边无际的白色虞美人，梦幻般的气氛弥漫在空气中。浓郁的花香充满了整个庭园。在短暂人生之中，你们是第一次见到这么美丽的庭院。",
+      "location_id": "loc_shallow_garden",
+      "npc_ids": [
+        "npc_vorvados"
+      ],
+      "clue_ids": [
+        "clue_poppy_dew"
+      ],
+      "likely_skill_checks": [
+        "侦查",
+        "聆听",
+        "幸运"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_nightmare_abyss",
+          "condition": "触碰黑色树木，被拉入深层（无法抵抗）",
+          "required_clues": [],
+          "auto_trigger": false
+        }
+      ],
+      "is_opening": false,
+      "is_climax": false,
+      "is_ending": false
+    },
+    {
+      "id": "scene_nightmare_abyss",
+      "title": "噩梦之底——深眠之层",
+      "description": "黑暗恶臭的沼泽湿地。调查员可能走散（幸运/2检定）。听到珍视之人的声音后会遭遇更强的人偶。沼泽中央有半透明球体（耐久力5），黑棘剑可分开沼泽接近。破坏球体可使所有人偶停止活动。战斗结束后污秽度最高者会被拉入沼泽，需要全员合作与沃瓦道斯一起对抗许普诺斯。",
+      "read_aloud": "周围是一片黑暗，与黑色树木相似的恶臭充满了这个空间。在这里，中央有个沼泽，周围都是广阔的湿地。远处隐约传来了你认识的人的声音，好像在呼唤着你的名字。",
+      "location_id": "loc_nightmare_abyss",
+      "npc_ids": [
+        "npc_puppet",
+        "npc_vorvados"
+      ],
+      "clue_ids": [
+        "clue_sphere"
+      ],
+      "likely_skill_checks": [
+        "幸运",
+        "聆听",
+        "侦查",
+        "黑棘剑",
+        "战斗技能"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_hypnos_temptation",
+          "condition": "击败人偶或破坏球体后，污秽度最高的调查员被拉入沼泽，通过门扉进入下一层",
+          "required_clues": [],
+          "auto_trigger": false
+        }
+      ],
+      "is_opening": false,
+      "is_climax": false,
+      "is_ending": false
+    },
+    {
+      "id": "scene_hypnos_temptation",
+      "title": "献给虞美人般的你——许普诺斯的诱惑",
+      "description": "污秽度最高的调查员在梦中苏醒，身边是最珍视的人（实际上是许普诺斯本人）。需进行3次POW×5检定来回忆梦境中的经历。全部失败则珍视之人会提出永远在一起。接受=BAD END。拒绝或犹豫后许普诺斯显露真身（理智检定1D6/1D20），进入最终对抗。",
+      "read_aloud": "你慢慢地睁开了眼睛。身边是你最珍视的那个人，脸上挂着和善的笑容。你几乎想不起来刚才在梦境中所遭遇的事情……一切都像是一场遥远的梦。这里有你想要的一切，温暖、安宁、还有你最爱的人。",
+      "location_id": "loc_hypnos_dream",
+      "npc_ids": [
+        "npc_hypnos"
+      ],
+      "clue_ids": [],
+      "likely_skill_checks": [
+        "POW×5",
+        "心理学"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_escape_nightmare",
+          "condition": "拒绝许普诺斯或在犹豫后许普诺斯显露真身",
+          "required_clues": [],
+          "auto_trigger": false
+        }
+      ],
+      "is_opening": false,
+      "is_climax": true,
+      "is_ending": false
+    },
+    {
+      "id": "scene_escape_nightmare",
+      "title": "从噩梦逃脱——最终对抗",
+      "description": "全体调查员的POW总和的一半加上沃瓦道斯的POW75，与许普诺斯的POW85进行对抗。成功则许普诺斯被暂时轰飞到别的次元，梦境空间开始崩塌。失败则被囚禁的调查员迷失在噩梦中，其余人再与POW12对抗。黑猫催促调查员通过门扉离开。被囚禁的调查员可获得暗红色宝石'蔷薇之眼'。",
+      "read_aloud": "就在你表达出拒绝的那一刻，许普诺斯的面容扭曲变形，化作了可怕幻影与恐怖的混合体。周围的景色开始剧烈崩塌，从远方传来同伴们的呼唤声。那只赤色眼睛的黑猫不知何时出现在你身边，在崩塌的梦境中为你指引着归途。",
+      "location_id": "loc_hypnos_dream",
+      "npc_ids": [
+        "npc_hypnos",
+        "npc_vorvados"
+      ],
+      "clue_ids": [],
+      "likely_skill_checks": [
+        "POW对抗",
+        "侦查"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_ending",
+          "condition": "POW对抗成功，梦境崩塌，通过门扉逃离",
+          "required_clues": [],
+          "auto_trigger": true
+        }
+      ],
+      "is_opening": false,
+      "is_climax": true,
+      "is_ending": false
+    },
+    {
+      "id": "scene_ending",
+      "title": "结局——醒来之后",
+      "description": "TRUE END：调查员从梦境中平安逃脱，回到日常生活。但若既未接受也未拒绝许普诺斯且未佩戴蔷薇之眼，1D100天后会再次被许普诺斯带走（同BAD END）。BAD END：接受许普诺斯的调查员再也没有醒来，嘴角挂着浅浅微笑，身旁放满白色虞美人。存活奖励：理智+1D6+1；赠予POW者额外+1D6；污秽度最高者额外+1D10；克苏鲁神话技能+3%。",
+      "read_aloud": "调查员们从许普诺斯的梦境中平安逃脱，回到了日常生活。那件纯白连衣裙已经消失不见了，就好像什么都没有发生过一样。但你们知道，那不是普通的梦——那是睡神的领地。",
+      "location_id": "loc_real_world",
+      "npc_ids": [],
+      "clue_ids": [],
+      "likely_skill_checks": [],
+      "transitions": [],
+      "is_opening": false,
+      "is_climax": false,
+      "is_ending": true
+    }
+  ],
+  "clues": [
+    {
+      "id": "clue_white_dress",
+      "name": "纯白连衣裙",
+      "description": "一件没有接缝的纯白连衣裙，散发着淡淡的虞美人香味，布料从未见过。具有魅惑效果，穿上后尺寸刚好合身，触感极为舒适。实际上是许普诺斯赠与的礼物，穿上后会将调查员拉入梦境。",
+      "core": true,
+      "location_id": "loc_real_world",
+      "discovery_method": "侦查/聆听/博物学",
+      "discovery_difficulty": "普通",
+      "leads_to": [
+        "scene_bud_room",
+        "scene_flower_room"
+      ],
+      "handout_text": "这是一件没有接缝的连衣裙，散发着淡淡的虞美人香味。布料的触感至今未曾感受过——如此舒适滑顺柔软。"
+    },
+    {
+      "id": "clue_sealed_letter",
+      "name": "蜡封信件",
+      "description": "红色蜡密封的信件。初始内容称赞调查员高洁的灵魂并赠与礼服。穿上连衣裙后内容会变化为：'请舍弃掉那被世界污秽所侵蚀的肉体，来到我这里吧。'发信人和地址均不明。",
+      "core": true,
+      "location_id": "loc_real_world",
+      "discovery_method": "阅读",
+      "discovery_difficulty": "普通",
+      "leads_to": [],
+      "handout_text": "『亲爱的○○小姐，你高洁无秽的灵魂，令我心荡神怡。为此，赠与这件纯白的礼服。愿你的灵魂能更加的崇高。』"
+    },
+    {
+      "id": "clue_white_poppy",
+      "name": "白色虞美人",
+      "description": "一朵白色的虞美人花，花语为'沉眠、忘却'（博物学或知识/2检定可得知）。看上去像是刚摘下来的，残留着露水。",
+      "core": false,
+      "location_id": "loc_real_world",
+      "discovery_method": "博物学或知识/2",
+      "discovery_difficulty": "普通",
+      "leads_to": [],
+      "handout_text": "一朵美丽的白色虞美人花，仿佛刚被摘下，花瓣上还残留着晶莹的露水。"
+    },
+    {
+      "id": "clue_black_thorn_sword",
+      "name": "黑棘剑",
+      "description": "代表人类拒绝之心的具现化产物。初始技能值15%，污秽度每+1额外+10%。伤害1D8+1+DB。剑柄上的荆棘会扎入持有者手腕，每上升2点污秽度HP减少1点（不可恢复）。能斩裂一切，是唯一能杀死许普诺斯人偶的武器。人无法主动丢弃它。污秽度最高者在结局会被许普诺斯选中。",
+      "core": true,
+      "location_id": "loc_bud_room",
+      "discovery_method": "触碰镜中荆棘/战斗中自动获得",
+      "discovery_difficulty": "普通",
+      "leads_to": [
+        "scene_white_corridor"
+      ],
+      "handout_text": "一把黑色的剑，剑柄上延伸出了黑色的荆棘，深深地刺入你的手腕中，然而却没有感受到疼痛感。它仿佛与你融为一体。"
+    },
+    {
+      "id": "clue_belongings",
+      "name": "调查员的随身物品",
+      "description": "藏在白色被褥中的调查员随身物品，是入睡前持有的东西。KP可酌情限制。",
+      "core": false,
+      "location_id": "loc_bud_room",
+      "discovery_method": "侦查",
+      "discovery_difficulty": "普通",
+      "leads_to": [],
+      "handout_text": null
+    },
+    {
+      "id": "clue_white_book",
+      "name": "白色封皮的书本",
+      "description": "白色书架上一本没有书名的白色书本。翻开时眼前会闪现幻梦境的影像：双太阳的世界、异形生物、有翼生物、凭空造物的人们。最后一页写着等价交换是这个世界最根本的法则。阅读者习得'梦知识'技能（基础值POW×3），理智损失1/1D2，克苏鲁神话+2%。造梦消耗理智1点+魔力若干点。",
+      "core": true,
+      "location_id": "loc_white_library",
+      "discovery_method": "图书馆使用",
+      "discovery_difficulty": "普通",
+      "leads_to": [],
+      "handout_text": "最后一页写着：'等价交换，就是这个世界最根本的法则。想要什么价值的东西，就要支付同等的代价。'"
+    },
+    {
+      "id": "clue_black_booklet",
+      "name": "黑色封皮的小册子",
+      "description": "黑色小册子，目录有两个项目：'人类的罪与拒绝'记载了黑棘剑的来历和能力；'睡梦大帝'记载了梦境世界的秘密和许普诺斯的恐怖——被大帝看上的人类每晚会在无尽恐怖的噩梦中挣扎，最终意识远去，肉体不再是原来的样子。理智损失1D2/1D4，克苏鲁神话+2%。",
+      "core": true,
+      "location_id": "loc_white_library",
+      "discovery_method": "图书馆使用",
+      "discovery_difficulty": "普通",
+      "leads_to": [],
+      "handout_text": "人们会做梦。而在做梦的时候，灵魂会从肉体出窍，向各式各样的世界出发。被大帝看上的人类，每晚会在无尽恐怖的噩梦中挣扎。最终，他们变得不再理性，意识远去，肉体也不再是原来的样子。"
+    },
+    {
+      "id": "clue_poppy_dew",
+      "name": "虞美人的花露",
+      "description": "装着琥珀色液体的小瓶子，由污秽度最低的调查员从熟悉的人影处获得。饮用后MP全部恢复，使用次数一次。是模组结束后的奖励道具之一。",
+      "core": false,
+      "location_id": "loc_shallow_garden",
+      "discovery_method": "幸运（污秽度最低的调查员）",
+      "discovery_difficulty": "困难",
+      "leads_to": [],
+      "handout_text": "一个装着琥珀色液体的小瓶子。心爱之人的赠物，散发着温暖的光芒。"
+    },
+    {
+      "id": "clue_sphere",
+      "name": "沼泽中央的半透明球体",
+      "description": "大约排球大小的半透明球体，微弱的光芒闪耀着，像心脏一样有规律地跳动。用黑棘剑可以破坏（耐久力5）。破坏后所有许普诺斯的人偶会停止活动，变成黑色木制人偶。靠近时污秽度+1，破坏时污秽度+1。",
+      "core": true,
+      "location_id": "loc_nightmare_abyss",
+      "discovery_method": "侦查",
+      "discovery_difficulty": "普通",
+      "leads_to": [
+        "scene_hypnos_temptation"
+      ],
+      "handout_text": "沼泽中央漂浮着一个半透明的球体，大约排球大小。微弱的光芒闪耀着，像心脏一样有着规律跳动的脉搏。"
+    }
+  ],
+  "timeline": [
+    {
+      "id": "event_package_arrival",
+      "description": "调查员们各自收到神秘包裹，内含纯白连衣裙、蜡封信和白色虞美人。",
+      "trigger_condition": "模组开始",
+      "consequences": "调查员被连衣裙的魅力吸引，最终穿上并陷入沉睡，进入许普诺斯的梦境。"
+    },
+    {
+      "id": "event_dream_entry",
+      "description": "调查员被分配到蕾之房间和花之房间，分别在不同的梦境空间中醒来。",
+      "trigger_condition": "穿上连衣裙并入睡后",
+      "consequences": "调查员获得黑棘剑，用其切开空间进入白色走廊。污秽度机制开始生效。"
+    },
+    {
+      "id": "event_library_discovery",
+      "description": "调查员在白色书库中发现关键书籍，了解梦境世界的规则和黑棘剑的真相。",
+      "trigger_condition": "进入白色书库后",
+      "consequences": "习得梦知识技能，了解到许普诺斯的危险和黑棘剑的能力与代价。"
+    },
+    {
+      "id": "event_garden_exploration",
+      "description": "调查员在浅眠之庭遇到黑猫沃瓦道斯，发现通往深层的黑色树木。",
+      "trigger_condition": "离开白色书库后",
+      "consequences": "黑猫引导调查员前进。污秽度最低者可能获得虞美人花露。触碰黑树进入深层。"
+    },
+    {
+      "id": "event_nightmare_battle",
+      "description": "在噩梦之底与更强的人偶战斗，发现并破坏沼泽中央的球体。",
+      "trigger_condition": "被拉入深眠之层后",
+      "consequences": "污秽度最高的调查员被沼泽吞噬，进入许普诺斯的最终梦境。其余调查员需与沃瓦道斯合作。"
+    },
+    {
+      "id": "event_hypnos_temptation",
+      "description": "许普诺斯化身为调查员最珍视的人，试图以美好幻象诱惑调查员永远留在梦境中。",
+      "trigger_condition": "污秽度最高的调查员进入许普诺斯的梦境",
+      "consequences": "接受则BAD END（永眠）；拒绝则许普诺斯显露真身，进入最终对抗。"
+    },
+    {
+      "id": "event_final_confrontation",
+      "description": "全体调查员的POW合力加上沃瓦道斯（POW75）对抗许普诺斯（POW85），决定能否逃离梦境。",
+      "trigger_condition": "拒绝许普诺斯或许普诺斯显露真身后",
+      "consequences": "成功则梦境崩塌，调查员逃脱；失败则调查员迷失在噩梦中。"
+    },
+    {
+      "id": "event_awakening",
+      "description": "调查员醒来，回到现实世界。连衣裙消失。若未拒绝许普诺斯且未佩戴蔷薇之眼，1D100天后将再次被带走。",
+      "trigger_condition": "成功逃离梦境后",
+      "consequences": "TRUE END。获得奖励：理智+1D6+1，赠予POW者+1D6，污秽度最高者+1D10，克苏鲁神话+3%。可能获得道具虞美人花露和蔷薇之眼。"
+    }
+  ],
+  "ending_conditions": [
+    {
+      "id": "ending_true",
+      "description": "调查员成功对抗许普诺斯从梦境逃脱",
+      "type": "normal",
+      "trigger_hint": "当POW对抗成功梦境崩塌后，叙述觉醒结局"
+    },
+    {
+      "id": "ending_bad",
+      "description": "调查员接受许普诺斯的诱惑永远沉睡",
+      "type": "bad",
+      "trigger_hint": "若最高侵蚀值调查员接受永远在一起的提议，叙述永眠结局"
+    },
+    {
+      "id": "ending_partial",
+      "description": "部分调查员被困在梦境中",
+      "type": "normal",
+      "trigger_hint": "若POW对抗失败但其他调查员逃脱，叙述部分生还结局"
+    }
+  ]
+}

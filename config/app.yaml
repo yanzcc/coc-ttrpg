@@ -1,0 +1,69 @@
+# 全局配置（单文件）。敏感项优先使用环境变量：ANTHROPIC_API_KEY、DATABASE_URL、HOST、PORT。
+# 可通过环境变量 COC_TTRPG_CONFIG 指向其它 YAML 路径。
+
+paths:
+  # 相对项目根目录；数据库文件、上传等数据根路径
+  data_dir: data
+
+database:
+  # 非空则直接使用（仍低于环境变量 DATABASE_URL）
+  url: null
+
+# ---- 大语言模型：全局默认模型与密钥（密钥优先读环境变量）----
+llm:
+  # 未设置环境变量 CLAUDE_MODEL 时，各 Agent 调用 Anthropic API 使用的模型 ID
+  default_model: claude-sonnet-4-20250514
+  # API 密钥；留空则使用环境变量 ANTHROPIC_API_KEY（不要把真实密钥写进仓库）
+  api_key: null
+
+# ---- 各 Agent 单次回复的 max_tokens 上限（越大越长，费用与延迟越高）----
+agents:
+  # BaseAgent 未单独指定时使用的默认输出上限
+  base_default: 4096
+  # 守密人（分类/叙事等仍走 GameMasterAgent 的路径）
+  game_master: 2048
+  # 场景守密人：环境、情节描写（需要足够空间完成完整叙事段落）
+  scene_keeper: 4096
+  # NPC 守密人：单 NPC 对话与短动作
+  npc_keeper: 2000
+  # 技能检定结果的叙事包装、难度建议等
+  skill_check: 2000
+  # 战斗过程与结果的叙事描写
+  combat: 1000
+  # 记忆整理：从叙事中抽取事实/NPC 记忆/地点定稿 JSON
+  memory_curator: 4000
+  # 角色创建与卡面相关的 LLM 辅助
+  character_mgr: 5000
+  # 从种子生成完整模组文案
+  story_gen: 20000
+  # 模组文档导入为结构化 StoryModule
+  module_loader: 20000
+
+# ---- 上下文窗口与摘要（与守密人 system 外的拼装、历史压缩相关）----
+context:
+  # ContextBuilder 组装「场景/模组/角色/近期叙事」时的 token 预算估算上限（粗略按字折算）
+  builder_max_tokens: 20000
+  # summarize_narrative 调用 API 压缩旧日志为摘要时的输出上限
+  summarize_max_tokens: 2048
+
+# ---- 会话级 Token 用量与告警 ----
+session:
+  # 新建游戏会话时写入的 token 预算上限（用于进度百分比与节流叙事详略）
+  default_token_budget: 5000000
+  # 本会话累计用量占预算达到这些百分比时，各向玩家提示一次（如 50%、80%、95%）
+  token_warning_thresholds: [50, 80, 95]
+
+# ---- HTTP 服务（run.py 启动 uvicorn；HOST/PORT 环境变量可覆盖）----
+server:
+  # 监听地址；0.0.0.0 表示本机所有网卡
+  host: "0.0.0.0"
+  # 监听端口
+  port: 8000
+  # 开发时是否启用热重载（生产环境可改为 false）
+  uvicorn_reload: true
+
+# ---- FastAPI 应用元数据（仅文档与展示）----
+api:
+  title: "克苏鲁的呼唤 TTRPG"
+  description: "多Agent驱动的克苏鲁的呼唤跑团框架"
+  version: "0.1.0"

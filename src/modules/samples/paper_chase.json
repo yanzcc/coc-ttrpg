@@ -1,0 +1,571 @@
+{
+  "metadata": {
+    "title": "追书人",
+    "author": "John Sullivan / Mike Mason",
+    "era": "1920s",
+    "player_count_min": 1,
+    "player_count_max": 2,
+    "estimated_sessions": 1,
+    "difficulty": "简单",
+    "summary": "1922年密歇根州阿诺兹堡。调查员受托马斯·金博尔之托，调查一起离奇的入室盗书案及其叔叔道格拉斯·金博尔一年前的神秘失踪。调查将引导调查员走向一片古老墓地，揭开一个令人不安却又出人意料温情的真相——失踪的叔叔已经变成了食尸鬼，他只是想取回自己心爱的书籍。",
+    "tags": [
+      "入门",
+      "调查",
+      "食尸鬼",
+      "1920s",
+      "单人",
+      "经典"
+    ]
+  },
+  "npcs": [
+    {
+      "id": "npc_thomas",
+      "name": "托马斯·金博尔",
+      "age": 35,
+      "occupation": "房屋继承人",
+      "description": "道格拉斯·金博尔的侄子，继承了叔叔在艾尔斯伯里大街218号的房子。普通的中年人，对叔叔的失踪既担忧又困惑。",
+      "personality": "务实、有些小气但总体善良。对叔叔的失踪感到不安但并不过分悲伤。",
+      "motivation": "找到偷书的贼，追回书籍，可能的话查明叔叔的下落。",
+      "secret": "他对叔叔的藏书并无太大兴趣，更在意的是房子和财产。失踪一年来他已经习惯了独占房屋。",
+      "dialogue_style": "说话简洁实际，偶尔抱怨花销。提到叔叔时语气平淡，提到被偷的书时更为上心。",
+      "stats": {
+        "STR": 50,
+        "CON": 55,
+        "SIZ": 55,
+        "DEX": 50,
+        "INT": 60,
+        "POW": 50,
+        "EDU": 60,
+        "APP": 50
+      },
+      "skills": {
+        "信用评级": 40,
+        "说服": 35,
+        "会计": 50
+      },
+      "initial_attitude": "友好"
+    },
+    {
+      "id": "npc_jefferson",
+      "name": "梅洛迪亚斯·杰弗逊",
+      "age": 58,
+      "occupation": "守墓人",
+      "description": "一个粗犷的中年男人，穿着打补丁的衣服，在这片墓地工作了二十多年。外套口袋里藏着一瓶违禁烈酒。",
+      "personality": "好斗、粗鲁，但对老熟人有感情。对墓地里的怪事心知肚明但害怕提起。",
+      "motivation": "安安稳稳地保住工作，不想惹麻烦。内心深处想念道格拉斯的陪伴。",
+      "secret": "最近深夜在墓地见到过人影，就在道格拉斯以前常坐的墓碑旁，他相信那是金博尔的鬼魂，太害怕不敢靠近。",
+      "dialogue_style": "语气粗鲁简短，不愿多聊。被说服或灌酒后话匣子会打开，回忆起道格拉斯时语气变得柔和。",
+      "stats": {
+        "STR": 45,
+        "CON": 65,
+        "SIZ": 60,
+        "DEX": 50,
+        "INT": 70,
+        "POW": 60,
+        "EDU": 65,
+        "APP": 55
+      },
+      "skills": {
+        "园艺": 80,
+        "信用评级": 32,
+        "恐吓": 45,
+        "机械维修": 55,
+        "博物学": 70,
+        "格斗（斗殴）": 30,
+        "闪避": 25
+      },
+      "initial_attitude": "冷淡"
+    },
+    {
+      "id": "npc_douglas",
+      "name": "道格拉斯·金博尔",
+      "age": 60,
+      "occupation": "食尸鬼/前爱书人",
+      "description": "曾经是白发秃顶、戴圆框眼镜的中年书虫。如今已变成皮肤呈胶状、生有蹄状双足、具有犬科动物特征的食尸鬼。但面容仍依稀可辨。",
+      "personality": "温和、友善，坚守着残存的人性。对书籍的热爱超越了种族的界限。对人类社会无留恋但对侄子仍有些许亲情。",
+      "motivation": "在食尸鬼隧道被永久封闭前取回自己的藏书，在地下世界建造图书馆。不想伤害任何人。",
+      "secret": "五年前在墓地读书时结识了食尸鬼，一年前自愿加入了它们的地下世界。他正在计划根据地下见闻撰写新书。今晚是他最后一次回来取书。",
+      "dialogue_style": "说话缓慢而有教养，偶尔发出含糊的食尸鬼特有的呻吟声。谈到书籍时眼中放光（尽管是食尸鬼的眼睛）。会礼貌地请求调查员保守秘密。",
+      "stats": {
+        "STR": 55,
+        "CON": 65,
+        "SIZ": 60,
+        "DEX": 40,
+        "INT": 80,
+        "POW": 65,
+        "EDU": 85,
+        "APP": 0
+      },
+      "skills": {
+        "攀爬": 85,
+        "潜行": 70,
+        "跳跃": 75,
+        "聆听": 70,
+        "侦查": 50,
+        "格斗（爪击）": 50,
+        "闪避": 30
+      },
+      "initial_attitude": "中立"
+    },
+    {
+      "id": "npc_odell",
+      "name": "莉拉·奥黛尔",
+      "age": 72,
+      "occupation": "退休居民",
+      "description": "一位衣着整洁的老妇人，住在墓地附近。以貌取人，非常在意调查员的外表是否体面。",
+      "personality": "势利、多嘴但记忆力好。愿意和体面人聊天。",
+      "motivation": "日常散步，喜欢八卦。",
+      "secret": "无特殊秘密。",
+      "dialogue_style": "说话絮叨，喜欢评价他人外表。回忆道格拉斯时用怀旧的语气。'他总是在读书。'",
+      "stats": {
+        "STR": 25,
+        "CON": 40,
+        "SIZ": 40,
+        "DEX": 30,
+        "INT": 60,
+        "POW": 55,
+        "EDU": 55,
+        "APP": 40
+      },
+      "skills": {
+        "侦查": 45,
+        "心理学": 40
+      },
+      "initial_attitude": "警惕"
+    }
+  ],
+  "locations": [
+    {
+      "id": "loc_kimball_house",
+      "name": "金博尔家",
+      "description": "艾尔斯伯里大街218号的一栋小屋，靠近墓地。屋内有一间塞满藏书的书房，窗锁因年久松动。调查员住在其中一间空卧室。",
+      "atmosphere": "老旧但维护尚可的房屋，书房弥漫着旧纸和皮革的气味，书架上留有明显的空缺——那是被偷走的书。",
+      "clue_ids": [
+        "clue_diary",
+        "clue_window_latch",
+        "clue_missing_books"
+      ],
+      "npc_ids": [
+        "npc_thomas"
+      ],
+      "connections": {
+        "前往墓地": "loc_cemetery",
+        "前往图书馆": "loc_library",
+        "前往警察局": "loc_police",
+        "前往报社": "loc_newspaper"
+      },
+      "events": [
+        "深夜可能有人影从窗户进入书房"
+      ],
+      "is_starting_location": true
+    },
+    {
+      "id": "loc_cemetery",
+      "name": "阿诺兹堡公墓",
+      "description": "一片古老的墓地，植被茂盛但打理得还不错。高大灌木和古树点缀其间。有一块风化光滑的矮墓碑——道格拉斯以前最爱的读书地点。深处有一座陵墓，通向食尸鬼的地下隧道。",
+      "atmosphere": "白天宁静祥和，偶有守墓人劳作的声音。夜晚则充满不安，月光下墓碑投下长长的阴影，偶尔传来细碎的声响。",
+      "clue_ids": [
+        "clue_footprints",
+        "clue_jefferson_testimony"
+      ],
+      "npc_ids": [
+        "npc_jefferson",
+        "npc_douglas"
+      ],
+      "connections": {
+        "返回金博尔家": "loc_kimball_house",
+        "进入陵墓": "loc_mausoleum"
+      },
+      "events": [
+        "守墓人杰弗逊在此工作",
+        "深夜有食尸鬼出没"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_mausoleum",
+      "name": "陵墓与地下隧道",
+      "description": "一座古老的陵墓，门后隐藏着通往地下的泥土隧道网络。打开门时会释放出可怕的腐臭。隧道遍布整个公墓地下，是食尸鬼的栖息地。",
+      "atmosphere": "彻底的黑暗，潮湿的泥土气息混合着腐烂的恶臭。隧道狭窄曲折，偶尔传来远处的嘎吱声和低沉的呻吟。",
+      "clue_ids": [],
+      "npc_ids": [
+        "npc_douglas"
+      ],
+      "connections": {
+        "返回墓地": "loc_cemetery"
+      },
+      "events": [
+        "可能迷路",
+        "可能遭遇食尸鬼群",
+        "道格拉斯可能在隧道中被发现"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_library",
+      "name": "阿诺兹堡图书馆",
+      "description": "本地公共图书馆，收藏了《阿诺兹堡广告报》的旧刊。",
+      "atmosphere": "安静的阅览环境，木质书架排列整齐。图书馆管理员偶尔从眼镜上方打量来访者。",
+      "clue_ids": [
+        "clue_library_article"
+      ],
+      "npc_ids": [],
+      "connections": {
+        "返回金博尔家": "loc_kimball_house"
+      },
+      "events": [
+        "图书馆使用检定失败可能导致被锁在馆内过夜"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_police",
+      "name": "阿诺兹堡警察局",
+      "description": "本地警局，值班警官繁忙但对有专业背景的来访者较为配合。",
+      "atmosphere": "嘈杂的办公环境，打字机声和电话铃声此起彼伏。",
+      "clue_ids": [
+        "clue_police_info"
+      ],
+      "npc_ids": [],
+      "connections": {
+        "返回金博尔家": "loc_kimball_house"
+      },
+      "events": [],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_newspaper",
+      "name": "阿诺兹堡广告报社",
+      "description": "本地报社，保存有过期旧刊和记者未发表的采访笔记。",
+      "atmosphere": "油墨和纸张的气味弥漫，堆积如山的旧报纸。",
+      "clue_ids": [
+        "clue_ward_testimony"
+      ],
+      "npc_ids": [],
+      "connections": {
+        "返回金博尔家": "loc_kimball_house"
+      },
+      "events": [],
+      "is_starting_location": false
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene_commission",
+      "title": "受托调查",
+      "description": "调查员抵达金博尔家，从托马斯·金博尔那里了解案情：叔叔一年前失踪，最近有人偷走了书房里的书。托马斯愿意支付10美元报酬和调查期间的住宿。守密人应引导调查员了解可以调查的方向：询问邻居、查看墓地、去图书馆、去警察局、去报社、检查金博尔家。",
+      "read_aloud": "密歇根州阿诺兹堡，1922年。你来到艾尔斯伯里大街218号——一栋靠近一片古老墓地的小屋。开门的是一个看起来有些焦虑的中年男人。'你就是调查员吧？快进来。我叔叔的书又被偷了。'",
+      "location_id": "loc_kimball_house",
+      "npc_ids": [
+        "npc_thomas"
+      ],
+      "clue_ids": [
+        "clue_missing_books"
+      ],
+      "likely_skill_checks": [],
+      "transitions": [
+        {
+          "target_scene_id": "scene_investigation",
+          "condition": "调查员开始外出调查（图书馆、墓地、警察局等）",
+          "required_clues": [],
+          "auto_trigger": false
+        }
+      ],
+      "is_opening": true,
+      "is_climax": false,
+      "is_ending": false
+    },
+    {
+      "id": "scene_investigation",
+      "title": "多方调查",
+      "description": "调查员可以按任意顺序前往各地收集线索。关键地点和可获线索：\n1.【邻居】奥黛尔夫人（需外貌/信用检定）：道格拉斯总是在墓地读书\n2.【墓地】守墓人杰弗逊（需魅惑/说服检定，孤注一掷可用恐吓/话术）：指出道格拉斯最爱的墓碑。被要挟/贿赂后承认深夜见过人影\n3.【图书馆】（图书馆使用检定）：找到报道，有人声称看见裸体怪人在墓地狂欢，警察搜查后只发现怪异脚印\n4.【警察局】（法律/魅惑/说服检定或私家侦探免检）：近期无盗窃案、曾有墓地异响报告、叔叔寻人启事无果\n5.【报社】（图书馆使用检定）：希尔达·沃德声称二十多年间看见'魔鬼的子嗣'出没墓地，形似人类但有犬类特征和蹄状足\n6.【金博尔家书房】（侦查检定）：找到道格拉斯日记，最后一条提及要加入'地下的朋友们'。窗锁松动。",
+      "read_aloud": "",
+      "location_id": "",
+      "npc_ids": [
+        "npc_jefferson",
+        "npc_odell"
+      ],
+      "clue_ids": [
+        "clue_diary",
+        "clue_window_latch",
+        "clue_library_article",
+        "clue_police_info",
+        "clue_ward_testimony",
+        "clue_jefferson_testimony",
+        "clue_footprints"
+      ],
+      "likely_skill_checks": [
+        "侦查",
+        "图书馆使用",
+        "魅惑",
+        "说服",
+        "恐吓",
+        "心理学",
+        "外貌",
+        "信用评级"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_surveillance",
+          "condition": "调查员决定监视金博尔家或墓地，等待窃贼再次出现",
+          "required_clues": [],
+          "auto_trigger": false
+        },
+        {
+          "target_scene_id": "scene_tunnel",
+          "condition": "调查员发现陵墓入口并决定探索隧道",
+          "required_clues": [
+            "clue_footprints"
+          ],
+          "auto_trigger": false
+        }
+      ],
+      "is_opening": false,
+      "is_climax": false,
+      "is_ending": false
+    },
+    {
+      "id": "scene_surveillance",
+      "title": "深夜监视",
+      "description": "调查员在金博尔家或墓地设岗监视。每晚进行一次幸运检定，成功则当晚目击一条人影从墓地走向金博尔家，通过书房窗户进入取书。如果锁了窗户，人影会撞碎窗户。人影取书后返回墓地。调查员可以：追赶、攻击、喊话、或喊出'道格拉斯·金博尔'。\n如果喊出名字，人影会停顿并缓缓走向墓地，似乎在引导调查员跟随——转入对话场景。\n如果攻击——转入战斗。道格拉斯闪避30%，爪击50%伤害1D6，HP12，枪械伤害减半。他只想赶走攻击者然后逃跑。",
+      "read_aloud": "",
+      "location_id": "loc_kimball_house",
+      "npc_ids": [
+        "npc_douglas"
+      ],
+      "clue_ids": [],
+      "likely_skill_checks": [
+        "幸运",
+        "侦查",
+        "潜行",
+        "格斗（斗殴）",
+        "射击（手枪）",
+        "闪避"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_encounter",
+          "condition": "调查员跟随人影或喊出道格拉斯的名字",
+          "required_clues": [],
+          "auto_trigger": false
+        },
+        {
+          "target_scene_id": "scene_encounter",
+          "condition": "调查员击倒或杀死人影后近距离观察",
+          "required_clues": [],
+          "auto_trigger": false
+        }
+      ],
+      "is_opening": false,
+      "is_climax": false,
+      "is_ending": false
+    },
+    {
+      "id": "scene_tunnel",
+      "title": "陵墓探索",
+      "description": "调查员打开陵墓门（力量检定，或用工具）。释放出可怕腐臭——如果没有屏住呼吸会昏厥。隧道内完全黑暗，需要导航检定避免迷路。无论如何，调查员最终会在隧道中或返回地面时遇到道格拉斯。\n如果昏厥：醒来时发现道格拉斯就坐在旁边的墓碑上。\n如果迷路：在精疲力竭后遇到道格拉斯。",
+      "read_aloud": "",
+      "location_id": "loc_mausoleum",
+      "npc_ids": [
+        "npc_douglas"
+      ],
+      "clue_ids": [],
+      "likely_skill_checks": [
+        "力量",
+        "导航",
+        "体质"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_encounter",
+          "condition": "与道格拉斯相遇",
+          "required_clues": [],
+          "auto_trigger": true
+        }
+      ],
+      "is_opening": false,
+      "is_climax": false,
+      "is_ending": false
+    },
+    {
+      "id": "scene_encounter",
+      "title": "真相揭露",
+      "description": "这是模组高潮。调查员与食尸鬼道格拉斯·金博尔面对面。\n\n【对话路线】道格拉斯坐在墓碑上说'你好'。看清食尸鬼面容需理智检定（失败损失1D4 SAN）。他会礼貌回答问题：厌倦人类社会、只想读书不被打扰、食尸鬼生活甚合心意、食尸鬼隧道即将封闭这是最后一晚、正在计划写新书。他请求不要告诉侄子。随后爬入陵墓并封闭入口。听取真相损失1D4 SAN，但克苏鲁神话技能+3%。\n\n【战斗路线】击杀或击晕道格拉斯后近距离观察：第一次理智检定（遭遇食尸鬼：成功0/失败1D6 SAN）；第二次理智检定（认出是道格拉斯：成功1/失败1D4 SAN）。随后数十只食尸鬼从夜幕中现身——第三次理智检定（失败损失6 SAN，可能临时疯狂并昏厥→在疗养院醒来）。成功则可选择逃跑（食尸鬼不追）或战斗（必败，被带入地下失踪）。\n\n【跟随路线】如果调查员选择跟随道格拉斯进入地下世界，他将从此失踪。",
+      "read_aloud": "",
+      "location_id": "loc_cemetery",
+      "npc_ids": [
+        "npc_douglas"
+      ],
+      "clue_ids": [],
+      "likely_skill_checks": [
+        "理智",
+        "格斗（斗殴）",
+        "射击（手枪）",
+        "闪避"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_ending",
+          "condition": "调查员与道格拉斯对话后、战斗后逃离、或在疗养院醒来",
+          "required_clues": [],
+          "auto_trigger": false
+        }
+      ],
+      "is_opening": false,
+      "is_climax": true,
+      "is_ending": false
+    },
+    {
+      "id": "scene_ending",
+      "title": "尾声",
+      "description": "模组结局。此后食尸鬼不会再来，金博尔家恢复平静。调查员需要决定是否将道格拉斯的真相告诉托马斯。\n\n可能获得的奖励：\n- 与道格拉斯交谈过：获得1D6理智值恢复（知道他不会再来）\n- 曾陷入临时疯狂：克苏鲁神话+5%\n- 完成任务：托马斯支付10美元（如损坏物品则扣5美元）\n- 进行技能成长检定\n\n守密人应根据调查员的经历叙述一个有收束感的结局。如果调查员失踪或死亡，描述此后的影响。",
+      "read_aloud": "",
+      "location_id": "loc_kimball_house",
+      "npc_ids": [
+        "npc_thomas"
+      ],
+      "clue_ids": [],
+      "likely_skill_checks": [],
+      "transitions": [],
+      "is_opening": false,
+      "is_climax": false,
+      "is_ending": true
+    }
+  ],
+  "clues": [
+    {
+      "id": "clue_missing_books",
+      "name": "失窃的书籍",
+      "description": "书房架子上少了大约六本书，留下明显空档。窃贼似乎只对特定书籍感兴趣。没有暴力破门痕迹。",
+      "core": false,
+      "location_id": "loc_kimball_house",
+      "discovery_method": "托马斯·金博尔直接告知",
+      "discovery_difficulty": "普通",
+      "leads_to": [
+        "clue_window_latch"
+      ],
+      "handout_text": null
+    },
+    {
+      "id": "clue_window_latch",
+      "name": "松动的窗锁",
+      "description": "书房窗户的锁因年久变松，从外侧用力就可以轻松打开。这是窃贼的入口。",
+      "core": false,
+      "location_id": "loc_kimball_house",
+      "discovery_method": "侦查",
+      "discovery_difficulty": "普通",
+      "leads_to": [],
+      "handout_text": null
+    },
+    {
+      "id": "clue_diary",
+      "name": "道格拉斯的日记",
+      "description": "在书房深处找到的一本日记。最后一条写于道格拉斯失踪前一天，隐晦提及他'做出决定'要加入'地下的朋友们'。更早的条目暗示公墓地下存在隧道网络，其中居住着道格拉斯在夜间看见的神秘'生物'。",
+      "core": true,
+      "location_id": "loc_kimball_house",
+      "discovery_method": "侦查（搜索书房需至少一天）",
+      "discovery_difficulty": "普通",
+      "leads_to": [
+        "clue_footprints"
+      ],
+      "handout_text": "今夜之后，我便不再属于这个世界了。我的朋友们在下面等着我，那里有永恒的宁静和无尽的时间。我只需要带上几本心爱的书。"
+    },
+    {
+      "id": "clue_library_article",
+      "name": "图书馆旧报道",
+      "description": "《阿诺兹堡广告报》十多年前的报道：有人声称看见一群明显未着寸缕的人在毗邻金博尔宅的墓地里狂欢嬉戏。警察搜索整片公墓未找到任何人，但发现了形状怪异的脚印。",
+      "core": false,
+      "location_id": "loc_library",
+      "discovery_method": "图书馆使用",
+      "discovery_difficulty": "普通",
+      "leads_to": [
+        "clue_footprints"
+      ],
+      "handout_text": null
+    },
+    {
+      "id": "clue_police_info",
+      "name": "警方信息",
+      "description": "近期无入室盗窃报案（上一起一年前已结案）。六七年前墓地曾有异响报告，巡警巡查数周未发现异常。道格拉斯·金博尔的寻人启事已发但始终未找到此人。",
+      "core": false,
+      "location_id": "loc_police",
+      "discovery_method": "法律/魅惑/说服（私家侦探或记者免检）",
+      "discovery_difficulty": "普通",
+      "leads_to": [],
+      "handout_text": null
+    },
+    {
+      "id": "clue_ward_testimony",
+      "name": "沃德夫人的证词",
+      "description": "报社记者未发表的采访笔记。64岁失眠症患者希尔达·沃德声称二十多年间时常看见'魔鬼的子嗣'出没于墓地附近：外观轮廓似人类但有犬类特征，足部呈蹄状，浑身沾满腐烂的泥土。沃德已搬去底特律，其他邻居均否认见过。",
+      "core": false,
+      "location_id": "loc_newspaper",
+      "discovery_method": "图书馆使用（在报社旧刊中查找）",
+      "discovery_difficulty": "普通",
+      "leads_to": [],
+      "handout_text": "我见过它们，不止一次。二十多年了。它们在夜里出来，在墓碑间走动。像人，但不是人。它们的脚不对劲——像是蹄子。身上全是泥和烂东西的味道。"
+    },
+    {
+      "id": "clue_jefferson_testimony",
+      "name": "杰弗逊的证词",
+      "description": "守墓人杰弗逊在被要挟或贿赂后承认：最近深夜在道格拉斯以前常坐的墓碑旁见过人影。他因相信那是金博尔的鬼魂而太过害怕，没敢靠近。",
+      "core": true,
+      "location_id": "loc_cemetery",
+      "discovery_method": "恐吓（普通）或说服（困难）或赠送烈酒（免检）",
+      "discovery_difficulty": "困难",
+      "leads_to": [],
+      "handout_text": null
+    },
+    {
+      "id": "clue_footprints",
+      "name": "怪异的足迹",
+      "description": "道格拉斯最爱的墓碑周围有若干奇怪足迹：看起来像脚趾处呈偶蹄状的成年人赤足留下的。沿着足迹可以一路穿过墓地，被引到一座陵墓的门前。",
+      "core": true,
+      "location_id": "loc_cemetery",
+      "discovery_method": "侦查或追踪",
+      "discovery_difficulty": "普通",
+      "leads_to": [],
+      "handout_text": null
+    }
+  ],
+  "timeline": [
+    {
+      "id": "event_backstory",
+      "description": "五年前，道格拉斯·金博尔在墓地读书时结识了食尸鬼。一年前，他自愿跟随食尸鬼进入地下世界定居。",
+      "trigger_condition": "背景信息，游戏前已发生",
+      "consequences": "道格拉斯失踪，房屋由侄子托马斯继承。"
+    },
+    {
+      "id": "event_book_theft",
+      "description": "道格拉斯在某个夜晚回到旧居，通过松动的窗锁进入书房取走了部分藏书。",
+      "trigger_condition": "游戏开始前发生，引发托马斯雇佣调查员",
+      "consequences": "托马斯发现书被偷，联系调查员。"
+    },
+    {
+      "id": "event_return_for_more",
+      "description": "道格拉斯计划再次回来取更多书籍。这是他最后的机会，因为食尸鬼们即将永久封闭这处隧道出口。",
+      "trigger_condition": "调查员监视金博尔家或墓地期间的某个夜晚（幸运检定成功）",
+      "consequences": "调查员目击人影从墓地前往金博尔家取书。这是模组的关键转折点。"
+    },
+    {
+      "id": "event_tunnel_sealed",
+      "description": "道格拉斯取完书后，他和食尸鬼群会封闭陵墓入口并永远离去。",
+      "trigger_condition": "调查员与道格拉斯对话结束后，或调查员逃离食尸鬼群后",
+      "consequences": "此后再也没有食尸鬼出现，金博尔家恢复平静。"
+    }
+  ],
+  "ending_conditions": [
+    {
+      "id": "ending_truth",
+      "description": "调查员发现道格拉斯的真相后选择是否告诉托马斯",
+      "type": "normal",
+      "trigger_hint": "当调查员与道格拉斯对话后、或在陵墓中发现真相后、或食尸鬼封洞离去后，叙述结局"
+    },
+    {
+      "id": "ending_tunnel_sealed",
+      "description": "道格拉斯取完书后封闭隧道永远离去，调查未完也应收束",
+      "type": "bad",
+      "trigger_hint": "若时间线推进到食尸鬼封洞离去，调查员错过真相，叙述遗憾结局"
+    }
+  ]
+}

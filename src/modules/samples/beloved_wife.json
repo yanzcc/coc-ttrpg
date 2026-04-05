@@ -1,0 +1,593 @@
+{
+  "metadata": {
+    "title": "挚爱吾妻",
+    "author": "弦歌忘忧",
+    "era": "1950s",
+    "player_count_min": 1,
+    "player_count_max": 1,
+    "estimated_sessions": 2,
+    "difficulty": "困难",
+    "summary": "1950年代美国小镇。你已与温柔完美的妻子西尔维娅结婚一年。一个深夜两位访客先后登门，让你对妻子隐秘的一面产生好奇。随着调查深入，你将面对一个又一个颠覆认知的真相——你深爱的妻子，究竟是被邪教追杀的可怜女人，还是披着人皮的冷血怪物？",
+    "tags": [
+      "单人",
+      "调查",
+      "悬疑",
+      "深潜者",
+      "1950s",
+      "心理恐怖",
+      "感情纠葛"
+    ]
+  },
+  "npcs": [
+    {
+      "id": "npc_sylvia",
+      "name": "西尔维娅",
+      "age": 70,
+      "occupation": "家庭主妇",
+      "description": "温柔美丽的完美妻子，棕色长发，穿着得体的连衣裙，举止优雅。实际上是脱离深潜者教团的特殊深潜者，外表看起来只有25岁。",
+      "personality": "表面温柔贤淑完美，实际是反社会人格，通过学习模仿正常人的情感表现。可以毫不犹豫伤害他人但不从中取乐。",
+      "motivation": "作为普通人类安宁享受生活，维持人类外形，为此什么都做得出来。",
+      "secret": "她是深潜者，七十多岁，杀死了真正的西尔维娅窃取身份。她在给调查员喝的鱼汤里加了深潜者的肉，试图将调查员转化为她的信徒。与犹格·索托斯有一个女儿丽塔。",
+      "dialogue_style": "说话温柔得体，永远从容不迫。在被质疑时会用真挚的泪水和恳求来化解。极少露出破绽。",
+      "stats": {
+        "STR": 55,
+        "CON": 60,
+        "SIZ": 50,
+        "DEX": 55,
+        "INT": 75,
+        "POW": 70,
+        "EDU": 65,
+        "APP": 85
+      },
+      "skills": {
+        "说服": 85,
+        "话术": 75,
+        "心理学": 70,
+        "侦查": 60,
+        "克苏鲁神话": 25
+      },
+      "initial_attitude": "友好"
+    },
+    {
+      "id": "npc_john",
+      "name": "约翰·提托",
+      "age": 30,
+      "occupation": "无固定职业",
+      "description": "调查员的发小好友，头发蓬乱，穿着随意，眼神中有些不安。为人轻浮浪荡好赌，但对调查员感情真挚。",
+      "personality": "轻浮、浪荡、好赌，但讲义气。陷入债务危机。",
+      "motivation": "向调查员借钱/担保还债，同时想警告调查员妻子可能的不忠。",
+      "secret": "他前几天看见西尔维娅和一个陌生男人在咖啡厅，西尔维娅还哭了。",
+      "dialogue_style": "说话急促，紧张时会抓头发。提到钱的事情会尴尬地回避目光。提到西尔维娅时欲言又止。",
+      "stats": {
+        "STR": 50,
+        "CON": 45,
+        "SIZ": 55,
+        "DEX": 55,
+        "INT": 50,
+        "POW": 40,
+        "EDU": 45
+      },
+      "skills": {
+        "闪避": 35,
+        "说服": 40,
+        "信用评级": 15
+      },
+      "initial_attitude": "友好"
+    },
+    {
+      "id": "npc_robert",
+      "name": "罗伯特·凯恩",
+      "age": 18,
+      "occupation": "大学生/画家",
+      "description": "敏感脆弱的年轻画家，因哮喘来小镇疗养。苍白瘦弱，衣着简朴但干净，手上总有颜料痕迹。",
+      "personality": "敏感、脆弱、内向、理想主义。对西尔维娅的爱是超脱物欲的骑士之爱。",
+      "motivation": "想让西尔维娅做他的绘画模特。",
+      "secret": "他在画西尔维娅时会进入神游状态，不自觉画出深潜者的真身，然后用颜料覆盖。西尔维娅计划杀他嫁祸调查员。",
+      "dialogue_style": "说话时容易脸红，手指不安地揉搓颜料。谈到西尔维娅时眼中放光，语气虔诚。",
+      "stats": {
+        "STR": 35,
+        "CON": 30,
+        "SIZ": 45,
+        "DEX": 50,
+        "INT": 70,
+        "POW": 65,
+        "EDU": 60,
+        "APP": 55
+      },
+      "skills": {
+        "美术": 75,
+        "侦查": 45,
+        "心理学": 30
+      },
+      "initial_attitude": "紧张"
+    },
+    {
+      "id": "npc_rita",
+      "name": "丽塔",
+      "age": 50,
+      "occupation": "无",
+      "description": "看起来像十二岁的小女孩，手中总抱着书。白天天真烂漫，夜晚变成鱼头触手怪物。实际年龄约五十岁。",
+      "personality": "有人性但知道无法被人类接纳。羡慕普通人的生活，很寂寞。只在母亲身边有归属感。",
+      "motivation": "帮助母亲西尔维娅，同时渴望友谊。",
+      "secret": "她是西尔维娅和犹格·索托斯的女儿。夜晚会变身。会按母亲的命令杀人，但对调查员可能产生犹豫。",
+      "dialogue_style": "白天像普通少女，偶尔流露阴郁。被问到母亲的事会立刻警觉。手中总拿着不符合年龄的哲学书。",
+      "stats": {
+        "STR": 55,
+        "CON": 60,
+        "SIZ": 45,
+        "DEX": 55,
+        "INT": 65,
+        "POW": 65,
+        "EDU": 70
+      },
+      "skills": {
+        "潜行": 60,
+        "聆听": 55,
+        "克苏鲁神话": 15
+      },
+      "initial_attitude": "警惕"
+    },
+    {
+      "id": "npc_hank",
+      "name": "老汉克",
+      "age": 75,
+      "occupation": "退休赌徒",
+      "description": "住在茅屋里的老滑头。嗜酒好色好赌，玩世不恭。是镇上唯一讨厌西尔维娅的人。",
+      "personality": "世故、圆滑、洞察力惊人。表面玩世不恭内心有自己的坚持。",
+      "motivation": "40年前的搭档路克因为调查一个'完美女人'而失踪，他怀疑西尔维娅是那个女人的后代。",
+      "secret": "他有一张40年前的旧照片，上面的贵妇与西尔维娅极像，旁边有个小女孩与丽塔一模一样。",
+      "dialogue_style": "说话油滑，喜欢卖关子。提到年轻女人会嬉皮笑脸。但提到路克时会突然沉默严肃。要用酒和赌博才能撬开他的嘴。",
+      "stats": {
+        "STR": 30,
+        "CON": 35,
+        "SIZ": 50,
+        "DEX": 30,
+        "INT": 70,
+        "POW": 55,
+        "EDU": 40
+      },
+      "skills": {
+        "侦查": 65,
+        "心理学": 60,
+        "话术": 70,
+        "赌博": 90
+      },
+      "initial_attitude": "冷淡"
+    },
+    {
+      "id": "npc_captain",
+      "name": "马尔斯船长",
+      "age": 78,
+      "occupation": "退休船长",
+      "description": "近八十的退休船长，声音洪亮，为人热情。红鼻头，穿着旧海军外套。",
+      "personality": "豪爽、热情、喜欢讲故事。",
+      "motivation": "路过小镇参加宴会。",
+      "secret": "50年前在海上救过一个叫海伦的女人，长得和西尔维娅很像。那个女人冷血无情——有船员摔断腿时只有她无动于衷。",
+      "dialogue_style": "声音洪亮，喜欢拍桌子。讲故事时绘声绘色。只在本镇停留一周。",
+      "stats": {
+        "STR": 40,
+        "CON": 45,
+        "SIZ": 60,
+        "DEX": 30,
+        "INT": 55,
+        "POW": 50,
+        "EDU": 45
+      },
+      "skills": {
+        "领航": 75,
+        "说服": 50,
+        "聆听": 40
+      },
+      "initial_attitude": "友好"
+    }
+  ],
+  "locations": [
+    {
+      "id": "loc_home",
+      "name": "调查员的家",
+      "description": "1950年代美式小镇温馨住宅。白色木栅栏，修剪整齐的草坪。室内布置温馨但有种说不出的完美感——每一件家具、每一束花都恰到好处，仿佛是从杂志上剪下来的。厨房里总飘着西尔维娅烹饪的香气。",
+      "atmosphere": "白天阳光明媚，一切看起来无可挑剔。但深夜独处时，这种完美会让人产生一丝说不清的不适感，像是住在一个精心布置的舞台上。",
+      "clue_ids": [
+        "clue_jewelry",
+        "clue_fish_soup",
+        "clue_ring"
+      ],
+      "npc_ids": [
+        "npc_sylvia"
+      ],
+      "connections": {
+        "湖边": "loc_lake",
+        "镇中心": "loc_town",
+        "邻居": "loc_neighbor"
+      },
+      "events": [
+        "深夜西尔维娅会悄悄离开家",
+        "搜索书桌可能发现深潜者黄金首饰",
+        "厨房里的鱼汤散发着异常鲜美的香气"
+      ],
+      "is_starting_location": true
+    },
+    {
+      "id": "loc_town",
+      "name": "小镇中心",
+      "description": "典型的1950年代美国小镇。杂货店、邮局、咖啡馆、教堂，一切都井井有条。街上的居民互相打招呼，每个人都认识西尔维娅并对她赞不绝口。",
+      "atmosphere": "表面上宁静祥和的小镇生活，但随着调查深入，会发现这种和谐下隐藏着不安的暗流。",
+      "clue_ids": [],
+      "npc_ids": [
+        "npc_captain",
+        "npc_hank"
+      ],
+      "connections": {
+        "回家": "loc_home",
+        "警察局": "loc_police",
+        "图书馆": "loc_library",
+        "旅馆": "loc_hotel"
+      },
+      "events": [
+        "可能在咖啡馆遇到马尔斯船长",
+        "老汉克常在镇上的酒吧出没"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_lake",
+      "name": "湖边小屋",
+      "description": "人迹罕至的湖边，有一间朴素的小木屋。湖水清澈但深不见底，岸边长满了芦苇。小木屋外表普通，内部却有西尔维娅和丽塔秘密会面的痕迹。",
+      "atmosphere": "湖水在阳光下看起来很美，但在阴天时会散发出一种不自然的腥味。夜晚时湖面偶尔会泛起不明的涟漪，仿佛有什么东西在水下游动。",
+      "clue_ids": [
+        "clue_photo"
+      ],
+      "npc_ids": [
+        "npc_rita"
+      ],
+      "connections": {
+        "回镇上": "loc_town"
+      },
+      "events": [
+        "跟踪西尔维娅可能发现她来此与丽塔会面",
+        "湖底似乎有不明物体的反光",
+        "夜晚可能目睹丽塔变身"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_library",
+      "name": "图书馆",
+      "description": "小镇的公共图书馆，规模不大但藏书丰富。木质书架散发着旧书的气味。在不起眼的角落里收藏了关于深潜者教团、印斯矛斯等传说的零散资料，以及数十年前的旧报纸合订本。",
+      "atmosphere": "安静的阅读空间，午后阳光从窗户洒入。但当你翻开那些关于印斯矛斯的旧资料时，空气似乎变得沉重起来。",
+      "clue_ids": [
+        "clue_newspaper",
+        "clue_detective_notes"
+      ],
+      "npc_ids": [],
+      "connections": {
+        "回镇上": "loc_town"
+      },
+      "events": [
+        "图书馆使用检定可以找到关于印斯矛斯和深潜者的资料",
+        "旧报纸中隐藏着关键线索"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_neighbor",
+      "name": "洛斯卡家",
+      "description": "调查员的邻居瑞秋·洛斯卡的家。与调查员家相邻的温馨住宅，瑞秋是一位热心的中年妇女，经常和西尔维娅来往。",
+      "atmosphere": "普通的邻居家庭，但随着事件发展，洛斯卡一家会突然'搬走'，留下空荡荡的房子和来不及收拾的痕迹。",
+      "clue_ids": [],
+      "npc_ids": [],
+      "connections": {
+        "回家": "loc_home"
+      },
+      "events": [
+        "瑞秋可能提供关于西尔维娅日常行为的线索",
+        "洛斯卡一家突然'搬走'后，房子里留下可疑的痕迹"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_hotel",
+      "name": "旅馆",
+      "description": "小镇唯一的旅馆，老旧但干净。侦探卡特生前住在这里的一间房间，房间在他失踪后一直没有清理，留下了笔记碎片和调查痕迹。",
+      "atmosphere": "旅馆本身平平无奇，但卡特的房间弥漫着一种被中断的紧迫感——墙上钉着照片和地图，桌上散落着潦草的笔记。",
+      "clue_ids": [
+        "clue_detective_notes"
+      ],
+      "npc_ids": [],
+      "connections": {
+        "回镇上": "loc_town"
+      },
+      "events": [
+        "搜索卡特的房间可以找到追踪谋杀案的笔记",
+        "旅馆老板可能提及卡特失踪前的异常行为"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_police",
+      "name": "警察局",
+      "description": "斯诺警长管理的小镇警察局。规模不大，只有几个警员。斯诺警长是个务实的中年人，对超自然事件持怀疑态度。",
+      "atmosphere": "典型的小镇警察局，墙上挂着通缉令和镇务公告。斯诺警长对外来的麻烦事不太感兴趣。",
+      "clue_ids": [],
+      "npc_ids": [],
+      "connections": {
+        "回镇上": "loc_town"
+      },
+      "events": [
+        "可以报案或查询案件记录",
+        "海恩·罗斯被杀后警察局会变得忙碌"
+      ],
+      "is_starting_location": false
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene_visitors",
+      "title": "深夜的两位访客",
+      "description": "某个深夜西尔维娅不在家时，罗伯特·凯恩和约翰·提托先后来访。罗伯特想请西尔维娅做模特并留下一张她在湖边的背影照片。约翰来借钱并警告调查员，说前几天看见西尔维娅和一个陌生男人在咖啡厅，西尔维娅还哭了。守密人应注意：罗伯特的来访会让调查员对妻子产生第一丝疑虑，约翰的警告则会加深这种不安。两位访客离开后，西尔维娅会若无其事地回家，如果被问起聚会的事会完美地搪塞过去。",
+      "read_aloud": "深夜的时钟指向十一点。西尔维娅说要去参加一个朋友的聚会，你独自坐在客厅里，翻着报纸。门铃响了。",
+      "location_id": "loc_home",
+      "npc_ids": [
+        "npc_robert",
+        "npc_john"
+      ],
+      "clue_ids": [
+        "clue_photo"
+      ],
+      "likely_skill_checks": [
+        "侦查",
+        "灵感",
+        "心理学"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_investigation",
+          "condition": "调查员决定深入调查西尔维娅的过去，或第二天开始行动",
+          "required_clues": [],
+          "auto_trigger": false
+        }
+      ],
+      "is_opening": true,
+      "is_climax": false,
+      "is_ending": false
+    },
+    {
+      "id": "scene_investigation",
+      "title": "深入调查",
+      "description": "调查员开始调查西尔维娅的过去。这是模组的核心调查阶段，调查员可以自由行动：跟踪妻子发现她前往湖边小屋与丽塔会面；搜索家中发现深潜者黄金首饰和鱼汤的秘密；拜访老汉克获取40年前的旧照片；在镇上遇到马尔斯船长听取50年前的海上故事；去图书馆查阅关于印斯矛斯和深潜者的资料；访问邻居洛斯卡家了解西尔维娅的日常。随着调查深入，高利贷黑帮会因约翰的债务骚扰调查员，海恩·罗斯会被杀，罗伯特·凯恩会被杀且西尔维娅试图嫁祸调查员，洛斯卡一家也会突然'搬走'。守密人应根据调查员的行动节奏推进时间线事件。",
+      "read_aloud": "新的一天开始了。西尔维娅像往常一样在厨房准备早餐，鱼汤的香气弥漫在屋子里。她转过头来，露出温柔的微笑：「亲爱的，早餐好了。今天有什么计划吗？」\n\n阳光透过白色纱帘洒进来，一切看起来那么美好。但昨晚两位访客的话像一根刺，扎在你心里。",
+      "location_id": "",
+      "npc_ids": [
+        "npc_sylvia",
+        "npc_hank",
+        "npc_captain",
+        "npc_rita"
+      ],
+      "clue_ids": [
+        "clue_newspaper",
+        "clue_jewelry",
+        "clue_ring",
+        "clue_painting",
+        "clue_old_photo",
+        "clue_detective_notes",
+        "clue_fish_soup",
+        "clue_captain_story"
+      ],
+      "likely_skill_checks": [
+        "跟踪",
+        "侦查",
+        "聆听",
+        "图书馆使用",
+        "说服",
+        "心理学",
+        "幸运"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_confrontation",
+          "condition": "调查员收集到足够证据后主动与西尔维娅摊牌，或时间线推进到罗伯特被杀后调查员被警方怀疑",
+          "required_clues": [],
+          "auto_trigger": false
+        },
+        {
+          "target_scene_id": "scene_confrontation",
+          "condition": "西尔维娅发现调查员的调查行为，主动摊牌或采取行动",
+          "required_clues": [],
+          "auto_trigger": true
+        }
+      ],
+      "is_opening": false,
+      "is_climax": false,
+      "is_ending": false
+    },
+    {
+      "id": "scene_confrontation",
+      "title": "真相与抉择",
+      "description": "调查员与西尔维娅摊牌。根据调查员掌握的证据数量和种类，西尔维娅会有不同的反应：证据不足时她会用泪水和恳求化解；证据确凿时她会露出真面目。调查员面临最终抉择——接受西尔维娅的真实身份继续生活（但可能已被鱼汤转化），揭露她的身份（面对深潜者的反击），或试图逃离。丽塔的态度也可能根据之前的互动而改变。不同的选择导向不同的结局：与怪物共度余生、揭露真相后的生死搏斗、逃离小镇但永远活在阴影中，或被西尔维娅彻底转化为深潜者的仆从。",
+      "read_aloud": "你站在客厅里，手中攥着那些不该存在的证据。门锁轻轻转动的声音传来——西尔维娅回来了。\n\n她推门而入，和往常一样挂上外套，整理好头发，转过身来。看到你的表情，她的微笑凝固了一瞬，但很快恢复如常。\n\n「怎么了，亲爱的？你看起来不太好。」\n\n她的声音一如既往地温柔，棕色的眼睛里满是关切。那双眼睛，你凝视了无数个日夜的眼睛——此刻，你第一次不确定里面藏着的究竟是爱意，还是某种更古老、更冰冷的东西。",
+      "location_id": "loc_home",
+      "npc_ids": [
+        "npc_sylvia",
+        "npc_rita"
+      ],
+      "clue_ids": [],
+      "likely_skill_checks": [
+        "说服",
+        "意志",
+        "闪避",
+        "格斗"
+      ],
+      "transitions": [],
+      "is_opening": false,
+      "is_climax": true,
+      "is_ending": true
+    }
+  ],
+  "clues": [
+    {
+      "id": "clue_photo",
+      "name": "湖边照片",
+      "description": "罗伯特·凯恩拍摄的西尔维娅在湖边的背影照片。照片中她正向湖里扔东西，仔细观察（侦查检定）可以发现水面上漂浮着细小的白色物体——实际上是人类牙齿。",
+      "core": true,
+      "location_id": "loc_home",
+      "discovery_method": "罗伯特来访时主动交给调查员",
+      "discovery_difficulty": "简单",
+      "leads_to": [
+        "clue_painting"
+      ],
+      "handout_text": "一张黑白照片。西尔维娅站在湖边，背对镜头，手臂扬起，似乎正把什么东西抛向湖中。湖面上泛着细碎的涟漪。如果用放大镜观察水面，可以隐约看到一些小而白的东西漂浮在水面上，形状……像牙齿。"
+    },
+    {
+      "id": "clue_newspaper",
+      "name": "泛黄剪报",
+      "description": "50年前一份关于太平洋海难的旧新闻报道。一艘货船沉没，唯一的女性幸存者名叫海伦，被马尔斯船长的船只救起。报道中附有一张模糊的照片，女子的轮廓与西尔维娅极为相似。",
+      "core": true,
+      "location_id": "loc_library",
+      "discovery_method": "图书馆使用",
+      "discovery_difficulty": "困难",
+      "leads_to": [
+        "clue_captain_story"
+      ],
+      "handout_text": "「1900年8月17日 《太平洋晨报》——货船'海鸥号'于上月在北太平洋沉没，船上24人仅一名女性幸存。该女子自称海伦，被途经的'北极星号'救起。据'北极星号'船长马尔斯称，该女子被发现时漂浮在一块船板上，身上几乎没有伤痕，精神状态异常平静……」"
+    },
+    {
+      "id": "clue_jewelry",
+      "name": "深潜者黄金首饰",
+      "description": "在西尔维娅书桌底层抽屉中发现的一件奇怪的金色头饰。造型怪异，布满鱼鳞状纹路和不明符文。这件头饰的形状只有颅骨变形的生物才能佩戴——正常人类的头骨根本戴不上去。",
+      "core": true,
+      "location_id": "loc_home",
+      "discovery_method": "侦查",
+      "discovery_difficulty": "普通",
+      "leads_to": [
+        "clue_newspaper"
+      ],
+      "handout_text": null
+    },
+    {
+      "id": "clue_ring",
+      "name": "绿宝石戒指",
+      "description": "海恩·罗斯被杀后，这枚戒指出现在西尔维娅的首饰盒中。调查员如果见过高利贷打手海恩·罗斯，会认出这是他手上那枚标志性的绿宝石戒指。",
+      "core": false,
+      "location_id": "loc_home",
+      "discovery_method": "侦查",
+      "discovery_difficulty": "普通",
+      "leads_to": [],
+      "handout_text": null
+    },
+    {
+      "id": "clue_painting",
+      "name": "罗伯特的画作",
+      "description": "罗伯特·凯恩为西尔维娅所画的油画。表面看是一幅优美的肖像画，但如果刮开表面的颜料层（罗伯特在神游状态下覆盖了第一层画），下面是一幅令人毛骨悚然的鱼头人身像——深潜者的真实形态。观看此画需要进行理智检定。",
+      "core": true,
+      "location_id": "loc_town",
+      "discovery_method": "侦查",
+      "discovery_difficulty": "困难",
+      "leads_to": [
+        "clue_jewelry"
+      ],
+      "handout_text": null
+    },
+    {
+      "id": "clue_old_photo",
+      "name": "四十年前的旧照片",
+      "description": "老汉克保存了四十年的一张旧照片。照片中一位衣着华贵的女性与西尔维娅长得几乎一模一样，她身旁站着一个约十二岁的小女孩——与丽塔一模一样。照片背面用铅笔写着'特蕾莎与女儿，1910年'。",
+      "core": true,
+      "location_id": "loc_town",
+      "discovery_method": "说服（需要用酒或赌博说服老汉克）",
+      "discovery_difficulty": "困难",
+      "leads_to": [
+        "clue_detective_notes"
+      ],
+      "handout_text": "一张泛黄的老照片，边角已经磨损。照片中是一位穿着爱德华时代华服的美丽女子，她的面容与西尔维娅如出一辙——同样的棕色长发，同样优雅的微笑。她身旁站着一个看起来约十二岁的小女孩，表情有些阴郁。照片背面用已经褪色的铅笔字写着：'特蕾莎与女儿，1910年'。"
+    },
+    {
+      "id": "clue_detective_notes",
+      "name": "侦探卡特的笔记",
+      "description": "私家侦探卡特在旅馆房间里留下的调查笔记碎片。卡特追踪了一系列横跨数十年的谋杀案和身份窃取案，所有线索都指向一个名叫特蕾莎的女人——也就是西尔维娅的旧身份。笔记中提到特蕾莎每隔十到二十年就会换一个身份，而所有与她过于亲密的人最终都会失踪。卡特本人也已经失踪。",
+      "core": true,
+      "location_id": "loc_hotel",
+      "discovery_method": "侦查",
+      "discovery_difficulty": "普通",
+      "leads_to": [
+        "clue_old_photo"
+      ],
+      "handout_text": "「案件编号：私人备忘\n\n目标：特蕾莎（化名众多——海伦、玛丽安、伊莎贝拉……）\n\n1900年——太平洋海难唯一幸存者'海伦'\n1910年——波士顿社交名流'特蕾莎'，丈夫失踪\n1925年——芝加哥'玛丽安'，邻居全家'搬走'\n1940年——新奥尔良'伊莎贝拉'，未婚夫溺亡\n\n共同点：每次都是完美的女人。每次身边的人都会消失。她从不变老。\n\n她现在叫'西尔维娅'。我确信就是她。但我需要更多证——」\n\n笔记到此中断。"
+    },
+    {
+      "id": "clue_fish_soup",
+      "name": "鲜美的鱼汤",
+      "description": "西尔维娅每周都会给调查员做一碗异常鲜美的鱼汤。调查员如果在获得相关知识后分析汤的成分，会发现其中含有非普通鱼类的肉——实际上是深潜者的肉。长期食用会导致人类逐渐产生对深潜者的依赖和亲近感，最终被转化为深潜者的仆从。",
+      "core": true,
+      "location_id": "loc_home",
+      "discovery_method": "灵感或克苏鲁神话",
+      "discovery_difficulty": "困难",
+      "leads_to": [],
+      "handout_text": null
+    },
+    {
+      "id": "clue_captain_story",
+      "name": "船长的故事",
+      "description": "马尔斯船长讲述的50年前的故事。他救起的那个叫海伦的女人，在船上的表现令人不安——当一名船员从桅杆摔下摔断腿、惨叫不止时，所有人都在慌张救助，只有海伦站在一旁，面无表情地看着，仿佛在观察一个与她无关的事件。船长说他永远忘不了那个眼神——'那不是冷漠，是……不理解。她不理解痛苦是什么。'",
+      "core": false,
+      "location_id": "loc_town",
+      "discovery_method": "说服或自然交谈",
+      "discovery_difficulty": "简单",
+      "leads_to": [
+        "clue_newspaper"
+      ],
+      "handout_text": null
+    }
+  ],
+  "timeline": [
+    {
+      "id": "timeline_visitors",
+      "description": "深夜访客：罗伯特·凯恩和约翰·提托先后来访，分别留下照片和警告。游戏从此开始。",
+      "trigger_condition": "游戏开始",
+      "consequences": "调查员获得湖边照片线索，得知西尔维娅可能与陌生男人在咖啡厅会面。约翰借钱请求埋下高利贷黑帮骚扰的伏笔。"
+    },
+    {
+      "id": "timeline_loan_sharks",
+      "description": "高利贷黑帮骚扰：约翰的债务牵连调查员。高利贷打手海恩·罗斯带人上门威胁，要求调查员替约翰还债或交出约翰。这一事件会连续发生三次，逐次升级。",
+      "trigger_condition": "约翰来访后的第二天开始，每隔一天骚扰一次",
+      "consequences": "调查员被卷入约翰的债务纠纷。如果调查员不处理，黑帮会变得越来越暴力。海恩·罗斯会在第三次骚扰后被杀。"
+    },
+    {
+      "id": "timeline_hein_killed",
+      "description": "海恩·罗斯被杀：高利贷打手海恩·罗斯在第三次骚扰后被发现死在小镇郊外，死因是溺水但周围没有水源。他的绿宝石戒指失踪，后来出现在西尔维娅的首饰盒中。",
+      "trigger_condition": "高利贷骚扰三次后",
+      "consequences": "高利贷骚扰停止，但警方开始调查。如果调查员搜索首饰盒会发现绿宝石戒指。这是西尔维娅（或丽塔）杀人的第一个证据。"
+    },
+    {
+      "id": "timeline_robert_killed",
+      "description": "罗伯特·凯恩被杀：西尔维娅杀死罗伯特并试图嫁祸调查员。罗伯特的尸体被发现在他的画室，现场留有指向调查员的伪造证据。",
+      "trigger_condition": "海恩被杀后数天，或调查员的调查行为引起西尔维娅警觉",
+      "consequences": "调查员成为嫌疑人，警方开始追查。调查员必须证明自己的清白或逃避追捕。罗伯特的画作成为关键证据。"
+    },
+    {
+      "id": "timeline_neighbor_vanished",
+      "description": "洛斯卡一家'搬走'：调查员的邻居洛斯卡一家在一夜之间消失。官方说法是搬走了，但房子里留下了来不及收拾的痕迹和一丝血腥味。实际上他们因为知道了太多而被西尔维娅灭口。",
+      "trigger_condition": "罗伯特被杀之后，或洛斯卡家的瑞秋向调查员透露了关于西尔维娅的可疑信息",
+      "consequences": "调查员失去一个潜在的情报来源。如果调查员搜索洛斯卡家，可能发现灭口的证据。小镇的'完美'表象进一步崩塌。"
+    }
+  ],
+  "ending_conditions": [
+    {
+      "id": "ending_confrontation",
+      "description": "调查员与西尔维娅摊牌，根据证据多寡有不同结局",
+      "type": "normal",
+      "trigger_hint": "当调查员直接质问西尔维娅或掌握足够证据后与她对质时，进入结局"
+    },
+    {
+      "id": "ending_flee",
+      "description": "调查员选择逃离小镇",
+      "type": "normal",
+      "trigger_hint": "当调查员决定放弃调查逃离小镇时，叙述逃离结局"
+    },
+    {
+      "id": "ending_consumed",
+      "description": "调查员被深潜者同化或杀害",
+      "type": "bad",
+      "trigger_hint": "若调查员持续喝鱼汤且未察觉异常或触怒西尔维娅导致被害，叙述悲剧结局"
+    }
+  ]
+}

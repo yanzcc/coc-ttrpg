@@ -1,0 +1,457 @@
+"""CoC 7版预设武器列表
+
+精选自调查员手册(p250-255)的常见武器，用于开卡时快速选择。
+完整列表见 data/weapons.py。
+"""
+
+from __future__ import annotations
+
+# 每条: name, skill, damage, range, attacks, ammo, malfunction
+# ammo/malfunction 为 None 时前端显示 "-"
+
+PRESET_WEAPONS: list[dict] = [
+    # ── 徒手/近战 ──
+    {
+        "category": "徒手/近战",
+        "name": "徒手攻击",
+        "skill": "格斗（斗殴）",
+        "damage": "1D3+DB",
+        "range": "近",
+        "attacks": "1",
+        "ammo": None,
+        "malfunction": None,
+    },
+    {
+        "category": "徒手/近战",
+        "name": "小型刀（弹簧折叠刀）",
+        "skill": "格斗（斗殴）",
+        "damage": "1D4+DB",
+        "range": "近",
+        "attacks": "1",
+        "ammo": None,
+        "malfunction": None,
+    },
+    {
+        "category": "徒手/近战",
+        "name": "中型刀（切肉餐刀）",
+        "skill": "格斗（斗殴）",
+        "damage": "1D4+2+DB",
+        "range": "近",
+        "attacks": "1",
+        "ammo": None,
+        "malfunction": None,
+    },
+    {
+        "category": "徒手/近战",
+        "name": "大型刀（甘蔗刀）",
+        "skill": "格斗（斗殴）",
+        "damage": "1D8+DB",
+        "range": "近",
+        "attacks": "1",
+        "ammo": None,
+        "malfunction": None,
+    },
+    {
+        "category": "徒手/近战",
+        "name": "手斧",
+        "skill": "格斗（斗殴）",
+        "damage": "1D6+1+DB",
+        "range": "近",
+        "attacks": "1",
+        "ammo": None,
+        "malfunction": None,
+    },
+    {
+        "category": "徒手/近战",
+        "name": "伐木斧",
+        "skill": "格斗（斧）",
+        "damage": "1D8+2+DB",
+        "range": "近",
+        "attacks": "1",
+        "ammo": None,
+        "malfunction": None,
+    },
+    {
+        "category": "徒手/近战",
+        "name": "小型棍棒（警棍）",
+        "skill": "格斗（斗殴）",
+        "damage": "1D6+DB",
+        "range": "近",
+        "attacks": "1",
+        "ammo": None,
+        "malfunction": None,
+    },
+    {
+        "category": "徒手/近战",
+        "name": "大棒（棒球棒）",
+        "skill": "格斗（斗殴）",
+        "damage": "1D8+DB",
+        "range": "近",
+        "attacks": "1",
+        "ammo": None,
+        "malfunction": None,
+    },
+    {
+        "category": "徒手/近战",
+        "name": "黄铜指虎",
+        "skill": "格斗（斗殴）",
+        "damage": "1D3+1+DB",
+        "range": "近",
+        "attacks": "1",
+        "ammo": None,
+        "malfunction": None,
+    },
+    {
+        "category": "徒手/近战",
+        "name": "矛",
+        "skill": "格斗（矛）",
+        "damage": "1D8+1+DB",
+        "range": "近",
+        "attacks": "1",
+        "ammo": None,
+        "malfunction": None,
+    },
+    {
+        "category": "徒手/近战",
+        "name": "中型剑（佩剑）",
+        "skill": "格斗（剑）",
+        "damage": "1D6+1+DB",
+        "range": "近",
+        "attacks": "1",
+        "ammo": None,
+        "malfunction": None,
+    },
+    {
+        "category": "徒手/近战",
+        "name": "大型剑（马刀）",
+        "skill": "格斗（剑）",
+        "damage": "1D8+1+DB",
+        "range": "近",
+        "attacks": "1",
+        "ammo": None,
+        "malfunction": None,
+    },
+
+    # ── 投掷 ──
+    {
+        "category": "投掷",
+        "name": "投石",
+        "skill": "投掷",
+        "damage": "1D4+半DB",
+        "range": "STR英尺",
+        "attacks": "1",
+        "ammo": None,
+        "malfunction": None,
+    },
+    {
+        "category": "投掷",
+        "name": "投矛",
+        "skill": "投掷",
+        "damage": "1D8+半DB",
+        "range": "STR码",
+        "attacks": "1",
+        "ammo": None,
+        "malfunction": None,
+    },
+
+    # ── 弓弩 ──
+    {
+        "category": "弓弩",
+        "name": "弓箭",
+        "skill": "射击（弓）",
+        "damage": "1D6+半DB",
+        "range": "30码",
+        "attacks": "1",
+        "ammo": "1",
+        "malfunction": "97",
+    },
+    {
+        "category": "弓弩",
+        "name": "弩",
+        "skill": "射击（弓）",
+        "damage": "1D8+2",
+        "range": "50码",
+        "attacks": "1/2",
+        "ammo": "1",
+        "malfunction": "96",
+    },
+
+    # ── 手枪 ──
+    {
+        "category": "手枪",
+        "name": ".22小型自动手枪",
+        "skill": "射击（手枪）",
+        "damage": "1D6",
+        "range": "10码",
+        "attacks": "1(3)",
+        "ammo": "6",
+        "malfunction": "100",
+    },
+    {
+        "category": "手枪",
+        "name": ".32左轮手枪",
+        "skill": "射击（手枪）",
+        "damage": "1D8",
+        "range": "15码",
+        "attacks": "1(3)",
+        "ammo": "6",
+        "malfunction": "100",
+    },
+    {
+        "category": "手枪",
+        "name": ".32自动手枪",
+        "skill": "射击（手枪）",
+        "damage": "1D8",
+        "range": "15码",
+        "attacks": "1(3)",
+        "ammo": "8",
+        "malfunction": "99",
+    },
+    {
+        "category": "手枪",
+        "name": ".38左轮手枪",
+        "skill": "射击（手枪）",
+        "damage": "1D10",
+        "range": "15码",
+        "attacks": "1(3)",
+        "ammo": "6",
+        "malfunction": "100",
+    },
+    {
+        "category": "手枪",
+        "name": ".38自动手枪",
+        "skill": "射击（手枪）",
+        "damage": "1D10",
+        "range": "15码",
+        "attacks": "1(3)",
+        "ammo": "8",
+        "malfunction": "99",
+    },
+    {
+        "category": "手枪",
+        "name": ".45左轮手枪",
+        "skill": "射击（手枪）",
+        "damage": "1D10+2",
+        "range": "15码",
+        "attacks": "1(3)",
+        "ammo": "6",
+        "malfunction": "100",
+    },
+    {
+        "category": "手枪",
+        "name": ".45自动手枪（柯尔特M1911）",
+        "skill": "射击（手枪）",
+        "damage": "1D10+2",
+        "range": "15码",
+        "attacks": "1(3)",
+        "ammo": "7",
+        "malfunction": "100",
+    },
+    {
+        "category": "手枪",
+        "name": "9mm鲁格P08",
+        "skill": "射击（手枪）",
+        "damage": "1D10",
+        "range": "15码",
+        "attacks": "1(3)",
+        "ammo": "8",
+        "malfunction": "99",
+    },
+    {
+        "category": "手枪",
+        "name": ".357马格南左轮",
+        "skill": "射击（手枪）",
+        "damage": "1D8+1D4",
+        "range": "15码",
+        "attacks": "1(3)",
+        "ammo": "6",
+        "malfunction": "100",
+    },
+    {
+        "category": "手枪",
+        "name": "贝瑞塔M9（9mm）",
+        "skill": "射击（手枪）",
+        "damage": "1D10",
+        "range": "15码",
+        "attacks": "1(3)",
+        "ammo": "15",
+        "malfunction": "98",
+    },
+    {
+        "category": "手枪",
+        "name": "格洛克17（9mm）",
+        "skill": "射击（手枪）",
+        "damage": "1D10",
+        "range": "15码",
+        "attacks": "1(3)",
+        "ammo": "17",
+        "malfunction": "98",
+    },
+    {
+        "category": "手枪",
+        "name": ".44马格南左轮",
+        "skill": "射击（手枪）",
+        "damage": "1D10+1D4+2",
+        "range": "15码",
+        "attacks": "1(3)",
+        "ammo": "6",
+        "malfunction": "100",
+    },
+
+    # ── 步枪 ──
+    {
+        "category": "步枪",
+        "name": ".22栓式步枪",
+        "skill": "射击（步枪/霰弹枪）",
+        "damage": "1D6+1",
+        "range": "30码",
+        "attacks": "1",
+        "ammo": "6",
+        "malfunction": "99",
+    },
+    {
+        "category": "步枪",
+        "name": ".30杠杆式步枪",
+        "skill": "射击（步枪/霰弹枪）",
+        "damage": "2D6",
+        "range": "50码",
+        "attacks": "1",
+        "ammo": "6",
+        "malfunction": "98",
+    },
+    {
+        "category": "步枪",
+        "name": ".30栓式步枪（李-恩菲尔德）",
+        "skill": "射击（步枪/霰弹枪）",
+        "damage": "2D6+4",
+        "range": "110码",
+        "attacks": "1",
+        "ammo": "10",
+        "malfunction": "100",
+    },
+    {
+        "category": "步枪",
+        "name": ".30栓式步枪（春田/毛瑟）",
+        "skill": "射击（步枪/霰弹枪）",
+        "damage": "2D6+4",
+        "range": "110码",
+        "attacks": "1/2",
+        "ammo": "5",
+        "malfunction": "100",
+    },
+    {
+        "category": "步枪",
+        "name": "猎象步枪",
+        "skill": "射击（步枪/霰弹枪）",
+        "damage": "3D6+4",
+        "range": "100码",
+        "attacks": "1",
+        "ammo": "2",
+        "malfunction": "98",
+    },
+    {
+        "category": "步枪",
+        "name": "SKS半自动步枪",
+        "skill": "射击（步枪/霰弹枪）",
+        "damage": "2D6+4",
+        "range": "90码",
+        "attacks": "1(2)",
+        "ammo": "10",
+        "malfunction": "98",
+    },
+
+    # ── 霰弹枪 ──
+    {
+        "category": "霰弹枪",
+        "name": "12号双管霰弹枪",
+        "skill": "射击（步枪/霰弹枪）",
+        "damage": "4D6/2D6/1D6",
+        "range": "10/20/50码",
+        "attacks": "1或2",
+        "ammo": "2",
+        "malfunction": "100",
+    },
+    {
+        "category": "霰弹枪",
+        "name": "12号泵动式霰弹枪",
+        "skill": "射击（步枪/霰弹枪）",
+        "damage": "4D6/2D6/1D6",
+        "range": "10/20/50码",
+        "attacks": "1",
+        "ammo": "5",
+        "malfunction": "100",
+    },
+    {
+        "category": "霰弹枪",
+        "name": "12号半自动霰弹枪",
+        "skill": "射击（步枪/霰弹枪）",
+        "damage": "4D6/2D6/1D6",
+        "range": "10/20/50码",
+        "attacks": "1(2)",
+        "ammo": "5",
+        "malfunction": "99",
+    },
+    {
+        "category": "霰弹枪",
+        "name": "20号双管霰弹枪",
+        "skill": "射击（步枪/霰弹枪）",
+        "damage": "2D6/1D6/1D3",
+        "range": "10/20/50码",
+        "attacks": "1或2",
+        "ammo": "2",
+        "malfunction": "100",
+    },
+
+    # ── 冲锋枪 ──
+    {
+        "category": "冲锋枪",
+        "name": "汤普森冲锋枪",
+        "skill": "射击（冲锋枪）",
+        "damage": "1D10+2",
+        "range": "20码",
+        "attacks": "1(2)/全自动",
+        "ammo": "20/30/50",
+        "malfunction": "96",
+    },
+    {
+        "category": "冲锋枪",
+        "name": "乌兹冲锋枪",
+        "skill": "射击（冲锋枪）",
+        "damage": "1D10",
+        "range": "20码",
+        "attacks": "1(2)/全自动",
+        "ammo": "32",
+        "malfunction": "98",
+    },
+]
+
+
+def get_weapon_categories() -> list[str]:
+    """返回所有武器分类名称。"""
+    seen = []
+    for w in PRESET_WEAPONS:
+        if w["category"] not in seen:
+            seen.append(w["category"])
+    return seen
+
+
+def get_preset_weapons_grouped() -> list[dict]:
+    """返回按分类分组的武器列表。"""
+    cats = get_weapon_categories()
+    result = []
+    for cat in cats:
+        weapons = [
+            {
+                "name": w["name"],
+                "skill": w["skill"],
+                "damage": w["damage"],
+                "range": w["range"],
+                "attacks": w["attacks"],
+                "ammo": w["ammo"] if w["ammo"] is not None else "-",
+                "malfunction": w["malfunction"] if w["malfunction"] is not None else "-",
+            }
+            for w in PRESET_WEAPONS
+            if w["category"] == cat
+        ]
+        result.append({"category": cat, "weapons": weapons})
+    return result

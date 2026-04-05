@@ -1,0 +1,1448 @@
+{% extends "base.html" %}
+{% block title %}创建调查员 - 克苏鲁的呼唤{% endblock %}
+
+{% block head %}
+<style>
+/* === 开卡页面 === */
+.cc-page { max-width: 1260px; margin: 0 auto; }
+.cc-page h1 { margin-bottom: 1.2rem; font-size: 1.6rem; }
+
+/* --- 基本信息横栏 --- */
+.cc-info-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+.cc-info-bar .form-group { margin-bottom: 0; }
+
+/* --- 两列布局 --- */
+.cc-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    align-items: start;
+}
+@media (max-width: 860px) { .cc-two-col { grid-template-columns: 1fr; } }
+
+/* --- 属性表格 --- */
+.cc-attr-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.cc-attr-table th {
+    text-align: left; padding: 0.4rem 0.6rem; color: var(--text-secondary);
+    border-bottom: 1px solid var(--border); font-weight: 600; font-size: 0.8rem;
+}
+.cc-attr-table td { padding: 0.35rem 0.6rem; border-bottom: 1px solid rgba(48,54,61,0.4); }
+.cc-attr-table .attr-name { font-weight: 600; white-space: nowrap; }
+.cc-attr-table .attr-sub { font-size: 0.75rem; color: var(--text-muted); }
+.cc-attr-table input[type="number"] { width: 64px; text-align: center; padding: 0.25rem 0.4rem; }
+.cc-attr-table .computed {
+    font-family: var(--font-mono); color: var(--text-secondary);
+    text-align: center; min-width: 36px; display: inline-block;
+}
+
+/* --- 衍生属性网格 --- */
+.cc-derived-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.5rem;
+}
+.cc-derived-item {
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: 6px; padding: 0.5rem 0.6rem; text-align: center;
+}
+.cc-derived-item .label { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.15rem; }
+.cc-derived-item .value { font-size: 1rem; font-weight: 700; font-family: var(--font-mono); }
+.cc-derived-item input[type="number"] {
+    width: 48px; text-align: center; padding: 0.15rem 0.25rem;
+    font-size: 0.95rem; font-weight: 700;
+}
+
+/* 伤害加值/体格 */
+.cc-db-row { display: flex; gap: 1.5rem; margin-top: 0.6rem; font-size: 0.88rem; }
+.cc-db-row span { color: var(--text-secondary); }
+.cc-db-row strong { color: var(--text-primary); font-family: var(--font-mono); }
+
+/* --- 雷达图 --- */
+.cc-radar-wrap {
+    display: flex; justify-content: center; align-items: center;
+    padding: 0.5rem 0;
+}
+.cc-radar-wrap canvas { max-width: 280px; max-height: 280px; }
+
+/* --- 职业详情面板 --- */
+.cc-occ-detail {
+    border: 1px dashed var(--border); border-radius: 6px;
+    padding: 0.8rem; margin-top: 0.6rem;
+    background: rgba(88,166,255,0.03);
+}
+.cc-occ-detail .occ-title {
+    font-weight: 700; font-size: 1rem; color: var(--accent); margin-bottom: 0.5rem;
+}
+.cc-occ-detail .occ-row {
+    display: flex; gap: 0.5rem; align-items: baseline;
+    font-size: 0.85rem; margin-bottom: 0.3rem; flex-wrap: wrap;
+}
+.cc-occ-detail .occ-label { color: var(--text-muted); min-width: 70px; }
+.cc-occ-detail .occ-val { color: var(--text-primary); }
+.cc-occ-skill-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.3rem; }
+.cc-occ-skill-tag {
+    background: rgba(88,166,255,0.1); border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 4px; padding: 0.15rem 0.5rem; font-size: 0.78rem; color: var(--accent);
+}
+.cc-occ-skill-tag.wildcard { border-color: var(--warning); color: var(--warning); }
+.cc-formula-select { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+.cc-formula-select label {
+    font-size: 0.83rem; color: var(--text-secondary); cursor: pointer;
+    display: flex; align-items: center; gap: 0.25rem;
+}
+.cc-formula-select input[type="radio"] { accent-color: var(--accent); }
+
+/* --- 技能点计算器 --- */
+.cc-skill-points {
+    display: flex; gap: 1.2rem; flex-wrap: wrap; font-size: 0.83rem;
+    padding: 0.5rem 0;
+}
+.cc-skill-points .sp-item { display: flex; align-items: center; gap: 0.4rem; }
+.sp-bar {
+    width: 100px; height: 5px; background: var(--bg-primary);
+    border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle;
+}
+.sp-bar-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+.sp-ok { background: var(--success); }
+.sp-over { background: var(--danger); }
+
+/* --- 技能TAB --- */
+.cc-skill-tabs {
+    display: flex; gap: 0; border-bottom: 2px solid var(--border);
+    margin-bottom: 0.5rem; overflow-x: auto;
+}
+.cc-skill-tab {
+    padding: 0.4rem 0.8rem; font-size: 0.82rem; cursor: pointer;
+    color: var(--text-muted); border-bottom: 2px solid transparent;
+    margin-bottom: -2px; white-space: nowrap; transition: all 0.15s;
+    background: none; border-top: none; border-left: none; border-right: none;
+}
+.cc-skill-tab:hover { color: var(--text-secondary); }
+.cc-skill-tab.active {
+    color: var(--accent); border-bottom-color: var(--accent); font-weight: 600;
+}
+.cc-skill-tab .tab-count {
+    font-size: 0.7rem; color: var(--text-muted); margin-left: 0.2rem;
+}
+
+/* --- 技能表格 --- */
+.cc-skill-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.cc-skill-table th {
+    text-align: center; padding: 0.3rem 0.4rem; color: var(--text-muted);
+    border-bottom: 1px solid var(--border); font-weight: 600; font-size: 0.75rem;
+}
+.cc-skill-table th:first-child { text-align: left; }
+.cc-skill-table td {
+    padding: 0.25rem 0.4rem; border-bottom: 1px solid rgba(48,54,61,0.3);
+    text-align: center;
+}
+.cc-skill-table td:first-child { text-align: left; }
+.cc-skill-table tr:hover { background: rgba(88,166,255,0.04); }
+.cc-skill-table tr.occ-skill-row { border-left: 3px solid var(--accent); }
+.cc-skill-table .sk-name-cell {
+    display: flex; align-items: center; gap: 0.3rem;
+}
+.cc-skill-table .sk-check { width: 14px; height: 14px; accent-color: var(--accent); }
+.cc-skill-table .sk-name { color: var(--text-secondary); font-size: 0.85rem; }
+.cc-skill-table .sk-occ-badge {
+    font-size: 0.6rem; background: var(--accent); color: #000;
+    border-radius: 3px; padding: 0 0.3rem; font-weight: 700;
+}
+.cc-skill-table input[type="number"] {
+    width: 50px; text-align: center; padding: 0.15rem 0.25rem; font-size: 0.85rem;
+}
+.cc-skill-table .mono { font-family: var(--font-mono); font-size: 0.82rem; }
+
+/* --- 信用评级特殊行 --- */
+.cc-credit-row {
+    background: rgba(210,153,34,0.06); border: 1px solid rgba(210,153,34,0.2);
+    border-radius: 4px; padding: 0.5rem 0.6rem; margin-bottom: 0.6rem;
+    display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; font-size: 0.85rem;
+}
+.cc-credit-row .cr-label { color: var(--warning); font-weight: 600; }
+.cc-credit-row input[type="number"] { width: 60px; text-align: center; }
+.cc-credit-row .cr-range { color: var(--text-muted); font-size: 0.8rem; }
+.cc-credit-row .cr-warn { color: var(--danger); font-size: 0.78rem; }
+
+/* --- 通配符技能选择 --- */
+.cc-wildcard-section {
+    border: 1px dashed rgba(210,153,34,0.4); border-radius: 6px;
+    padding: 0.6rem; margin-bottom: 0.6rem; background: rgba(210,153,34,0.04);
+}
+.cc-wildcard-title {
+    font-size: 0.85rem; font-weight: 600; color: var(--warning); margin-bottom: 0.4rem;
+}
+.cc-wildcard-row {
+    display: flex; gap: 0.4rem; align-items: center; margin-bottom: 0.3rem; font-size: 0.83rem;
+}
+.cc-wildcard-row select { max-width: 200px; font-size: 0.83rem; }
+
+/* --- 武器/物品 --- */
+.cc-weapon-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.cc-weapon-table th {
+    text-align: left; padding: 0.3rem 0.4rem; color: var(--text-secondary);
+    border-bottom: 1px solid var(--border); font-weight: 600; font-size: 0.76rem;
+}
+.cc-weapon-table td { padding: 0.25rem 0.4rem; border-bottom: 1px solid rgba(48,54,61,0.3); }
+.cc-weapon-table input { width: 100%; padding: 0.18rem 0.35rem; font-size: 0.82rem; }
+
+.cc-item-row { display: flex; align-items: center; gap: 0.5rem; padding: 0.2rem 0; border-bottom: 1px solid rgba(48,54,61,0.3); }
+.cc-item-row input { flex: 1; }
+
+/* --- 背景故事 --- */
+.cc-collapse-toggle {
+    display: flex; align-items: center; gap: 0.5rem;
+    background: none; border: none; color: var(--accent);
+    font-size: 0.95rem; font-weight: 600; cursor: pointer;
+    padding: 0.5rem 0; width: 100%; text-align: left;
+}
+.cc-collapse-toggle .arrow { transition: transform 0.2s; display: inline-block; }
+.cc-collapse-toggle .arrow.open { transform: rotate(90deg); }
+.cc-bg-fields textarea { min-height: 55px; resize: vertical; }
+.cc-bg-field { margin-bottom: 0.6rem; }
+.cc-bg-field label {
+    display: block; margin-bottom: 0.25rem; color: var(--text-secondary);
+    font-size: 0.83rem; font-weight: 500;
+}
+
+/* --- 操作按钮 --- */
+.cc-actions {
+    display: flex; gap: 0.75rem; flex-wrap: wrap;
+    margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border);
+}
+
+/* --- Section 标题 --- */
+.cc-section-title {
+    font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem;
+    padding-bottom: 0.25rem; border-bottom: 2px solid var(--accent); display: inline-block;
+}
+
+.cc-page .card { margin-bottom: 1rem; }
+.cc-page .card + .card { margin-top: 0; }
+
+/* 通知 */
+.cc-toast {
+    position: fixed; top: 70px; right: 1.5rem;
+    padding: 0.75rem 1.25rem; border-radius: 6px;
+    font-size: 0.9rem; z-index: 200; animation: fadeIn 0.3s ease;
+}
+.cc-toast.success { background: #238636; color: #fff; }
+.cc-toast.error { background: var(--danger); color: #fff; }
+
+.sk-val-red { color: var(--danger) !important; }
+.sk-val-green { color: var(--success) !important; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="cc-page" x-data="charCreate('{{ session_id }}', '{{ edit_id }}')" x-init="init()">
+    <h1 x-text="editId ? '编辑调查员' : '创建调查员'"></h1>
+
+    <!-- 通知 -->
+    <div x-show="toast.show" x-transition class="cc-toast" :class="toast.type" x-text="toast.msg"></div>
+
+    <!-- 锁定提示 -->
+    <div x-show="locked" class="card" style="border-color:var(--warning);background:rgba(210,153,34,0.08);margin-bottom:1rem;">
+        <div style="display:flex;align-items:center;gap:0.5rem;color:var(--warning);font-weight:600;">
+            &#x1f512; 此调查员正在游戏中，无法手动编辑
+        </div>
+        <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:0.3rem;">
+            游戏进行中的属性/技能变更只能通过游戏机制进行。
+        </p>
+    </div>
+
+    <!-- ============ 1. 基本信息区 ============ -->
+    <div class="card">
+        <div class="cc-section-title">基本信息</div>
+        <div class="cc-info-bar">
+            <div class="form-group">
+                <label>姓名</label>
+                <input type="text" x-model="form.name" placeholder="角色姓名" required>
+            </div>
+            <div class="form-group">
+                <label>玩家名</label>
+                <input type="text" x-model="form.player_name" placeholder="你的名字">
+            </div>
+            <div class="form-group">
+                <label>年龄</label>
+                <input type="number" x-model.number="form.age" min="15" max="90" @change="recalc()">
+            </div>
+            <div class="form-group">
+                <label>性别</label>
+                <select x-model="form.gender">
+                    <option value="男">男</option>
+                    <option value="女">女</option>
+                    <option value="其他">其他</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>出生地</label>
+                <input type="text" x-model="form.birthplace" placeholder="出生地">
+            </div>
+            <div class="form-group">
+                <label>居住地</label>
+                <input type="text" x-model="form.residence" placeholder="居住地">
+            </div>
+            <div class="form-group">
+                <label>时代</label>
+                <select x-model="form.era" @change="onEraChange()">
+                    <option value="1920s">1920年代</option>
+                    <option value="modern">现代</option>
+                    <option value="gaslight">煤气灯</option>
+                    <option value="dark_ages">黑暗时代</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ 2. 属性 + 雷达图 ============ -->
+    <div class="cc-two-col">
+        <!-- 左：属性表 -->
+        <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem;">
+                <div class="cc-section-title" style="margin-bottom:0;">属性</div>
+                <button class="btn btn-small" @click="rollAttributes()" :disabled="rolling">
+                    <span x-show="!rolling">&#x1f3b2; 随机掷骰</span>
+                    <span x-show="rolling">掷骰中...</span>
+                </button>
+            </div>
+            <table class="cc-attr-table">
+                <thead>
+                    <tr><th>属性</th><th>数值</th><th>半值</th><th>1/5值</th></tr>
+                </thead>
+                <tbody>
+                    <template x-for="attr in attrList" :key="attr.key">
+                        <tr>
+                            <td>
+                                <span class="attr-name" x-text="attr.key"></span>
+                                <span class="attr-sub" x-text="attr.label"></span>
+                            </td>
+                            <td>
+                                <input type="number" min="1" max="99"
+                                       :value="chars[attr.key]"
+                                       @input="chars[attr.key] = +$event.target.value; recalc()"
+                                       :disabled="locked">
+                            </td>
+                            <td><span class="computed" x-text="Math.floor(chars[attr.key]/2)"></span></td>
+                            <td><span class="computed" x-text="Math.floor(chars[attr.key]/5)"></span></td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+            <div class="cc-db-row">
+                <div><span>伤害加值：</span><strong x-text="damageBonus"></strong></div>
+                <div><span>体格：</span><strong x-text="build"></strong></div>
+            </div>
+
+            <!-- 衍生属性 -->
+            <div style="margin-top:0.8rem;">
+                <div style="font-weight:600;font-size:0.88rem;margin-bottom:0.4rem;color:var(--text-secondary);">衍生属性</div>
+                <div class="cc-derived-grid">
+                    <div class="cc-derived-item">
+                        <div class="label">HP</div>
+                        <div class="value" x-text="derived.hp + '/' + derived.hp_max"></div>
+                    </div>
+                    <div class="cc-derived-item">
+                        <div class="label">MP</div>
+                        <div class="value" x-text="derived.mp + '/' + derived.mp_max"></div>
+                    </div>
+                    <div class="cc-derived-item">
+                        <div class="label">SAN</div>
+                        <div class="value">
+                            <input type="number" x-model.number="derived.san" min="0" max="99">/<span x-text="derived.san_max"></span>
+                        </div>
+                    </div>
+                    <div class="cc-derived-item">
+                        <div class="label">幸运</div>
+                        <div class="value">
+                            <input type="number" x-model.number="derived.luck" min="0" max="99">
+                        </div>
+                    </div>
+                    <div class="cc-derived-item">
+                        <div class="label">MOV</div>
+                        <div class="value" x-text="derived.mov"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右：雷达图 + 职业选择 -->
+        <div>
+            <!-- 雷达图 -->
+            <div class="card">
+                <div class="cc-section-title">属性雷达图</div>
+                <div class="cc-radar-wrap">
+                    <canvas x-ref="radarCanvas" width="280" height="280"></canvas>
+                </div>
+            </div>
+
+            <!-- 职业选择 + 详情 -->
+            <div class="card">
+                <div class="cc-section-title">职业</div>
+                <div class="form-group" style="margin-bottom:0.5rem;">
+                    <select x-model="form.occupation" @change="onOccupationChange()" style="width:100%;">
+                        <option value="">-- 选择职业 --</option>
+                        <template x-for="occ in occupationList" :key="occ.name">
+                            <option :value="occ.name" x-text="occ.name"></option>
+                        </template>
+                    </select>
+                </div>
+
+                <!-- 职业详情面板 -->
+                <div x-show="form.occupation && selectedOcc" class="cc-occ-detail" x-transition>
+                    <div class="occ-title" x-text="form.occupation"></div>
+
+                    <!-- 技能点公式 -->
+                    <div class="occ-row">
+                        <span class="occ-label">技能点：</span>
+                        <template x-if="selectedOcc && !selectedOcc.skill_points_alt">
+                            <span class="occ-val" x-text="currentOccFormula + ' = ' + occPointsTotal"></span>
+                        </template>
+                        <template x-if="selectedOcc && selectedOcc.skill_points_alt">
+                            <div class="cc-formula-select">
+                                <label>
+                                    <input type="radio" :name="'formula_'+form.occupation" value="main"
+                                           x-model="selectedFormula" @change="recalcSkillPoints()">
+                                    <span x-text="selectedOcc.skill_points + ' = ' + calcFormulaPoints(selectedOcc.skill_points)"></span>
+                                </label>
+                                <label>
+                                    <input type="radio" :name="'formula_'+form.occupation" value="alt"
+                                           x-model="selectedFormula" @change="recalcSkillPoints()">
+                                    <span x-text="selectedOcc.skill_points_alt + ' = ' + calcFormulaPoints(selectedOcc.skill_points_alt)"></span>
+                                </label>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- 信用评级范围 -->
+                    <div class="occ-row">
+                        <span class="occ-label">信用评级：</span>
+                        <span class="occ-val" x-text="selectedOcc ? selectedOcc.credit_rating[0] + ' ~ ' + selectedOcc.credit_rating[1] : ''"></span>
+                    </div>
+
+                    <!-- 本职技能标签 -->
+                    <div class="occ-row" style="align-items:flex-start;">
+                        <span class="occ-label">本职技能：</span>
+                    </div>
+                    <div class="cc-occ-skill-tags">
+                        <template x-for="sk in (selectedOcc ? selectedOcc.skills : [])" :key="sk">
+                            <span class="cc-occ-skill-tag"
+                                  :class="{'wildcard': sk.includes('任一')}"
+                                  x-text="sk"></span>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ 3. 技能区 ============ -->
+    <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.4rem;">
+            <div class="cc-section-title" style="margin-bottom:0;">技能</div>
+            <div class="cc-skill-points">
+                <div class="sp-item">
+                    <span>职业点：</span>
+                    <strong :class="occPointsRemaining < 0 ? 'sk-val-red' : (occPointsRemaining === 0 ? 'sk-val-green' : '')"
+                            x-text="occPointsRemaining + ' / ' + occPointsTotal"></strong>
+                    <div class="sp-bar">
+                        <div class="sp-bar-fill"
+                             :class="occPointsRemaining < 0 ? 'sp-over' : 'sp-ok'"
+                             :style="'width:' + Math.min(100, occPointsTotal ? (occPointsTotal - occPointsRemaining)/occPointsTotal*100 : 0) + '%'">
+                        </div>
+                    </div>
+                </div>
+                <div class="sp-item">
+                    <span>兴趣点：</span>
+                    <strong :class="intPointsRemaining < 0 ? 'sk-val-red' : (intPointsRemaining === 0 ? 'sk-val-green' : '')"
+                            x-text="intPointsRemaining + ' / ' + intPointsTotal"></strong>
+                    <div class="sp-bar">
+                        <div class="sp-bar-fill"
+                             :class="intPointsRemaining < 0 ? 'sp-over' : 'sp-ok'"
+                             :style="'width:' + Math.min(100, intPointsTotal ? (intPointsTotal - intPointsRemaining)/intPointsTotal*100 : 0) + '%'">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div x-show="occPointsRemaining < 0 || intPointsRemaining < 0"
+             style="color:var(--danger);font-size:0.82rem;margin-bottom:0.4rem;">
+            &#x26a0; 技能点超支！请减少分配的点数。
+        </div>
+
+        <!-- 信用评级特殊行 -->
+        <div class="cc-credit-row" x-show="form.occupation">
+            <span class="cr-label">信用评级</span>
+            <span style="color:var(--text-muted);font-size:0.8rem;" x-text="'基础: 0'"></span>
+            <input type="number" min="0" max="99"
+                   :value="creditRating"
+                   @input="creditRating = +$event.target.value; recalcSkillPoints()">
+            <span class="cr-range" x-text="selectedOcc ? '（职业范围: ' + selectedOcc.credit_rating[0] + '-' + selectedOcc.credit_rating[1] + '）' : ''"></span>
+            <span class="cr-warn" x-show="creditRatingOutOfRange"
+                  x-text="'&#x26a0; 超出职业信用范围'"></span>
+        </div>
+
+        <!-- 通配符技能选择 -->
+        <div class="cc-wildcard-section" x-show="wildcardSlots.length > 0">
+            <div class="cc-wildcard-title">&#x1f3af; 选择本职通配技能</div>
+            <template x-for="(slot, idx) in wildcardSlots" :key="idx">
+                <div class="cc-wildcard-row">
+                    <span style="color:var(--text-muted);min-width:120px;" x-text="slot.label + '：'"></span>
+                    <select x-model="slot.selected" @change="updateWildcardSkills()">
+                        <option value="">-- 选择 --</option>
+                        <template x-for="opt in slot.options" :key="opt">
+                            <option :value="opt" x-text="opt"></option>
+                        </template>
+                    </select>
+                </div>
+            </template>
+        </div>
+
+        <!-- 技能TAB -->
+        <div class="cc-skill-tabs">
+            <template x-for="tab in skillTabs" :key="tab.id">
+                <button class="cc-skill-tab" :class="{'active': activeTab === tab.id}"
+                        @click="activeTab = tab.id">
+                    <span x-text="tab.name"></span>
+                    <span class="tab-count" x-text="'(' + getTabSkillCount(tab.id) + ')'"></span>
+                </button>
+            </template>
+        </div>
+
+        <!-- 技能表格 -->
+        <table class="cc-skill-table">
+            <thead>
+                <tr>
+                    <th style="text-align:left;width:30%;">技能</th>
+                    <th style="width:10%;">初始</th>
+                    <th style="width:12%;">职业点</th>
+                    <th style="width:12%;">兴趣点</th>
+                    <th style="width:10%;">合计</th>
+                    <th style="width:10%;">半值</th>
+                    <th style="width:10%;">1/5</th>
+                </tr>
+            </thead>
+            <tbody>
+                <template x-for="sk in filteredSkills" :key="sk.name">
+                    <tr :class="{'occ-skill-row': isOccSkill(sk.name)}">
+                        <td>
+                            <div class="sk-name-cell">
+                                <input type="checkbox" class="sk-check" x-model="sk.experienced"
+                                       :title="'经验标记：' + sk.name">
+                                <span class="sk-name" x-text="sk.name"></span>
+                                <span x-show="isOccSkill(sk.name)" class="sk-occ-badge">本职</span>
+                            </div>
+                        </td>
+                        <td class="mono" x-text="sk.base"></td>
+                        <td>
+                            <input type="number" min="0" max="99"
+                                   :value="sk.occPoints || 0"
+                                   @input="sk.occPoints = +$event.target.value; syncSkillTotal(sk); recalcSkillPoints()"
+                                   :disabled="locked || !isOccSkill(sk.name)"
+                                   :style="!isOccSkill(sk.name) ? 'opacity:0.3' : ''">
+                        </td>
+                        <td>
+                            <input type="number" min="0" max="99"
+                                   :value="sk.intPoints || 0"
+                                   @input="sk.intPoints = +$event.target.value; syncSkillTotal(sk); recalcSkillPoints()"
+                                   :disabled="locked || sk.name === '克苏鲁神话'"
+                                   :style="sk.name === '克苏鲁神话' ? 'opacity:0.3' : ''">
+                        </td>
+                        <td class="mono" :style="sk.current > sk.base ? 'color:var(--success)' : ''"
+                            x-text="sk.current"></td>
+                        <td class="mono" x-text="Math.floor(sk.current / 2)"></td>
+                        <td class="mono" x-text="Math.floor(sk.current / 5)"></td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+
+        <!-- 自定义技能 -->
+        <div style="margin-top:0.6rem;display:flex;gap:0.5rem;align-items:center;">
+            <input type="text" x-model="customSkillName" placeholder="自定义技能名" style="width:160px;">
+            <input type="number" x-model.number="customSkillBase" placeholder="基础值" min="0" max="99" style="width:70px;">
+            <button class="btn btn-small" @click="addCustomSkill()">+ 添加</button>
+        </div>
+    </div>
+
+    <!-- ============ 4. 武器/物品区 ============ -->
+    <div class="card">
+        <div class="cc-section-title">武器与装备</div>
+
+        <!-- 预设武器选择 -->
+        <div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.6rem;flex-wrap:wrap;">
+            <select x-model="selectedPresetWeapon" style="max-width:280px;font-size:0.85rem;">
+                <option value="">-- 从规则书选择预设武器 --</option>
+                <template x-for="cat in weaponPresets" :key="cat.category">
+                    <optgroup :label="cat.category">
+                        <template x-for="pw in cat.weapons" :key="pw.name">
+                            <option :value="pw.name" x-text="pw.name + ' (' + pw.damage + ')'"></option>
+                        </template>
+                    </optgroup>
+                </template>
+            </select>
+            <button class="btn btn-small" @click="addPresetWeapon()"
+                    :disabled="!selectedPresetWeapon">+ 添加预设武器</button>
+            <button class="btn btn-small" @click="weapons.push({name:'',skill:'',damage:'',range:'',attacks:'1',ammo:'',malfunction:''})">+ 空白武器</button>
+        </div>
+
+        <table class="cc-weapon-table">
+            <thead>
+                <tr>
+                    <th>名称</th><th>技能</th><th>伤害</th><th>射程</th><th>攻击次数</th><th>弹药</th><th>故障值</th><th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <template x-for="(w, i) in weapons" :key="i">
+                    <tr>
+                        <td><input type="text" x-model="w.name" placeholder="武器名"></td>
+                        <td><input type="text" x-model="w.skill" placeholder="技能"></td>
+                        <td><input type="text" x-model="w.damage" placeholder="伤害"></td>
+                        <td><input type="text" x-model="w.range" placeholder="射程"></td>
+                        <td><input type="text" x-model="w.attacks" placeholder="1"></td>
+                        <td><input type="text" x-model="w.ammo" placeholder="-"></td>
+                        <td><input type="text" x-model="w.malfunction" placeholder="-"></td>
+                        <td><button class="btn btn-danger btn-small" @click="weapons.splice(i,1)">x</button></td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+
+        <div style="margin-top:0.8rem;">
+            <div style="font-weight:600;font-size:0.88rem;margin-bottom:0.3rem;color:var(--text-secondary);">物品</div>
+            <template x-for="(item, i) in items" :key="i">
+                <div class="cc-item-row">
+                    <input type="text" x-model="items[i]" placeholder="物品名">
+                    <button class="btn btn-danger btn-small" @click="items.splice(i,1)">x</button>
+                </div>
+            </template>
+            <button class="btn btn-small" style="margin-top:0.3rem;" @click="items.push('')">+ 添加物品</button>
+        </div>
+
+        <div style="margin-top:0.8rem;display:flex;gap:1rem;flex-wrap:wrap;">
+            <div class="form-group" style="margin-bottom:0;">
+                <label>现金</label>
+                <input type="text" x-model="form.cash" placeholder="随身现金" style="width:150px;">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+                <label>资产</label>
+                <input type="text" x-model="form.assets" placeholder="总资产" style="width:150px;">
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ 5. 背景故事 ============ -->
+    <div class="card">
+        <button class="cc-collapse-toggle" @click="bgOpen = !bgOpen">
+            <span class="arrow" :class="{'open': bgOpen}">&#x25b6;</span>
+            背景故事
+        </button>
+        <div x-show="bgOpen" x-transition>
+            <div class="cc-bg-fields" style="margin-top:0.4rem;">
+                <template x-for="field in bgFields" :key="field.key">
+                    <div class="cc-bg-field">
+                        <label x-text="field.label"></label>
+                        <textarea x-model="background[field.key]" :placeholder="field.placeholder"></textarea>
+                    </div>
+                </template>
+            </div>
+            <button class="btn btn-small" @click="suggestBackground()" :disabled="suggestingBg" style="margin-top:0.4rem;">
+                <span x-show="!suggestingBg">AI生成建议</span>
+                <span x-show="suggestingBg">生成中...</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ============ 6. 操作按钮 ============ -->
+    <div class="cc-actions">
+        <button class="btn" @click="randomAll()" :disabled="rolling || locked" x-show="!locked">&#x1f3b2; 随机生成全部</button>
+        <button class="btn btn-primary" @click="saveCharacter()" :disabled="saving || locked" x-show="!locked">
+            <span x-show="!saving">&#x1f4be; 保存角色卡</span>
+            <span x-show="saving">保存中...</span>
+        </button>
+        <button class="btn btn-secondary" @click="exportJSON()">&#x1f4e5; 导出角色卡</button>
+        <a href="/" class="btn">&larr; 返回大厅</a>
+        <a x-show="characterId && sessionId && sessionId !== '_standalone'"
+           :href="'/game/' + sessionId + '?player=' + encodeURIComponent(form.player_name || playerId)"
+           class="btn btn-primary">&#x1f680; 进入游戏</a>
+    </div>
+</div>
+
+<script>
+/* =========================================================
+   CoC 角色卡创建 — Alpine.js 组件（重构版）
+   ========================================================= */
+function charCreate(sessionId, editId) {
+    return {
+        sessionId: sessionId || '',
+        editId: editId || '',
+        playerId: new URLSearchParams(window.location.search).get('player') || localStorage.getItem('coc_player_name') || '匿名',
+        characterId: editId || null,
+        rolling: false,
+        saving: false,
+        suggestingBg: false,
+        bgOpen: false,
+        locked: false,
+        toast: { show: false, msg: '', type: 'success' },
+
+        /* --- 基本信息 --- */
+        form: {
+            name: '', player_name: '', occupation: '', age: 30,
+            gender: '男', birthplace: '', residence: '', era: '1920s',
+            cash: '', assets: '',
+        },
+
+        occupationList: [],
+        selectedOcc: null,
+        selectedFormula: 'main',
+        currentOccSkills: [],
+        currentOccFormula: 'EDU×4',
+
+        /* --- 属性 --- */
+        attrList: [
+            { key: 'STR', label: '力量' }, { key: 'CON', label: '体质' },
+            { key: 'SIZ', label: '体型' }, { key: 'DEX', label: '敏捷' },
+            { key: 'APP', label: '外貌' }, { key: 'INT', label: '智力' },
+            { key: 'POW', label: '意志' }, { key: 'EDU', label: '教育' },
+        ],
+        chars: { STR: 50, CON: 50, SIZ: 50, DEX: 50, APP: 50, INT: 50, POW: 50, EDU: 50 },
+        derived: { hp: 10, hp_max: 10, mp: 10, mp_max: 10, san: 50, san_max: 99, luck: 50, mov: 8 },
+
+        /* --- 技能 --- */
+        skillCategories: [],   // 从后端加载的原始分类
+        allSkills: [],         // 扁平化所有技能
+        activeTab: 'occupation',
+        skillTabs: [
+            { id: 'occupation', name: '本职技能' },
+            { id: 'social', name: '社交' },
+            { id: 'investigate', name: '调查' },
+            { id: 'combat', name: '战斗' },
+            { id: 'body', name: '身体' },
+            { id: 'knowledge', name: '知识' },
+            { id: 'science', name: '科学/艺术' },
+            { id: 'other', name: '其他' },
+            { id: 'added', name: '已点' },
+            { id: 'all', name: '全部' },
+        ],
+        customSkillName: '',
+        customSkillBase: 5,
+        occPointsTotal: 0,
+        occPointsUsed: 0,
+        intPointsTotal: 0,
+        intPointsUsed: 0,
+
+        /* 信用评级 */
+        creditRating: 0,
+
+        /* 通配符 */
+        wildcardSlots: [],
+
+        /* --- 武器/物品 --- */
+        weapons: [{ name: '', skill: '', damage: '', range: '', attacks: '1', ammo: '', malfunction: '' }],
+        weaponPresets: [],          // [{category, weapons: [{name,skill,damage,range,attacks,ammo,malfunction}]}]
+        selectedPresetWeapon: '',   // 当前选中的预设武器名
+        items: [''],
+
+        /* --- 背景故事 --- */
+        background: {
+            personal_description: '', ideology: '', significant_people: '',
+            meaningful_locations: '', treasured_possessions: '', traits: '',
+        },
+        bgFields: [
+            { key: 'personal_description', label: '个人描述', placeholder: '外貌、穿着风格等...' },
+            { key: 'ideology', label: '思想/信念', placeholder: '信仰或世界观...' },
+            { key: 'significant_people', label: '重要之人', placeholder: '对你最重要的人...' },
+            { key: 'meaningful_locations', label: '意义非凡之地', placeholder: '有特殊意义的地点...' },
+            { key: 'treasured_possessions', label: '珍视之物', placeholder: '你最珍视的东西...' },
+            { key: 'traits', label: '特质', placeholder: '性格特点、习惯等...' },
+        ],
+
+        /* ======================== 初始化 ======================== */
+        async init() {
+            await Promise.all([this.fetchOccupations(), this.fetchWeaponPresets()]);
+            if (this.editId) {
+                await this.loadExistingCharacter(this.editId);
+            } else {
+                await this.loadDefaultSkills();
+                this.recalc();
+            }
+            this.$nextTick(() => this.drawRadar());
+        },
+
+        /* ======================== 职业 ======================== */
+        async fetchOccupations() {
+            try {
+                const res = await fetch('/api/character/occupations/list');
+                if (res.ok) this.occupationList = await res.json();
+            } catch (e) {
+                console.warn('获取职业列表失败');
+                this.occupationList = [
+                    { name: '私家侦探', skills: ['侦查','图书馆使用','心理学','乔装','法律','艺术/手艺（摄影）','任一','任一'], skill_points: 'EDU×2+DEX×2', credit_rating: [9, 30] },
+                    { name: '医生', skills: ['急救','医学','母语','心理学','科学（生物学）','科学（药学）','任一','任一'], skill_points: 'EDU×4', credit_rating: [30, 80] },
+                    { name: '警察', skills: ['格斗（斗殴）','射击（手枪）','急救','恐吓','法律','心理学','侦查','驾驶（汽车）'], skill_points: 'EDU×2+DEX×2', credit_rating: [9, 30] },
+                ];
+            }
+        },
+
+        async fetchWeaponPresets() {
+            try {
+                const res = await fetch('/api/character/weapons/presets');
+                if (res.ok) this.weaponPresets = await res.json();
+            } catch (e) {
+                console.warn('获取预设武器失败');
+            }
+        },
+
+        addPresetWeapon() {
+            if (!this.selectedPresetWeapon) return;
+            // 在所有分类中查找选中的武器
+            for (const cat of this.weaponPresets) {
+                const pw = cat.weapons.find(w => w.name === this.selectedPresetWeapon);
+                if (pw) {
+                    // 如果第一行是空的，替换它；否则追加
+                    const firstEmpty = this.weapons.length === 1 && !this.weapons[0].name.trim();
+                    const entry = {
+                        name: pw.name,
+                        skill: pw.skill,
+                        damage: pw.damage,
+                        range: pw.range,
+                        attacks: pw.attacks,
+                        ammo: pw.ammo || '',
+                        malfunction: pw.malfunction || '',
+                    };
+                    if (firstEmpty) {
+                        this.weapons[0] = entry;
+                    } else {
+                        this.weapons.push(entry);
+                    }
+                    this.selectedPresetWeapon = '';
+                    this.showToast('已添加: ' + pw.name, 'success');
+                    return;
+                }
+            }
+        },
+
+        onOccupationChange() {
+            const occ = this.occupationList.find(o => o.name === this.form.occupation);
+            this.selectedOcc = occ || null;
+            this.selectedFormula = 'main';
+            if (occ) {
+                this.currentOccSkills = this._resolveOccSkills(occ.skills);
+                this.currentOccFormula = occ.skill_points || 'EDU×4';
+                this._buildWildcardSlots(occ.skills);
+            } else {
+                this.currentOccSkills = [];
+                this.currentOccFormula = 'EDU×4';
+                this.wildcardSlots = [];
+            }
+            this.recalcSkillPoints();
+        },
+
+        /* 解析职业技能列表，展开通配符 */
+        _resolveOccSkills(rawSkills) {
+            const resolved = [];
+            for (const sk of rawSkills) {
+                if (sk.includes('任一')) continue;  // 通配由wildcardSlots处理
+                resolved.push(sk);
+            }
+            // 加上通配已选的
+            for (const slot of this.wildcardSlots) {
+                if (slot.selected) resolved.push(slot.selected);
+            }
+            return resolved;
+        },
+
+        /* 构建通配符选择槽 */
+        _buildWildcardSlots(rawSkills) {
+            const slots = [];
+            const allNames = this.allSkills.map(s => s.name);
+            const socialSkills = ['说服', '魅惑', '话术', '恐吓'];
+            const foreignLangs = allNames.filter(n => n.startsWith('外语'));
+
+            for (const sk of rawSkills) {
+                if (sk === '任一') {
+                    slots.push({ label: '任意技能', selected: '', options: allNames.filter(n => n !== '克苏鲁神话' && n !== '信用评级') });
+                } else if (sk === '社交技能（任一）') {
+                    slots.push({ label: '社交技能', selected: '', options: socialSkills });
+                } else if (sk === '外语（任一）') {
+                    slots.push({ label: '外语', selected: '', options: foreignLangs.length ? foreignLangs : ['外语（英语）','外语（法语）','外语（德语）'] });
+                } else if (sk.includes('任一') && sk.includes('科学')) {
+                    const sciSkills = allNames.filter(n => n.startsWith('科学'));
+                    slots.push({ label: '科学', selected: '', options: sciSkills });
+                } else if (sk.includes('任一') && sk.includes('艺术')) {
+                    const artSkills = allNames.filter(n => n.startsWith('艺术'));
+                    slots.push({ label: '艺术/手艺', selected: '', options: artSkills });
+                } else if (sk.includes('任一') && (sk.includes('格斗') || sk.includes('射击'))) {
+                    const combatSkills = allNames.filter(n => n.startsWith('格斗') || n.startsWith('射击'));
+                    slots.push({ label: sk.replace('（任一）',''), selected: '', options: combatSkills });
+                } else if (sk.includes('任一')) {
+                    slots.push({ label: sk, selected: '', options: allNames.filter(n => n !== '克苏鲁神话' && n !== '信用评级') });
+                }
+            }
+            this.wildcardSlots = slots;
+        },
+
+        updateWildcardSkills() {
+            if (this.selectedOcc) {
+                this.currentOccSkills = this._resolveOccSkills(this.selectedOcc.skills);
+            }
+            this.recalcSkillPoints();
+        },
+
+        isOccSkill(skillName) {
+            return this.currentOccSkills.includes(skillName);
+        },
+
+        /* ======================== 属性 ======================== */
+        rollDice(n, sides) {
+            let t = 0; for (let i = 0; i < n; i++) t += Math.floor(Math.random() * sides) + 1; return t;
+        },
+
+        rollAttributes() {
+            this.rolling = true;
+            const r3 = () => this.rollDice(3, 6) * 5;
+            const r2p6 = () => (this.rollDice(2, 6) + 6) * 5;
+            this.chars.STR = r3(); this.chars.CON = r3(); this.chars.DEX = r3();
+            this.chars.APP = r3(); this.chars.POW = r3();
+            this.chars.SIZ = r2p6(); this.chars.INT = r2p6(); this.chars.EDU = r2p6();
+            this.derived.luck = r3();
+            this.recalc();
+            setTimeout(() => { this.rolling = false; }, 300);
+        },
+
+        recalc() {
+            const c = this.chars;
+            this.derived.hp_max = Math.floor((c.CON + c.SIZ) / 10);
+            this.derived.hp = this.derived.hp_max;
+            this.derived.mp_max = Math.floor(c.POW / 5);
+            this.derived.mp = this.derived.mp_max;
+            this.derived.san = c.POW;
+            this.derived.san_max = 99;
+            this.derived.mov = this.calcMov();
+            // 更新闪避和母语基础值
+            for (const sk of this.allSkills) {
+                if (sk.name === '闪避') {
+                    const newBase = Math.floor(c.DEX / 2);
+                    if (sk.current === sk.base) sk.current = newBase;
+                    sk.base = newBase;
+                } else if (sk.name === '母语') {
+                    const newBase = c.EDU;
+                    if (sk.current === sk.base) sk.current = newBase;
+                    sk.base = newBase;
+                }
+            }
+            this.recalcSkillPoints();
+            this.$nextTick(() => this.drawRadar());
+        },
+
+        calcMov() {
+            const c = this.chars;
+            const age = this.form.age || 30;
+            let mov = 8;
+            if (c.DEX < c.SIZ && c.STR < c.SIZ) mov = 7;
+            else if (c.DEX > c.SIZ && c.STR > c.SIZ) mov = 9;
+            if (age >= 80) mov -= 5;
+            else if (age >= 70) mov -= 4;
+            else if (age >= 60) mov -= 3;
+            else if (age >= 50) mov -= 2;
+            else if (age >= 40) mov -= 1;
+            return Math.max(1, mov);
+        },
+
+        get damageBonus() {
+            const t = this.chars.STR + this.chars.SIZ;
+            if (t <= 64) return '-2'; if (t <= 84) return '-1';
+            if (t <= 124) return '0'; if (t <= 164) return '+1D4';
+            if (t <= 204) return '+1D6'; return '+2D6';
+        },
+        get build() {
+            const t = this.chars.STR + this.chars.SIZ;
+            if (t <= 64) return -2; if (t <= 84) return -1;
+            if (t <= 124) return 0; if (t <= 164) return 1;
+            if (t <= 204) return 2; return 3;
+        },
+
+        /* ======================== 技能点 ======================== */
+        parseSkillPointsFormula(formula) {
+            return this.calcFormulaPoints(formula);
+        },
+
+        calcFormulaPoints(formula) {
+            const c = this.chars;
+            const m = { EDU: c.EDU, DEX: c.DEX, APP: c.APP, INT: c.INT, STR: c.STR, CON: c.CON, POW: c.POW, SIZ: c.SIZ };
+            let total = 0;
+            for (const part of formula.replace(/×/g, '*').split('+')) {
+                const t = part.trim();
+                if (t.includes('*')) {
+                    const [a, b] = t.split('*');
+                    total += (m[a.trim().toUpperCase()] || 0) * (parseInt(b.trim(), 10) || 0);
+                } else if (t) {
+                    total += parseInt(t, 10) || 0;
+                }
+            }
+            return total;
+        },
+
+        recalcSkillPoints() {
+            // 职业技能点
+            const formula = (this.selectedFormula === 'alt' && this.selectedOcc?.skill_points_alt)
+                ? this.selectedOcc.skill_points_alt : this.currentOccFormula;
+            this.occPointsTotal = this.calcFormulaPoints(formula);
+            this.intPointsTotal = this.chars.INT * 2;
+
+            let occUsed = 0, intUsed = 0;
+            for (const sk of this.allSkills) {
+                occUsed += sk.occPoints || 0;
+                intUsed += sk.intPoints || 0;
+            }
+            // 信用评级也算职业点
+            occUsed += this.creditRating;
+
+            this.occPointsUsed = occUsed;
+            this.intPointsUsed = intUsed;
+        },
+
+        get occPointsRemaining() { return this.occPointsTotal - this.occPointsUsed; },
+        get intPointsRemaining() { return this.intPointsTotal - this.intPointsUsed; },
+
+        get creditRatingOutOfRange() {
+            if (!this.selectedOcc) return false;
+            const [lo, hi] = this.selectedOcc.credit_rating;
+            return this.creditRating < lo || this.creditRating > hi;
+        },
+
+        syncSkillTotal(sk) {
+            sk.current = sk.base + (sk.occPoints || 0) + (sk.intPoints || 0);
+        },
+
+        /* ======================== 技能TAB过滤 ======================== */
+        _skillTabMap: {
+            'social': ['说服', '魅惑', '话术', '恐吓', '心理学'],
+            'investigate': ['侦查', '聆听', '图书馆使用', '估价', '追踪', '会计', '人类学', '考古学', '博物学', '导航'],
+            'combat': ['闪避', '格斗', '射击', '投掷'],
+            'body': ['攀爬', '游泳', '跳跃', '潜行', '驾驶', '骑术', '操纵重型机械', '潜水', '生存'],
+            'knowledge': ['母语', '外语', '历史', '法律', '神秘学', '克苏鲁神话', '医学', '精神分析', '催眠', '急救'],
+            'science': ['科学', '艺术', '电气维修', '机械维修'],
+        },
+
+        _matchTab(skillName, tabId) {
+            const prefixes = this._skillTabMap[tabId];
+            if (!prefixes) return false;
+            return prefixes.some(p => skillName === p || skillName.startsWith(p));
+        },
+
+        get filteredSkills() {
+            const tab = this.activeTab;
+            if (tab === 'all') return this.allSkills;
+            if (tab === 'occupation') return this.allSkills.filter(s => this.isOccSkill(s.name));
+            if (tab === 'added') return this.allSkills.filter(s => s.current > s.base);
+            return this.allSkills.filter(s => this._matchTab(s.name, tab));
+        },
+
+        getTabSkillCount(tabId) {
+            if (tabId === 'all') return this.allSkills.length;
+            if (tabId === 'occupation') return this.allSkills.filter(s => this.isOccSkill(s.name)).length;
+            if (tabId === 'added') return this.allSkills.filter(s => s.current > s.base).length;
+            return this.allSkills.filter(s => this._matchTab(s.name, tabId)).length;
+        },
+
+        /* ======================== 技能加载 ======================== */
+        async loadDefaultSkills() {
+            try {
+                const res = await fetch(`/api/character/skills/${encodeURIComponent(this.form.era)}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    this.skillCategories = data.categories;
+                    this._flattenSkills();
+                    return;
+                }
+            } catch (e) {
+                console.warn('从后端加载技能失败:', e);
+            }
+            this._loadFallbackSkills();
+        },
+
+        _flattenSkills() {
+            const skills = [];
+            for (const cat of this.skillCategories) {
+                for (const sk of cat.skills) {
+                    let base = sk.base;
+                    if (sk.name === '闪避') base = Math.floor(this.chars.DEX / 2);
+                    else if (sk.name === '母语') base = this.chars.EDU;
+                    skills.push({
+                        name: sk.name, base, current: base,
+                        occPoints: 0, intPoints: 0, experienced: false,
+                    });
+                }
+            }
+            this.allSkills = skills;
+        },
+
+        _loadFallbackSkills() {
+            this.skillCategories = [
+                { name: '战斗技能', skills: [
+                    { name: '闪避', base: 0 }, { name: '格斗（斗殴）', base: 25 },
+                    { name: '射击（手枪）', base: 20 }, { name: '射击（步枪/霰弹枪）', base: 25 },
+                    { name: '投掷', base: 20 },
+                ]},
+                { name: '调查技能', skills: [
+                    { name: '侦查', base: 25 }, { name: '聆听', base: 20 },
+                    { name: '图书馆使用', base: 20 }, { name: '估价', base: 5 },
+                    { name: '追踪', base: 10 },
+                ]},
+                { name: '社交技能', skills: [
+                    { name: '说服', base: 10 }, { name: '魅惑', base: 15 },
+                    { name: '话术', base: 5 }, { name: '恐吓', base: 15 },
+                    { name: '心理学', base: 10 },
+                ]},
+                { name: '知识技能', skills: [
+                    { name: '母语', base: 0 }, { name: '历史', base: 5 },
+                    { name: '法律', base: 5 }, { name: '神秘学', base: 5 },
+                    { name: '克苏鲁神话', base: 0 },
+                ]},
+                { name: '身体技能', skills: [
+                    { name: '攀爬', base: 20 }, { name: '游泳', base: 20 },
+                    { name: '跳跃', base: 20 }, { name: '潜行', base: 20 },
+                    { name: '驾驶（汽车）', base: 20 },
+                ]},
+                { name: '其他', skills: [
+                    { name: '急救', base: 30 }, { name: '医学', base: 1 },
+                    { name: '乔装', base: 5 }, { name: '锁匠', base: 1 },
+                    { name: '电气维修', base: 10 }, { name: '机械维修', base: 10 },
+                ]},
+            ];
+            this._flattenSkills();
+        },
+
+        addCustomSkill() {
+            if (!this.customSkillName.trim()) return;
+            this.allSkills.push({
+                name: this.customSkillName.trim(),
+                base: this.customSkillBase || 5,
+                current: this.customSkillBase || 5,
+                occPoints: 0, intPoints: 0, experienced: false,
+            });
+            this.customSkillName = '';
+            this.customSkillBase = 5;
+        },
+
+        async onEraChange() {
+            await this.loadDefaultSkills();
+            this.recalcSkillPoints();
+        },
+
+        /* ======================== 雷达图 ======================== */
+        drawRadar() {
+            const canvas = this.$refs.radarCanvas;
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const W = canvas.width, H = canvas.height;
+            const cx = W / 2, cy = H / 2;
+            const R = Math.min(cx, cy) - 30;
+            const labels = ['STR', 'CON', 'SIZ', 'DEX', 'APP', 'INT', 'POW', 'EDU'];
+            const n = labels.length;
+            const step = (Math.PI * 2) / n;
+
+            ctx.clearRect(0, 0, W, H);
+
+            // 背景网格
+            for (let ring = 1; ring <= 5; ring++) {
+                const r = R * ring / 5;
+                ctx.beginPath();
+                for (let i = 0; i <= n; i++) {
+                    const a = -Math.PI / 2 + step * i;
+                    const x = cx + r * Math.cos(a);
+                    const y = cy + r * Math.sin(a);
+                    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+                }
+                ctx.strokeStyle = 'rgba(48,54,61,0.6)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+
+            // 轴线
+            for (let i = 0; i < n; i++) {
+                const a = -Math.PI / 2 + step * i;
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.lineTo(cx + R * Math.cos(a), cy + R * Math.sin(a));
+                ctx.strokeStyle = 'rgba(48,54,61,0.4)';
+                ctx.stroke();
+            }
+
+            // 数据区域
+            ctx.beginPath();
+            for (let i = 0; i <= n; i++) {
+                const idx = i % n;
+                const val = Math.min(100, this.chars[labels[idx]] || 0);
+                const r = R * val / 100;
+                const a = -Math.PI / 2 + step * idx;
+                const x = cx + r * Math.cos(a);
+                const y = cy + r * Math.sin(a);
+                i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+            }
+            ctx.fillStyle = 'rgba(88,166,255,0.15)';
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(88,166,255,0.8)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // 数据点
+            for (let i = 0; i < n; i++) {
+                const val = Math.min(100, this.chars[labels[i]] || 0);
+                const r = R * val / 100;
+                const a = -Math.PI / 2 + step * i;
+                ctx.beginPath();
+                ctx.arc(cx + r * Math.cos(a), cy + r * Math.sin(a), 3, 0, Math.PI * 2);
+                ctx.fillStyle = '#58a6ff';
+                ctx.fill();
+            }
+
+            // 标签
+            ctx.font = '12px sans-serif';
+            ctx.fillStyle = '#8b949e';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            for (let i = 0; i < n; i++) {
+                const a = -Math.PI / 2 + step * i;
+                const lx = cx + (R + 18) * Math.cos(a);
+                const ly = cy + (R + 18) * Math.sin(a);
+                const label = labels[i] + ' ' + (this.chars[labels[i]] || 0);
+                ctx.fillText(label, lx, ly);
+            }
+        },
+
+        /* ======================== 随机生成 ======================== */
+        async randomAll() {
+            this.rollAttributes();
+            await this.loadDefaultSkills();
+            this.onOccupationChange();
+            // 随机分配职业技能点
+            const assignPoints = (pool, isOcc) => {
+                const eligible = this.allSkills.filter(sk =>
+                    sk.name !== '克苏鲁神话' && sk.name !== '信用评级' &&
+                    (isOcc ? this.isOccSkill(sk.name) : !this.isOccSkill(sk.name))
+                );
+                let remaining = pool;
+                while (remaining > 0 && eligible.length > 0) {
+                    const sk = eligible[Math.floor(Math.random() * eligible.length)];
+                    const add = Math.min(remaining, Math.floor(Math.random() * 25) + 10);
+                    const maxAdd = 90 - sk.current;
+                    const actual = Math.min(add, maxAdd);
+                    if (actual <= 0) { eligible.splice(eligible.indexOf(sk), 1); continue; }
+                    if (isOcc) { sk.occPoints += actual; } else { sk.intPoints += actual; }
+                    sk.current = sk.base + (sk.occPoints || 0) + (sk.intPoints || 0);
+                    remaining -= actual;
+                }
+            };
+            // 先分配信用评级
+            if (this.selectedOcc) {
+                const [lo, hi] = this.selectedOcc.credit_rating;
+                this.creditRating = lo + Math.floor(Math.random() * (hi - lo + 1));
+            }
+            assignPoints(Math.max(0, this.occPointsTotal - this.creditRating), true);
+            assignPoints(this.intPointsTotal, false);
+            this.recalcSkillPoints();
+            this.showToast('随机生成完成！', 'success');
+        },
+
+        /* ======================== 加载已有角色 ======================== */
+        eraFormValue(apiEra) {
+            if (!apiEra) return '1920s';
+            const m = { '现代': 'modern', '煤气灯': 'gaslight', '黑暗时代': 'dark_ages', '1920s': '1920s' };
+            return m[apiEra] ?? apiEra;
+        },
+
+        async loadExistingCharacter(id) {
+            try {
+                const res = await fetch(`/api/character/${id}`);
+                if (!res.ok) { this.showToast('加载角色失败', 'error'); return; }
+                const data = await res.json();
+                this.form.name = data.name || '';
+                this.form.player_name = data.player_id || this.playerId;
+                this.form.occupation = data.occupation || '';
+                this.form.age = data.age || 30;
+                this.form.gender = data.gender || '男';
+                this.form.birthplace = data.birthplace || '';
+                this.form.residence = data.residence || '';
+                this.form.era = this.eraFormValue(data.era);
+                this.form.cash = data.cash ? String(data.cash) : '';
+                this.form.assets = data.assets || '';
+                if (data.characteristics) this.chars = { ...data.characteristics };
+                if (data.derived) this.derived = { ...this.derived, ...data.derived };
+
+                await this.loadDefaultSkills();
+
+                // 覆盖已有技能值
+                if (data.skills) {
+                    const known = new Set(this.allSkills.map(s => s.name));
+                    for (const sk of this.allSkills) {
+                        if (data.skills[sk.name]) {
+                            const saved = data.skills[sk.name];
+                            sk.base = saved.base ?? sk.base;
+                            sk.current = saved.current ?? sk.current;
+                            sk.experienced = saved.experience_check ?? false;
+                            // 还原点数分配：如果是本职技能，点数归入occPoints；否则归intPoints
+                            const added = Math.max(0, sk.current - sk.base);
+                            sk.occPoints = 0;
+                            sk.intPoints = 0;
+                            // 暂时全归一类，后面onOccupationChange会重新标记
+                            sk._savedAdded = added;
+                        }
+                    }
+                    // 添加未知技能
+                    for (const [name, sv] of Object.entries(data.skills)) {
+                        if (!known.has(name)) {
+                            const base = sv.base ?? 0;
+                            const current = sv.current ?? base;
+                            this.allSkills.push({
+                                name, base, current,
+                                occPoints: 0, intPoints: 0,
+                                experienced: sv.experience_check ?? false,
+                                _savedAdded: Math.max(0, current - base),
+                            });
+                        }
+                    }
+                    // 信用评级
+                    if (data.skills['信用评级']) {
+                        this.creditRating = (data.skills['信用评级'].current ?? 0);
+                        // 从allSkills中移除信用评级的_savedAdded
+                        const crSk = this.allSkills.find(s => s.name === '信用评级');
+                        if (crSk) { crSk._savedAdded = 0; crSk.occPoints = 0; crSk.intPoints = 0; crSk.current = crSk.base; }
+                    }
+                }
+                if (data.inventory) {
+                    this.weapons = data.inventory.filter(i => i.is_weapon).map(i => ({
+                        name: i.name, skill: i.skill_name || '', damage: i.damage || '',
+                        range: i.range || '', attacks: '1', ammo: i.uses ? String(i.uses) : '', malfunction: '',
+                    }));
+                    this.items = data.inventory.filter(i => !i.is_weapon).map(i => i.name);
+                    if (!this.weapons.length) this.weapons = [{name:'',skill:'',damage:'',range:'',attacks:'1',ammo:'',malfunction:''}];
+                    if (!this.items.length) this.items = [''];
+                }
+                this.background.personal_description = data.personal_description || '';
+                this.background.ideology = data.ideology || '';
+                this.background.significant_people = data.significant_people || '';
+                this.background.meaningful_locations = data.meaningful_locations || '';
+                this.background.treasured_possessions = data.treasured_possessions || '';
+                this.background.traits = data.traits || '';
+
+                this.onOccupationChange();
+                // 分配已保存的点数
+                for (const sk of this.allSkills) {
+                    if (sk._savedAdded > 0) {
+                        if (this.isOccSkill(sk.name)) {
+                            sk.occPoints = sk._savedAdded;
+                        } else {
+                            sk.intPoints = sk._savedAdded;
+                        }
+                        delete sk._savedAdded;
+                    }
+                }
+                this.recalcSkillPoints();
+
+                try {
+                    const lockRes = await fetch(`/api/character/${id}/lock-status`);
+                    if (lockRes.ok) {
+                        const lockData = await lockRes.json();
+                        this.locked = lockData.locked;
+                    }
+                } catch(e) {}
+            } catch(e) {
+                this.showToast('加载角色失败: ' + e.message, 'error');
+            }
+        },
+
+        /* ======================== 保存 ======================== */
+        async saveCharacter() {
+            if (!this.form.name.trim()) { this.showToast('请填写角色姓名', 'error'); return; }
+            if (this.creditRatingOutOfRange) { this.showToast('信用评级不在职业允许范围内', 'error'); return; }
+            this.saving = true;
+            const payload = this.buildPayload();
+            try {
+                const res = await fetch('/api/character/full-create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    this.characterId = data.id || data.character_id;
+                    this.editId = this.characterId;
+                    this.showToast('角色卡保存成功！', 'success');
+                } else {
+                    const err = await res.text();
+                    this.showToast('保存失败：' + err, 'error');
+                }
+            } catch (e) {
+                this.showToast('网络错误：' + e.message, 'error');
+            }
+            this.saving = false;
+        },
+
+        buildPayload() {
+            const skills = {};
+            for (const sk of this.allSkills) {
+                skills[sk.name] = { base: sk.base, current: sk.current, experienced: sk.experienced };
+            }
+            // 信用评级
+            skills['信用评级'] = { base: 0, current: this.creditRating, experienced: false };
+            return {
+                id: this.characterId || undefined,
+                session_id: (this.sessionId && this.sessionId !== '_standalone') ? this.sessionId : '',
+                player_id: this.form.player_name || this.playerId,
+                name: this.form.name,
+                age: this.form.age,
+                gender: this.form.gender,
+                occupation: this.form.occupation,
+                era: this.form.era,
+                birthplace: this.form.birthplace,
+                residence: this.form.residence,
+                characteristics: { ...this.chars },
+                derived: { ...this.derived },
+                skills: skills,
+                weapons: this.weapons.filter(w => w.name.trim()),
+                inventory: this.items.filter(i => i.trim()).map(i => ({ name: i, quantity: 1 })),
+                cash: this.form.cash,
+                assets: this.form.assets,
+                background: { ...this.background },
+            };
+        },
+
+        exportJSON() {
+            const payload = this.buildPayload();
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = (this.form.name || '调查员') + '_角色卡.json';
+            a.click(); URL.revokeObjectURL(url);
+            this.showToast('角色卡已导出', 'success');
+        },
+
+        async suggestBackground() {
+            if (!this.characterId) { this.showToast('请先保存角色卡后再获取AI建议', 'error'); return; }
+            this.suggestingBg = true;
+            try {
+                const res = await fetch(`/api/character/${this.characterId}/suggest-background`);
+                if (res.ok) {
+                    const data = await res.json();
+                    for (const f of this.bgFields) {
+                        if (data[f.key]) this.background[f.key] = data[f.key];
+                    }
+                    this.showToast('AI建议已填充', 'success');
+                } else { this.showToast('获取建议失败', 'error'); }
+            } catch (e) { this.showToast('网络错误', 'error'); }
+            this.suggestingBg = false;
+        },
+
+        showToast(msg, type) {
+            this.toast = { show: true, msg, type };
+            setTimeout(() => { this.toast.show = false; }, 3000);
+        },
+    };
+}
+</script>
+{% endblock %}

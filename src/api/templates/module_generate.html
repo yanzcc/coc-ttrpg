@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+{% block title %}模组生成器 - 克苏鲁的呼唤{% endblock %}
+
+{% block content %}
+<div class="lobby" x-data="moduleGenerator()">
+    <h1>模组生成器</h1>
+    <p class="subtitle">使用AI生成自定义CoC模组</p>
+
+    <!-- 生成表单 -->
+    <div class="card" x-show="!result">
+        <h2>生成参数</h2>
+        <form @submit.prevent="generate">
+            <div class="form-group">
+                <label for="seed-prompt">种子提示词</label>
+                <textarea id="seed-prompt" x-model="form.seed_prompt" rows="4"
+                          placeholder="描述你想要的模组主题、氛围、故事梗概...&#10;例如：一座被遗弃的维多利亚时代庄园中发生了诡异的失踪事件..."
+                          required
+                          style="resize: vertical;"></textarea>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="era">时代背景</label>
+                    <select id="era" x-model="form.era">
+                        <option value="1920s">1920年代（经典）</option>
+                        <option value="modern">现代</option>
+                        <option value="gaslight">煤气灯时代（维多利亚）</option>
+                        <option value="dark_ages">黑暗时代</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="players">玩家人数</label>
+                    <input type="number" id="players" x-model.number="form.player_count"
+                           min="1" max="8" value="4">
+                </div>
+                <div class="form-group">
+                    <label for="difficulty">难度</label>
+                    <select id="difficulty" x-model="form.difficulty">
+                        <option value="easy">简单 - 适合新手</option>
+                        <option value="normal" selected>普通 - 标准体验</option>
+                        <option value="hard">困难 - 高致死率</option>
+                        <option value="deadly">致命 - 生存挑战</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" :disabled="generating" style="width: 100%; margin-top: 0.5rem;">
+                <span x-show="!generating">生成模组</span>
+                <span x-show="generating">正在生成中...</span>
+            </button>
+        </form>
+    </div>
+
+    <!-- 生成进度 -->
+    <div class="card" x-show="generating" x-transition>
+        <h2>生成中</h2>
+        <div style="margin: 1rem 0;">
+            <div style="background: var(--bg-input); border-radius: 4px; height: 8px; overflow: hidden;">
+                <div style="height: 100%; border-radius: 4px; transition: width 0.5s ease;"
+                     :style="'width: ' + progress + '%; background: var(--accent);'"></div>
+            </div>
+            <p x-text="progressText" style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.5rem;"></p>
+        </div>
+    </div>
+
+    <!-- 生成结果 -->
+    <div x-show="result" x-transition>
+        <div class="card" style="border-color: var(--success);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="color: var(--success);">生成完成</h2>
+                <button class="btn btn-secondary btn-small" @click="resetForm">重新生成</button>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <h3 x-text="result.title" style="font-size: 1.3rem; margin-bottom: 0.5rem;"></h3>
+                <div style="display: flex; gap: 0.75rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
+                    <span x-text="'时代: ' + (result.era || form.era)"
+                          style="background: var(--bg-secondary); border: 1px solid var(--border); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.8rem; color: var(--text-secondary);"></span>
+                    <span x-text="'人数: ' + (result.players || result.player_count || form.player_count)"
+                          style="background: var(--bg-secondary); border: 1px solid var(--border); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.8rem; color: var(--text-secondary);"></span>
+                    <span x-text="'难度: ' + (result.difficulty || form.difficulty)"
+                          style="background: var(--bg-secondary); border: 1px solid var(--border); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.8rem; color: var(--text-secondary);"></span>
+                </div>
+            </div>
+
+            <div style="color: var(--text-secondary); font-size: 0.9rem;">
+                <div x-show="result.description || result.summary" style="margin-bottom: 0.75rem;">
+                    <strong style="color: var(--text-primary);">简介：</strong>
+                    <p x-text="result.description || result.summary"></p>
+                </div>
+                <div x-show="result.background" style="margin-bottom: 0.75rem;">
+                    <strong style="color: var(--text-primary);">背景：</strong>
+                    <p x-text="result.background"></p>
+                </div>
+                <div x-show="result.clues || result.key_clues" style="margin-bottom: 0.75rem;">
+                    <strong style="color: var(--text-primary);">关键线索：</strong>
+                    <p x-text="result.clues || result.key_clues"></p>
+                </div>
+                <div x-show="result.npcs" style="margin-bottom: 0.75rem;">
+                    <strong style="color: var(--text-primary);">NPC：</strong>
+                    <p x-text="typeof result.npcs === 'object' ? JSON.stringify(result.npcs, null, 2) : result.npcs"
+                       style="white-space: pre-wrap;"></p>
+                </div>
+                <div x-show="result.locations" style="margin-bottom: 0.75rem;">
+                    <strong style="color: var(--text-primary);">地点：</strong>
+                    <p x-text="typeof result.locations === 'object' ? JSON.stringify(result.locations, null, 2) : result.locations"
+                       style="white-space: pre-wrap;"></p>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+                <button class="btn btn-primary" @click="saveAndUse" :disabled="saving" style="flex: 1;">
+                    <span x-show="!saving">保存并使用</span>
+                    <span x-show="saving">保存中...</span>
+                </button>
+                <a href="/module-browser" class="btn btn-secondary" style="flex: 1; text-align: center;">返回模组库</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 操作结果提示 -->
+    <div x-show="message" x-transition
+         class="card" :style="'border-color: ' + (messageType === 'success' ? 'var(--success)' : 'var(--danger)')">
+        <p x-text="message" :style="'color: ' + (messageType === 'success' ? 'var(--success)' : 'var(--danger)')"></p>
+    </div>
+</div>
+
+<script>
+function moduleGenerator() {
+    return {
+        form: {
+            seed_prompt: '',
+            era: '1920s',
+            player_count: 4,
+            difficulty: 'normal',
+        },
+        generating: false,
+        progress: 0,
+        progressText: '',
+        result: null,
+        saving: false,
+        message: '',
+        messageType: 'success',
+
+        async generate() {
+            if (!this.form.seed_prompt.trim()) return;
+            this.generating = true;
+            this.progress = 0;
+            this.result = null;
+
+            // 模拟进度动画
+            this.progressText = '正在分析提示词...';
+            this.progress = 10;
+
+            const progressInterval = setInterval(() => {
+                if (this.progress < 90) {
+                    this.progress += Math.random() * 15;
+                    if (this.progress > 90) this.progress = 90;
+                    if (this.progress < 30) this.progressText = '正在构建故事框架...';
+                    else if (this.progress < 50) this.progressText = '正在设计NPC和地点...';
+                    else if (this.progress < 70) this.progressText = '正在编排线索链...';
+                    else this.progressText = '正在完善模组细节...';
+                }
+            }, 800);
+
+            try {
+                const res = await fetch('/api/game/modules/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(this.form),
+                });
+                clearInterval(progressInterval);
+
+                if (res.ok) {
+                    this.progress = 100;
+                    this.progressText = '生成完成！';
+                    this.result = await res.json();
+                } else {
+                    const err = await res.json().catch(() => ({}));
+                    this.showMessage('生成失败: ' + (err.detail || res.statusText), 'error');
+                }
+            } catch (e) {
+                clearInterval(progressInterval);
+                this.showMessage('生成失败: ' + e.message, 'error');
+            } finally {
+                this.generating = false;
+            }
+        },
+
+        async saveAndUse() {
+            this.saving = true;
+            try {
+                const res = await fetch('/api/game/modules/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(this.result),
+                });
+                if (res.ok) {
+                    this.showMessage('模组已保存！即将跳转到游戏大厅...', 'success');
+                    setTimeout(() => { window.location.href = '/'; }, 2000);
+                } else {
+                    const err = await res.json().catch(() => ({}));
+                    this.showMessage('保存失败: ' + (err.detail || res.statusText), 'error');
+                }
+            } catch (e) {
+                this.showMessage('保存失败: ' + e.message, 'error');
+            } finally {
+                this.saving = false;
+            }
+        },
+
+        resetForm() {
+            this.result = null;
+            this.progress = 0;
+            this.progressText = '';
+        },
+
+        showMessage(msg, type) {
+            this.message = msg;
+            this.messageType = type;
+            setTimeout(() => { this.message = ''; }, 4000);
+        },
+    };
+}
+</script>
+{% endblock %}

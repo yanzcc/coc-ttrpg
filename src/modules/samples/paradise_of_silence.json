@@ -1,0 +1,361 @@
+{
+  "metadata": {
+    "title": "寂灭的乐园",
+    "author": "未知",
+    "era": "现代",
+    "player_count_min": 1,
+    "player_count_max": 2,
+    "estimated_sessions": 1,
+    "difficulty": "普通",
+    "summary": "现代都市的深夜，你被一条漆黑的胡同吸引，捡起地上的纸条后陷入沉睡。醒来时你身处一片被吞噬一切的黑暗中，只有一座亮着灯的古宅是你唯一的庇护所。在黑暗不断侵蚀的压力下，你必须探索这座诡异的宅邸，解读残留的线索，在黎明到来前找到逃生之路。一个以探索为主的密室短篇。",
+    "tags": [
+      "单人",
+      "短篇",
+      "密室",
+      "现代",
+      "黑暗",
+      "奈亚拉托提普",
+      "探索"
+    ]
+  },
+  "npcs": [],
+  "locations": [
+    {
+      "id": "loc_outside",
+      "name": "路灯下",
+      "description": "唯一的路灯照亮一小片区域，四周是吞噬一切的黑暗。远处有一座亮灯的古宅，那微弱的灯光是这片无尽黑暗中唯一可见的目标。脚下是粗糙的柏油路面，路灯发出低沉的电流嗡嗡声，灯光的边缘正被黑暗一寸寸地蚕食。",
+      "atmosphere": "被黑暗包围的孤独光点，黑暗正在缓慢吞噬灯光。空气冰冷而沉滞，仿佛连声音都被这浓稠的黑暗所吸收。",
+      "clue_ids": [
+        "clue_note"
+      ],
+      "npc_ids": [],
+      "connections": {
+        "前往古宅": "loc_first_floor"
+      },
+      "events": [
+        "灯光范围每轮缩小，3轮后完全熄灭",
+        "黑暗中偶尔传来无法辨别方向的低语声"
+      ],
+      "is_starting_location": true
+    },
+    {
+      "id": "loc_first_floor",
+      "name": "古宅一楼",
+      "description": "宽广的客厅，沙发正对着一台老式电视机，电视下方的柜子里放着一盘录像带。高大的书架上放着书籍和文件，书脊上积满了灰尘。进入后身后的大门消失了，回头望去只有无尽的黑暗，仿佛这座宅邸漂浮在虚空之中。天花板上的吊灯散发着昏黄的光芒，光线微微颤动。",
+      "atmosphere": "封闭而压抑的空间，身后的出口已被黑暗吞噬。老旧的家具散发着陈腐的气味，空气中有一丝若有若无的香水味——不知来自何处。",
+      "clue_ids": [
+        "clue_recording"
+      ],
+      "npc_ids": [],
+      "connections": {
+        "上楼": "loc_second_floor"
+      },
+      "events": [
+        "灯光闪烁预示黑暗将侵入",
+        "播放录像带可听到女声提示",
+        "书架上可找到关于此宅历史的断篇残章"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_second_floor",
+      "name": "古宅二楼",
+      "description": "笔直的走廊，墙上的老式钟表指向11:00。走廊两侧有三扇门——书房、卧室和盥洗室。灯光只随探索者前进的方向而点亮，回头望去只有黑暗，仿佛身后的走廊已经不复存在。地毯上有细微的脚印痕迹，但不知是谁留下的。",
+      "atmosphere": "走廊中的灯光像是有意识地跟随着你，而你身后的一切都被黑暗即时吞没。钟表的滴答声是唯一持续的声响，却让寂静显得更加深沉。",
+      "clue_ids": [],
+      "npc_ids": [],
+      "connections": {
+        "书房": "loc_study",
+        "卧室": "loc_bedroom",
+        "盥洗室": "loc_bathroom",
+        "下楼": "loc_first_floor",
+        "阁楼": "loc_attic"
+      },
+      "events": [
+        "钟表在探索过程中缓慢走动，午夜时分指针会加速旋转",
+        "走廊尽头偶尔出现一个模糊的人影，靠近后消失"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_study",
+      "name": "书房",
+      "description": "两侧是巨大的书柜，中间放着一张沉重的书桌。书桌表面刻着'6→34'的字样，刻痕很深，像是用刀反复划出的。书架上的书排列整齐，仔细观察会发现每本书的书脊背后都贴着编号标签。按照6→34的提示找到第34号书，翻开后会发现书页被挖空，里面藏着一把手电筒。",
+      "atmosphere": "书房中弥漫着陈旧纸张的气味，灰尘在灯光下缓缓飘动。书桌上的刻痕透着一种绝望的急迫感，仿佛留下这些线索的人已经没有多少时间。",
+      "clue_ids": [
+        "clue_flashlight"
+      ],
+      "npc_ids": [],
+      "connections": {
+        "回走廊": "loc_second_floor"
+      },
+      "events": [
+        "翻找书架时可能触发书本掉落，发出的声响会引起走廊灯光闪烁",
+        "找到手电筒后，书房的灯光会明显变暗"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_bedroom",
+      "name": "卧室",
+      "description": "一片狼藉的房间。床被倒扣在地上，衣柜被翻得乱七八糟，衣物散落一地。唯独角落里有一张异常整齐的小桌子，桌上放着一台老式拨盘电话——没有电话线连接。桌子下面压着一张折叠的纸条。墙上的壁纸大片剥落，露出下面灰暗的墙面，上面隐约有抓痕。",
+      "atmosphere": "混乱中透着诡异的秩序——那张整齐的桌子在狼藉中格外突兀，像是被刻意保留的唯一完好之物。空气中有一股淡淡的铁锈味。",
+      "clue_ids": [
+        "clue_bedroom_note"
+      ],
+      "npc_ids": [],
+      "connections": {
+        "回走廊": "loc_second_floor"
+      },
+      "events": [
+        "拿起电话听筒会听到短暂的女声低语，随后变成刺耳的静电噪音",
+        "如果在卧室停留过久，倒扣的床会发出轻微的敲击声"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_bathroom",
+      "name": "盥洗室",
+      "description": "表面上看起来一切正常的盥洗室。有一面大镜子、白色的洗手台和一个老式浴缸。洗手台上有一块肥皂和一条叠好的毛巾。午夜过后，镜子会突然碎裂，浴缸中充满漆黑的水——用手电筒照射可以驱散黑水。水底露出的浴缸底部刻着文字，提示用镜子碎片折射光线。",
+      "atmosphere": "最初让人感到安心的正常空间，但镜子中的倒影似乎总有一瞬间的延迟。水龙头偶尔会自行滴水，每一滴都在寂静中格外清晰。",
+      "clue_ids": [
+        "clue_mirror",
+        "clue_bathtub_text"
+      ],
+      "npc_ids": [],
+      "connections": {
+        "回走廊": "loc_second_floor"
+      },
+      "events": [
+        "午夜后镜子碎裂，可获得镜子碎片",
+        "浴缸充满黑水，手电筒可驱散",
+        "驱散黑水后可看到浴缸底部文字"
+      ],
+      "is_starting_location": false
+    },
+    {
+      "id": "loc_attic",
+      "name": "阁楼",
+      "description": "狭小而昏暗的阁楼，堆放着蒙尘的旧箱子和破旧的家具。最引人注目的是头顶有一扇天窗——这是整座宅邸中唯一没有被黑暗完全淹没的窗户，透过玻璃可以看到一丝若有若无的天光。用手电筒照亮自己并借助镜子碎片折射光线，可以在这里撑到天亮。",
+      "atmosphere": "阁楼的空气稀薄而干燥，灰尘在天窗泄入的微光中浮动。这是最接近外界的地方，天窗中的那一丝光亮给人以微弱但真实的希望。",
+      "clue_ids": [],
+      "npc_ids": [],
+      "connections": {
+        "下楼": "loc_second_floor"
+      },
+      "events": [
+        "天窗外的光线在午夜后逐渐增强，预示黎明将至",
+        "如果携带手电筒和镜子碎片，可以进行最终的生存仪式"
+      ],
+      "is_starting_location": false
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene_awakening",
+      "title": "黑暗中苏醒",
+      "description": "开场场景。玩家在一盏正在熄灭的路灯下醒来，四周被无尽的黑暗包围。黑暗正在吞噬灯光，玩家必须在3轮内到达远处亮灯的古宅。失败则被黑暗吞没，进行理智检定（1/1D6）后仍会被'推'到古宅门前——黑暗似乎并不想杀死你，而是在引导你。守密人应强调黑暗的压迫感和紧迫性，营造孤立无援的氛围。",
+      "read_aloud": "你醒了过来——不知道这里是哪里。路灯的微光勉强照亮你脚下的一小片地面。四周是浓稠得仿佛实体的黑暗，而这黑暗，正在缓慢地吞噬灯光的边缘……前方，一座亮着灯的宅子是你能看见的唯一希望。",
+      "location_id": "loc_outside",
+      "npc_ids": [],
+      "clue_ids": [
+        "clue_note"
+      ],
+      "likely_skill_checks": [
+        "敏捷",
+        "侦查"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_exploration",
+          "condition": "玩家到达古宅并进入一楼",
+          "required_clues": [],
+          "auto_trigger": false
+        }
+      ],
+      "is_opening": true,
+      "is_climax": false,
+      "is_ending": false
+    },
+    {
+      "id": "scene_exploration",
+      "title": "探索古宅",
+      "description": "核心探索阶段。玩家逐层探索古宅，寻找线索。一楼的录像带提供了关键提示（闭眼可免受黑暗伤害），二楼的书房中藏着手电筒（6→34号书），卧室的纸条提示手电筒要照亮自己，盥洗室在午夜后镜子碎裂、浴缸出现黑水。时间压力贯穿始终——墙上的钟表从11:00开始走动，黑暗不断从窗外和身后侵蚀。守密人应根据玩家的探索进度调节紧迫感，如果玩家停滞不前，可以让灯光闪烁或黑暗更快逼近来施加压力。",
+      "read_aloud": "身后传来一声沉闷的响动——你猛地回头，却发现刚才进来的大门已经消失了。取而代之的，是那片你已经开始熟悉的、无尽的黑暗。\n\n你被困在了这座宅子里。\n\n客厅的吊灯发出昏黄而不稳定的光。沙发、电视、书架——一切看起来都很正常，但空气中有种说不清的违和感。电视下方的柜子里，你注意到一盘落满灰尘的录像带。墙角的楼梯通向二楼，黑暗在楼梯的拐角处等待着你。",
+      "location_id": "loc_first_floor",
+      "npc_ids": [],
+      "clue_ids": [
+        "clue_flashlight",
+        "clue_recording",
+        "clue_bedroom_note",
+        "clue_mirror",
+        "clue_bathtub_text"
+      ],
+      "likely_skill_checks": [
+        "侦查",
+        "图书馆使用",
+        "聆听",
+        "灵感",
+        "幸运"
+      ],
+      "transitions": [
+        {
+          "target_scene_id": "scene_midnight",
+          "condition": "钟表指向午夜，或玩家收集到手电筒和镜子碎片两个关键道具",
+          "required_clues": [
+            "clue_flashlight",
+            "clue_mirror"
+          ],
+          "auto_trigger": false
+        },
+        {
+          "target_scene_id": "scene_midnight",
+          "condition": "探索时间耗尽，钟表自动走到午夜",
+          "required_clues": [],
+          "auto_trigger": true
+        }
+      ],
+      "is_opening": false,
+      "is_climax": false,
+      "is_ending": false
+    },
+    {
+      "id": "scene_midnight",
+      "title": "午夜降临",
+      "description": "高潮与结局场景。钟声敲响午夜，整座宅邸发生剧变——墙壁上长出黑色的藤蔓，房间开始扭曲变形，黑暗从四面八方涌入。玩家面临最终抉择：\n\n1. 前往阁楼（生存结局）：如果携带手电筒和镜子碎片，可以在阁楼用手电筒照亮自己、用镜子碎片折射光线，在天窗下撑到黎明。黑暗在第一缕阳光到来时退去，玩家醒来发现自己躺在城市的胡同中。\n\n2. 走向黑暗（真相结局）：选择直面黑暗，会遇到奈亚拉托提普的化身——那个录像带中的女声。她揭示这一切都是一场'游戏'，玩家的恐惧是献给外神的祭品。进行意志检定，成功则保持理智离开，失败则永远困在这片黑暗中。\n\n3. 闭眼前行（隐藏结局）：如果玩家从录像带中领悟到'闭眼'的提示，在午夜时闭上眼睛不看黑暗，黑暗将无法伤害他。睁眼后发现自己已经回到了现实世界的胡同中，手中还握着那张纸条。",
+      "read_aloud": "铛——铛——铛——\n\n墙上的钟表开始疯狂地转动，指针飞速旋转，最终停在了12:00。\n\n钟声的回响还未消散，墙壁就开始了变化。黑色的藤蔓像活物一样从墙缝中钻出，沿着墙面蔓延开来。天花板上的灯发出最后一阵剧烈的闪烁，然后——一盏接一盏地熄灭了。\n\n黑暗从四面八方涌来。\n\n但在这浓稠的黑暗中，你听到了一个声音——一个女人的声音，和录像带中的一模一样，却不再是从机器里传出，而是从黑暗的深处：\n\n「时间到了。你做出选择了吗？」\n\n你知道你还有最后的机会。阁楼的天窗、前方的黑暗、或者……闭上你的眼睛。",
+      "location_id": "loc_second_floor",
+      "npc_ids": [],
+      "clue_ids": [],
+      "likely_skill_checks": [
+        "意志",
+        "敏捷",
+        "灵感"
+      ],
+      "transitions": [],
+      "is_opening": false,
+      "is_climax": true,
+      "is_ending": true
+    }
+  ],
+  "clues": [
+    {
+      "id": "clue_note",
+      "name": "纸条",
+      "description": "在路灯下捡到的一张皱巴巴的纸条，上面用潦草的字迹写着一行字。纸张泛黄，边缘有烧焦的痕迹，像是从火中抢救出来的。这是玩家在黑暗胡同中捡起后陷入沉睡的那张纸条，醒来时仍握在手中。",
+      "core": true,
+      "location_id": "loc_outside",
+      "discovery_method": "侦查",
+      "discovery_difficulty": "简单",
+      "leads_to": [
+        "clue_flashlight"
+      ],
+      "handout_text": "「在黑暗中，光芒将指引你前行。」"
+    },
+    {
+      "id": "clue_flashlight",
+      "name": "手电筒",
+      "description": "藏在书房6→34号书中的一把手电筒。书页被挖空形成一个恰好容纳手电筒的凹槽。手电筒外壳是铜制的，样式老旧但保养良好，电池仍有电量。打开后发出温暖的白色光芒，可以有效驱散模组中的超自然黑暗。这是通关的核心道具之一。",
+      "core": true,
+      "location_id": "loc_study",
+      "discovery_method": "侦查",
+      "discovery_difficulty": "普通",
+      "leads_to": [
+        "clue_bathtub_text"
+      ],
+      "handout_text": null
+    },
+    {
+      "id": "clue_recording",
+      "name": "录像带",
+      "description": "一楼电视柜中的一盘VHS录像带，表面积满灰尘，没有任何标签。放入电视下方的录像机播放后，屏幕上只有雪花和静电噪音，但扬声器中传出一个女人的声音——语调温柔却透着令人不安的意味。这段录音包含了隐藏结局的关键提示：'闭眼'可以免受黑暗的伤害。",
+      "core": true,
+      "location_id": "loc_first_floor",
+      "discovery_method": "侦查",
+      "discovery_difficulty": "简单",
+      "leads_to": [],
+      "handout_text": "（女声，温柔而空灵）\n「黑暗中，或许并不黑暗。但愿你，能陷入自己的黑暗。」\n（静电噪音，随后录像带自动弹出）"
+    },
+    {
+      "id": "clue_bedroom_note",
+      "name": "卧室纸条",
+      "description": "卧室角落整齐桌子下压着的一张纸条，字迹与路灯下捡到的纸条相同。内容暗示手电筒不仅要用来照亮前路，更重要的是要照亮自己——这是在阁楼生存结局中的关键操作提示。",
+      "core": true,
+      "location_id": "loc_bedroom",
+      "discovery_method": "侦查",
+      "discovery_difficulty": "普通",
+      "leads_to": [],
+      "handout_text": "「光明可以战胜黑暗，漫漫黑暗中，即使有光明相伴也莫要忘记照亮了自己。」"
+    },
+    {
+      "id": "clue_mirror",
+      "name": "镜子碎片",
+      "description": "盥洗室午夜后碎裂的镜子留下的碎片。碎片边缘锋利，但其中几块较大的碎片可以安全地拾取。镜面仍然光亮，可以有效折射手电筒的光线，将单一的光束扩散成更大范围的照明。这是阁楼生存结局中延长照明时间的关键道具。",
+      "core": true,
+      "location_id": "loc_bathroom",
+      "discovery_method": "侦查",
+      "discovery_difficulty": "简单",
+      "leads_to": [
+        "clue_bathtub_text"
+      ],
+      "handout_text": null
+    },
+    {
+      "id": "clue_bathtub_text",
+      "name": "浴缸文字",
+      "description": "用手电筒驱散浴缸中的黑水后，在浴缸底部发现的刻字。文字用某种尖锐的工具刻入搪瓷表面，笔迹与其他纸条上的字迹不同——更加随意，甚至带着一丝俏皮，暗示留下这些文字的人（或存在）对这一切抱着玩味的态度。内容提示玩家用镜子碎片折射手电筒光线。",
+      "core": false,
+      "location_id": "loc_bathroom",
+      "discovery_method": "侦查",
+      "discovery_difficulty": "普通",
+      "leads_to": [],
+      "handout_text": "「光过一些，或许，也不是坏事呢~」"
+    }
+  ],
+  "timeline": [
+    {
+      "id": "timeline_1100",
+      "description": "11:00 — 到达二楼，开始探索。墙上钟表指向11:00，灯光随探索者移动而点亮。",
+      "trigger_condition": "玩家从一楼上到二楼",
+      "consequences": "二楼走廊的灯光开始跟随玩家，身后的灯光会在玩家离开后熄灭。钟表开始缓慢走动，为午夜倒计时。"
+    },
+    {
+      "id": "timeline_1159",
+      "description": "11:59 — 探索接近尾声，时间循环。如果玩家注意到钟表，会发现时间走到11:59后短暂停顿，然后跳回11:00——暗示这里的时间被扭曲了。但这只会发生一次，第二轮循环结束后时间将直接跳到午夜。",
+      "trigger_condition": "玩家在二楼探索一定时间后自动触发",
+      "consequences": "玩家获得额外的探索时间，但同时会感到强烈的不安。理智检定（0/1）。这次时间循环是最后的机会——如果还没找到关键线索，必须抓紧。"
+    },
+    {
+      "id": "timeline_0000",
+      "description": "00:00 — 午夜降临。钟表指针疯狂旋转后停在12:00，墙壁长出黑色藤蔓，灯光逐一熄灭，黑暗全面入侵。进入最终抉择阶段。",
+      "trigger_condition": "第二轮探索时间耗尽，或玩家收集到手电筒和镜子碎片",
+      "consequences": "强制触发'午夜降临'场景。玩家必须立刻做出选择——前往阁楼、走向黑暗、或闭上眼睛。没有更多的探索时间。"
+    }
+  ],
+  "ending_conditions": [
+    {
+      "id": "ending_survival",
+      "description": "调查员在阁楼撑到天亮后逃脱",
+      "type": "normal",
+      "trigger_hint": "当调查员在午夜后选择躲避并撑到天亮时，叙述生还结局"
+    },
+    {
+      "id": "ending_truth",
+      "description": "调查员直面黑暗遭遇奈亚拉托提普化身",
+      "type": "normal",
+      "trigger_hint": "当调查员在午夜选择直面黑暗时，叙述真相结局"
+    },
+    {
+      "id": "ending_hidden",
+      "description": "调查员闭眼穿过黑暗安然逃脱",
+      "type": "secret",
+      "trigger_hint": "若调查员根据录音线索在黑暗中闭眼前行，叙述隐藏好结局"
+    },
+    {
+      "id": "ending_midnight_timeout",
+      "description": "午夜降临强制进入最终抉择",
+      "type": "normal",
+      "trigger_hint": "当时间线推进到午夜，无论调查员在哪个场景都强制进入最终阶段"
+    }
+  ]
+}

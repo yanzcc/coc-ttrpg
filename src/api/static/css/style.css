@@ -1,0 +1,910 @@
+/* 克苏鲁的呼唤 TTRPG - 暗色主题样式 */
+
+/* === 基础变量 === */
+:root {
+    --bg-primary: #0d1117;
+    --bg-secondary: #161b22;
+    --bg-card: #1c2128;
+    --bg-input: #0d1117;
+    --border: #30363d;
+    --text-primary: #e6edf3;
+    --text-secondary: #8b949e;
+    --text-muted: #484f58;
+    --accent: #58a6ff;
+    --accent-hover: #79c0ff;
+    --danger: #f85149;
+    --warning: #d29922;
+    --success: #3fb950;
+    --hp-color: #da3633;
+    --san-color: #8957e5;
+    --mp-color: #58a6ff;
+    --luck-color: #d29922;
+    --font-mono: 'Courier New', monospace;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
+    --radius: 8px;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* === 全局重置 === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-sans);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* === 导航栏 === */
+header {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.logo {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+
+.nav-links a:hover {
+    color: var(--text-primary);
+}
+
+/* === 主内容区 === */
+main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+/* 游戏页占满可视宽度，叙事区更宽 */
+main:has(.game-container) {
+    max-width: none;
+    padding: 1rem 1.25rem;
+}
+
+/* === 卡片 === */
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+}
+
+/* === 按钮 === */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+}
+
+.btn:hover {
+    border-color: var(--text-muted);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: #238636;
+    border-color: #2ea043;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #2ea043;
+}
+
+.btn-secondary {
+    background: var(--bg-secondary);
+    border-color: var(--border);
+}
+
+.btn-danger {
+    background: transparent;
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.btn-danger:hover {
+    background: var(--danger);
+    color: #fff;
+}
+
+.btn-small {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+/* === 表单 === */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    font-family: var(--font-sans);
+    transition: border-color 0.2s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+}
+
+.input-small {
+    width: 120px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+/* === 徽章 === */
+.badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: rgba(88, 166, 255, 0.15);
+    color: var(--accent);
+    border: 1px solid rgba(88, 166, 255, 0.3);
+}
+
+/* === 空状态 === */
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+}
+
+/* === 大厅页面 === */
+.lobby {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.lobby h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.session-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.session-item:last-child {
+    border-bottom: none;
+}
+
+.session-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.session-name {
+    font-weight: 600;
+}
+
+.session-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* === 游戏界面 === */
+.game-container {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0;
+    height: calc(100vh - 56px - 2rem);
+    min-height: min(560px, 85vh);
+}
+
+.game-container > .narrative-panel {
+    flex: 1 1 0%;
+    min-width: 260px;
+    min-height: 0;
+}
+
+/* 可拖动分隔条（叙事 | 角色栏） */
+.game-splitter {
+    flex: 0 0 8px;
+    width: 8px;
+    margin: 0 4px;
+    align-self: stretch;
+    cursor: col-resize;
+    border-radius: 4px;
+    background: transparent;
+    position: relative;
+    z-index: 2;
+    transition: background 0.15s ease;
+}
+
+.game-splitter::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    right: -6px;
+    top: 0;
+    bottom: 0;
+}
+
+.game-splitter:hover,
+.game-splitter.is-dragging {
+    background: rgba(88, 166, 255, 0.22);
+}
+
+.game-right-column {
+    flex: 0 0 auto;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 240px;
+}
+
+.game-right-column > .character-panel {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+/* 叙事面板 */
+.narrative-panel {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.narrative-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-secondary);
+}
+
+.narrative-header h2 {
+    font-size: 1rem;
+    flex: 1;
+}
+
+.players-count {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.narrative-log {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    scroll-behavior: smooth;
+}
+
+.narrative-entry {
+    margin-bottom: 0.75rem;
+    line-height: 1.7;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.entry-source {
+    font-weight: 600;
+    color: var(--accent);
+    margin-right: 0.3rem;
+    font-size: 0.85rem;
+}
+
+.entry-narration .entry-content {
+    color: var(--text-primary);
+}
+
+.entry-action .entry-source {
+    color: var(--success);
+}
+
+.entry-action .entry-content {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.entry-system {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 0.25rem 0;
+}
+
+.entry-system .entry-source {
+    color: var(--text-muted);
+}
+
+.entry-npc_dialogue {
+    background: rgba(139, 92, 246, 0.08);
+    border-left: 3px solid #8b5cf6;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0 4px 4px 0;
+}
+
+.entry-npc_dialogue .entry-source {
+    color: #8b5cf6;
+    font-weight: 700;
+}
+
+.entry-npc_dialogue .entry-content {
+    color: var(--text-primary);
+}
+
+.entry-dice_roll {
+    font-family: var(--font-mono);
+    background: rgba(88, 166, 255, 0.05);
+    border-left: 3px solid var(--accent);
+    padding: 0.5rem 0.75rem;
+    border-radius: 0 4px 4px 0;
+    font-size: 0.85rem;
+}
+
+.streaming-indicator {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    padding: 0.5rem 0;
+}
+
+.dot-pulse {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+/* 玩家输入 */
+.player-input {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--border);
+    background: var(--bg-secondary);
+}
+
+.input-row {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.input-row input {
+    flex: 1;
+}
+
+.input-hints {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.4rem;
+    font-size: 0.75rem;
+}
+
+.connection-status {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.connection-status::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.connection-status.online::before {
+    background: var(--success);
+}
+
+.connection-status.offline::before {
+    background: var(--danger);
+}
+
+/* === 角色卡面板 === */
+.character-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.character-sheet-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    font-size: 0.9rem;
+}
+
+.sheet-section {
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 0.9rem 0.85rem;
+}
+
+.sheet-section-last {
+    border-bottom: none;
+}
+
+.sheet-section-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 0.5rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid rgba(88, 166, 255, 0.25);
+}
+
+.sheet-section-body {
+    padding-top: 0.1rem;
+}
+
+.sheet-char-name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem;
+    line-height: 1.25;
+}
+
+.character-panel h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.35rem;
+}
+
+.skills-hint {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+}
+
+.skills-tab .skill-row {
+    font-size: 0.95rem;
+    padding: 0.35rem 0;
+}
+
+.skill-base-tag {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.items-tab .items-subtitle {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 0.6rem 0 0.35rem;
+}
+
+.items-tab .items-subtitle:first-child {
+    margin-top: 0;
+}
+
+.items-tab .item-weapon .item-meta {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-left: 0.5rem;
+}
+
+.muted-small {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-top: 0.35rem;
+}
+
+.char-subtitle {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+/* 属性条（标签在上，条与数值在下，纵向排列） */
+.stat-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    margin-bottom: 0;
+}
+
+.stat-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.25rem;
+}
+
+.stat-bar label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.stat-bar-value {
+    font-size: 0.78rem;
+    text-align: right;
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+}
+
+.bar-track {
+    height: 8px;
+    background: var(--bg-primary);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.bar-fill.hp { background: var(--hp-color); }
+.bar-fill.san { background: var(--san-color); }
+.bar-fill.mp { background: var(--mp-color); }
+.bar-fill.luck { background: var(--luck-color); }
+
+/* 基础属性网格 */
+.characteristics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+}
+
+/* 游戏侧栏较窄：八维两列，名称在上数值在下 */
+.game-chars-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.45rem;
+}
+
+.char-stat {
+    text-align: center;
+    padding: 0.5rem;
+    background: var(--bg-primary);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-bottom: 0.2rem;
+}
+
+.stat-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+}
+
+/* 技能列表（整卡滚动，不单区限高） */
+.skills-tab {
+    max-height: none;
+    overflow: visible;
+}
+
+.skills-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.skill-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid rgba(48, 54, 61, 0.5);
+    font-size: 0.85rem;
+}
+
+.skill-row-stacked {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15rem;
+    padding: 0.45rem 0;
+}
+
+.skill-row-stacked .skill-value {
+    font-size: 0.88rem;
+}
+
+.skill-name {
+    color: var(--text-secondary);
+}
+
+.skill-value {
+    font-family: var(--font-mono);
+    font-weight: 600;
+}
+
+/* 物品行 */
+.item-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid rgba(48, 54, 61, 0.5);
+    font-size: 0.85rem;
+}
+
+.item-row-stacked {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+}
+
+.item-title {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.item-qty {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.empty-state-inline {
+    padding: 0.5rem 0;
+    text-align: left;
+}
+
+/* 背景信息（小标题在上，正文在下） */
+.background-info h4 {
+    font-size: 0.8rem;
+    color: var(--accent);
+    margin-bottom: 0.25rem;
+    margin-top: 0;
+}
+
+.background-info .bg-block {
+    margin-bottom: 0.65rem;
+}
+
+.background-info .bg-block:last-child {
+    margin-bottom: 0;
+}
+
+.background-info p {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    white-space: pre-wrap;
+}
+
+/* === Token用量页面 === */
+.usage-page {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.usage-page h1 {
+    margin-bottom: 1.5rem;
+}
+
+.usage-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.usage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.usage-stat {
+    text-align: center;
+    padding: 1rem;
+    background: var(--bg-primary);
+    border-radius: 6px;
+}
+
+.usage-stat .stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 0.3rem;
+}
+
+.usage-stat .stat-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+}
+
+.usage-stat .stat-value.cost {
+    color: var(--warning);
+}
+
+.agent-usage-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.agent-usage-row:last-child {
+    border-bottom: none;
+}
+
+.agent-name {
+    font-weight: 600;
+}
+
+.agent-stats {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* === 角色创建页面 === */
+.character-create {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.character-create h1 {
+    margin-bottom: 1.5rem;
+}
+
+.result-card {
+    text-align: center;
+}
+
+/* === 响应式 === */
+@media (max-width: 768px) {
+    .game-container {
+        flex-direction: column;
+        height: auto;
+        min-height: unset;
+    }
+
+    .game-splitter {
+        display: none;
+    }
+
+    .game-right-column {
+        width: 100% !important;
+        flex-basis: auto !important;
+        min-width: 0;
+    }
+
+    .game-container > .narrative-panel {
+        flex: 1 1 auto;
+        min-width: 0;
+        min-height: 45vh;
+    }
+
+    .character-panel {
+        max-height: none;
+    }
+
+    .game-chars-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .session-item {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+}
+
+/* === 滚动条 === */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}

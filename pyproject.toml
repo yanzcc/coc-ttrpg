@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coc-ttrpg"
+version = "0.1.0"
+description = "基于克苏鲁的呼唤规则的多Agent驱动TTRPG游戏框架"
+requires-python = ">=3.11"
+dependencies = [
+    "langgraph>=0.4",
+    "anthropic>=0.42",
+    "fastapi>=0.115",
+    "uvicorn[standard]",
+    "jinja2",
+    "aiosqlite",
+    "sqlalchemy>=2.0",
+    "pydantic>=2.0",
+    "python-multipart",
+    "pypdf2",
+    "httpx",
+    "python-dotenv",
+    "websockets",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "httpx",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

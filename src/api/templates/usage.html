@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Token用量监控 - 克苏鲁的呼唤{% endblock %}
+
+{% block content %}
+<div class="usage-page" x-data="usageMonitor()">
+    <h1>Token用量监控</h1>
+
+    <div class="form-group" style="max-width: 400px;">
+        <label>选择会话</label>
+        <select x-model="selectedSession" @change="loadUsage">
+            <option value="">-- 选择会话 --</option>
+            <template x-for="s in sessions" :key="s.id">
+                <option :value="s.id" x-text="s.name + ' (' + s.id + ')'"></option>
+            </template>
+        </select>
+    </div>
+
+    <div x-show="usageData" class="usage-cards">
+        <!-- 总计 -->
+        <div class="card usage-total">
+            <h2>总计用量</h2>
+            <div class="usage-grid">
+                <div class="usage-stat">
+                    <span class="stat-label">输入Token</span>
+                    <span class="stat-value" x-text="formatNumber(usageData?.total?.input || 0)"></span>
+                </div>
+                <div class="usage-stat">
+                    <span class="stat-label">输出Token</span>
+                    <span class="stat-value" x-text="formatNumber(usageData?.total?.output || 0)"></span>
+                </div>
+                <div class="usage-stat">
+                    <span class="stat-label">缓存命中</span>
+                    <span class="stat-value" x-text="formatNumber(usageData?.total?.cached || 0)"></span>
+                </div>
+                <div class="usage-stat">
+                    <span class="stat-label">预估费用</span>
+                    <span class="stat-value cost" x-text="'$' + (usageData?.total?.cost || 0).toFixed(4)"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 按Agent分解 -->
+        <div class="card">
+            <h2>按Agent分解</h2>
+            <div x-show="Object.keys(usageData?.by_agent || {}).length === 0" class="empty-state">
+                <p>暂无用量数据</p>
+            </div>
+            <div class="agent-usage-list">
+                <template x-for="[agent, data] in Object.entries(usageData?.by_agent || {})" :key="agent">
+                    <div class="agent-usage-row">
+                        <span class="agent-name" x-text="agent"></span>
+                        <div class="agent-stats">
+                            <span>输入: <strong x-text="formatNumber(data.input)"></strong></span>
+                            <span>输出: <strong x-text="formatNumber(data.output)"></strong></span>
+                            <span>费用: <strong x-text="'$' + data.cost.toFixed(4)"></strong></span>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function usageMonitor() {
+    return {
+        sessions: [],
+        selectedSession: '',
+        usageData: null,
+
+        async init() {
+            const res = await fetch('/api/game/list');
+            this.sessions = await res.json();
+        },
+
+        async loadUsage() {
+            if (!this.selectedSession) {
+                this.usageData = null;
+                return;
+            }
+            const res = await fetch(`/api/usage/${this.selectedSession}`);
+            this.usageData = await res.json();
+        },
+
+        formatNumber(n) {
+            return n.toLocaleString('zh-CN');
+        },
+    };
+}
+</script>
+{% endblock %}

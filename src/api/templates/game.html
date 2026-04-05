@@ -1,0 +1,513 @@
+{% extends "base.html" %}
+{% block title %}游戏中 - 克苏鲁的呼唤{% endblock %}
+
+{% block content %}
+<div class="game-container"
+     x-data="gameUI('{{ session_id }}')"
+     x-init="init()"
+     x-ref="gameRoot">
+
+    <!-- 左侧：叙事区域 -->
+    <div class="narrative-panel">
+        <div class="narrative-header">
+            <h2>叙事</h2>
+            <span class="badge" x-text="phase"></span>
+            <span class="players-count" x-text="'在线: ' + onlinePlayers.length + '人'"></span>
+        </div>
+
+        <div class="narrative-log" id="narrative-log" x-ref="narrativeLog">
+            <template x-for="(entry, idx) in narrativeLog" :key="idx">
+                <div class="narrative-entry" :class="'entry-' + entry.type">
+                    <span class="entry-source" x-show="entry.source" x-text="'[' + entry.source + ']'"></span>
+                    <span class="entry-content" x-text="entry.content"></span>
+                </div>
+            </template>
+            <div x-show="isStreaming" class="streaming-indicator">
+                <span class="dot-pulse"></span> 守密人正在叙述...
+            </div>
+        </div>
+
+        <!-- 玩家输入 -->
+        <div class="player-input">
+            <form @submit.prevent="sendAction">
+                <div class="input-row">
+                    <input type="text" x-model="actionText"
+                           placeholder="描述你的行动..."
+                           :disabled="!connected" autofocus>
+                    <button type="submit" class="btn btn-primary"
+                            :disabled="!connected || !actionText.trim()">
+                        发送
+                    </button>
+                </div>
+            </form>
+            <div class="input-hints">
+                <span class="connection-status" :class="connected ? 'online' : 'offline'"
+                      x-text="connected ? '已连接' : '连接中...'"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 可拖动调整左右栏宽度 -->
+    <div class="game-splitter"
+         role="separator"
+         aria-orientation="vertical"
+         aria-label="拖动调整叙事区与角色栏宽度"
+         :class="{ 'is-dragging': splitterDragging }"
+         @mousedown.prevent="splitterStart($event)">
+    </div>
+
+    <div class="game-right-column"
+         :style="{ flexBasis: sidebarWidth + 'px', width: sidebarWidth + 'px' }">
+    <!-- 右侧：角色卡纵向分区（标题在上、内容在下，整列可滚动） -->
+    <div class="character-panel character-sheet" x-show="currentCharacter">
+        <template x-if="currentCharacter">
+            <div class="character-sheet-inner">
+                <section class="sheet-section">
+                    <h3 class="sheet-section-title">概况</h3>
+                    <div class="sheet-section-body">
+                        <p class="sheet-char-name" x-text="currentCharacter.name"></p>
+                        <p class="char-subtitle">
+                            <span x-text="currentCharacter.occupation"></span> ·
+                            <span x-text="currentCharacter.age + '岁'"></span>
+                        </p>
+                    </div>
+                </section>
+
+                <section class="sheet-section">
+                    <h3 class="sheet-section-title">资源</h3>
+                    <div class="sheet-section-body">
+                        <div class="stat-bars">
+                            <div class="stat-bar">
+                                <label>HP</label>
+                                <div class="bar-track">
+                                    <div class="bar-fill hp"
+                                         :style="'width:' + (currentCharacter.derived.hp / currentCharacter.derived.hp_max * 100) + '%'">
+                                    </div>
+                                </div>
+                                <span class="stat-bar-value" x-text="currentCharacter.derived.hp + '/' + currentCharacter.derived.hp_max"></span>
+                            </div>
+                            <div class="stat-bar">
+                                <label>SAN</label>
+                                <div class="bar-track">
+                                    <div class="bar-fill san"
+                                         :style="'width:' + (currentCharacter.derived.san / currentCharacter.derived.san_max * 100) + '%'">
+                                    </div>
+                                </div>
+                                <span class="stat-bar-value" x-text="currentCharacter.derived.san + '/' + currentCharacter.derived.san_max"></span>
+                            </div>
+                            <div class="stat-bar">
+                                <label>MP</label>
+                                <div class="bar-track">
+                                    <div class="bar-fill mp"
+                                         :style="'width:' + (currentCharacter.derived.mp / currentCharacter.derived.mp_max * 100) + '%'">
+                                    </div>
+                                </div>
+                                <span class="stat-bar-value" x-text="currentCharacter.derived.mp + '/' + currentCharacter.derived.mp_max"></span>
+                            </div>
+                            <div class="stat-bar">
+                                <label>幸运</label>
+                                <div class="bar-track">
+                                    <div class="bar-fill luck"
+                                         :style="'width:' + (currentCharacter.derived.luck / 99 * 100) + '%'">
+                                    </div>
+                                </div>
+                                <span class="stat-bar-value" x-text="currentCharacter.derived.luck"></span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="sheet-section">
+                    <h3 class="sheet-section-title">属性</h3>
+                    <div class="sheet-section-body">
+                        <div class="characteristics-grid game-chars-grid">
+                            <template x-for="[key, label] in [['STR','力量'],['CON','体质'],['SIZ','体型'],['DEX','敏捷'],['APP','外貌'],['INT','智力'],['POW','意志'],['EDU','教育']]">
+                                <div class="char-stat">
+                                    <span class="stat-label" x-text="label"></span>
+                                    <span class="stat-value" x-text="currentCharacter.characteristics[key]"></span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="sheet-section">
+                    <h3 class="sheet-section-title">技能</h3>
+                    <div class="sheet-section-body skills-tab">
+                        <div class="skills-list">
+                            <p class="skills-hint" x-show="filteredSkillEntries().length === 0">暂无加点技能（仅列出高于默认基础值的技能）</p>
+                            <template x-for="row in filteredSkillEntries()" :key="row.name">
+                                <div class="skill-row skill-row-stacked">
+                                    <span class="skill-name" x-text="row.name"></span>
+                                    <span class="skill-value">
+                                        <span x-text="row.current"></span>
+                                        <span class="skill-base-tag" x-text="' / 基础 ' + row.base"></span>
+                                    </span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="sheet-section">
+                    <h3 class="sheet-section-title">物品</h3>
+                    <div class="sheet-section-body items-tab">
+                        <template x-if="(currentCharacter.inventory || []).length === 0">
+                            <div class="empty-state empty-state-inline">
+                                <p>暂无物品</p>
+                                <p class="muted-small">在「完整角色卡创建」中可添加武器与随身物品。</p>
+                            </div>
+                        </template>
+                        <template x-if="(currentCharacter.inventory || []).some(i => i.is_weapon)">
+                            <div class="items-subtitle">武器</div>
+                            <template x-for="item in (currentCharacter.inventory || []).filter(i => i.is_weapon)" :key="item.name + '-w'">
+                                <div class="item-row item-row-stacked item-weapon">
+                                    <span class="item-title" x-text="item.name"></span>
+                                    <span class="item-meta" x-text="[item.damage, item.range].filter(Boolean).join(' · ')"></span>
+                                </div>
+                            </template>
+                        </template>
+                        <template x-if="(currentCharacter.inventory || []).some(i => !i.is_weapon)">
+                            <div class="items-subtitle">装备与杂物</div>
+                            <template x-for="item in (currentCharacter.inventory || []).filter(i => !i.is_weapon)" :key="item.name">
+                                <div class="item-row item-row-stacked">
+                                    <span class="item-title" x-text="item.name"></span>
+                                    <span x-show="item.quantity > 1" class="item-qty" x-text="'×' + item.quantity"></span>
+                                </div>
+                            </template>
+                        </template>
+                    </div>
+                </section>
+
+                <section class="sheet-section sheet-section-last">
+                    <h3 class="sheet-section-title">背景</h3>
+                    <div class="sheet-section-body background-info">
+                        <div x-show="currentCharacter.personal_description" class="bg-block">
+                            <h4>个人描述</h4>
+                            <p x-text="currentCharacter.personal_description"></p>
+                        </div>
+                        <div x-show="currentCharacter.ideology" class="bg-block">
+                            <h4>思想/信念</h4>
+                            <p x-text="currentCharacter.ideology"></p>
+                        </div>
+                        <div x-show="currentCharacter.significant_people" class="bg-block">
+                            <h4>重要之人</h4>
+                            <p x-text="currentCharacter.significant_people"></p>
+                        </div>
+                        <div x-show="currentCharacter.traits" class="bg-block">
+                            <h4>特质</h4>
+                            <p x-text="currentCharacter.traits"></p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </template>
+    </div>
+
+    <!-- 无角色时显示创建入口 -->
+    <div class="character-panel" x-show="!currentCharacter">
+        <div class="empty-state" style="padding: 2rem;">
+            <h3>尚未创建调查员</h3>
+            <p>在本会话中创建角色并保存后，会自动加入当前游戏。</p>
+            <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:1rem;">
+                <button class="btn btn-primary" @click="quickCreateCharacter">
+                    快速创建调查员
+                </button>
+                <a class="btn btn-secondary"
+                   :href="'/character/create/' + sessionId + '?player=' + encodeURIComponent(playerId)">
+                    完整角色卡创建
+                </a>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+<script>
+function gameUI(sessionId) {
+    return {
+        sessionId: sessionId,
+        /** 与首页/创建页一致：URL ?player= 优先，否则用 localStorage */
+        playerId: '匿名',
+        connected: false,
+        ws: null,
+        phase: '探索',
+        narrativeLog: [],
+        actionText: '',
+        currentCharacter: null,
+        onlinePlayers: [],
+        isStreaming: false,
+        /** 本页生命周期内仅在首次 catch_up 后触发一次开场（重连不再重复 POST opening） */
+        _historyBootstrapped: false,
+
+        /** 右侧栏宽度（px），可拖动调整 */
+        sidebarWidth: 300,
+        minSidebarWidth: 240,
+        maxSidebarWidth: 520,
+        minNarrativeWidth: 260,
+        splitterDragging: false,
+        _splitterStartX: 0,
+        _splitterStartW: 0,
+        _splitterMove: null,
+        _splitterUp: null,
+
+        init() {
+            try {
+                const saved = localStorage.getItem('coc_game_sidebar_width');
+                if (saved) {
+                    const n = parseInt(saved, 10);
+                    if (!isNaN(n)) this.sidebarWidth = n;
+                }
+            } catch (e) { /* ignore */ }
+
+            const fromQuery = new URLSearchParams(window.location.search).get('player');
+            if (fromQuery && String(fromQuery).trim()) {
+                this.playerId = String(fromQuery).trim();
+                try {
+                    localStorage.setItem('coc_player_name', this.playerId);
+                } catch (e) { /* ignore */ }
+            } else {
+                try {
+                    const stored = localStorage.getItem('coc_player_name');
+                    if (stored && stored.trim()) this.playerId = stored.trim();
+                } catch (e) { /* ignore */ }
+            }
+            this.connectWebSocket();
+            this.loadCharacter();
+            this.$nextTick(() => this.clampSidebarToContainer());
+            this._onWinResize = () => this.clampSidebarToContainer();
+            window.addEventListener('resize', this._onWinResize);
+        },
+
+        clampSidebarToContainer() {
+            const root = this.$refs.gameRoot;
+            if (!root || typeof root.clientWidth !== 'number') return;
+            const splitter = 8;
+            const maxFromLayout = root.clientWidth - this.minNarrativeWidth - splitter;
+            const cap = Math.max(this.minSidebarWidth, Math.min(this.maxSidebarWidth, maxFromLayout));
+            if (this.sidebarWidth > cap) this.sidebarWidth = cap;
+            if (this.sidebarWidth < this.minSidebarWidth) this.sidebarWidth = this.minSidebarWidth;
+        },
+
+        splitterStart(e) {
+            if (window.innerWidth <= 768) return;
+            this.clampSidebarToContainer();
+            this.splitterDragging = true;
+            this._splitterStartX = e.clientX;
+            this._splitterStartW = this.sidebarWidth;
+            document.body.style.userSelect = 'none';
+            document.body.style.cursor = 'col-resize';
+            this._splitterMove = (ev) => this.splitterMove(ev);
+            this._splitterUp = () => this.splitterEnd();
+            window.addEventListener('mousemove', this._splitterMove);
+            window.addEventListener('mouseup', this._splitterUp, { once: true });
+        },
+
+        splitterMove(e) {
+            if (!this.splitterDragging) return;
+            const dx = e.clientX - this._splitterStartX;
+            const root = this.$refs.gameRoot;
+            const splitter = 8;
+            let maxW = this.maxSidebarWidth;
+            if (root && root.clientWidth) {
+                maxW = Math.min(maxW, root.clientWidth - this.minNarrativeWidth - splitter);
+            }
+            maxW = Math.max(this.minSidebarWidth, maxW);
+            let next = this._splitterStartW - dx;
+            next = Math.min(maxW, Math.max(this.minSidebarWidth, next));
+            this.sidebarWidth = next;
+        },
+
+        splitterEnd() {
+            this.splitterDragging = false;
+            document.body.style.userSelect = '';
+            document.body.style.cursor = '';
+            if (this._splitterMove) {
+                window.removeEventListener('mousemove', this._splitterMove);
+                this._splitterMove = null;
+            }
+            try {
+                localStorage.setItem('coc_game_sidebar_width', String(this.sidebarWidth));
+            } catch (err) { /* ignore */ }
+        },
+
+        /** 首轮：由后端根据模组导入生成守密人开场（叙事为空时） */
+        async requestOpening() {
+            try {
+                await fetch(`/api/game/${this.sessionId}/opening`, { method: 'POST' });
+            } catch (e) {
+                console.warn('开场叙述触发失败', e);
+            }
+        },
+
+        /** 统一物品栏结构（API/缓存可能缺字段或非数组） */
+        normalizeCharacterPayload(raw) {
+            if (!raw || typeof raw !== 'object') return raw;
+            let inv = raw.inventory;
+            if (!Array.isArray(inv)) inv = [];
+            raw.inventory = inv.map((it) => {
+                if (!it || typeof it !== 'object') {
+                    return { name: String(it || ''), is_weapon: false, quantity: 1, description: '' };
+                }
+                const w = it.is_weapon === true || it.is_weapon === 1
+                    || String(it.is_weapon).toLowerCase() === 'true'
+                    || it.isWeapon === true;
+                return {
+                    ...it,
+                    name: it.name != null ? String(it.name) : '',
+                    is_weapon: !!w,
+                    quantity: Math.max(1, parseInt(it.quantity, 10) || 1),
+                };
+            });
+            return raw;
+        },
+
+        /** 技能：仅显示 current > base 的条目 */
+        filteredSkillEntries() {
+            const skills = this.currentCharacter?.skills;
+            if (!skills) return [];
+            return Object.entries(skills)
+                .filter(([_, sk]) => (sk.current ?? 0) > (sk.base ?? 0))
+                .map(([name, sk]) => ({
+                    name,
+                    current: sk.current ?? 0,
+                    base: sk.base ?? 0,
+                }))
+                .sort((a, b) => a.name.localeCompare(b.name, 'zh-CN'));
+        },
+
+        connectWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+            const url = `${protocol}://${window.location.host}/ws/${this.sessionId}/${this.playerId}`;
+            this.ws = new WebSocket(url);
+
+            this.ws.onopen = () => {
+                this.connected = true;
+                // 叙事与开场均在首条 catch_up 之后处理，见 handleMessage('catch_up')。
+            };
+
+            this.ws.onclose = () => {
+                this.connected = false;
+                this.addNarrative('系统', '连接已断开，正在重连...', 'system');
+                setTimeout(() => this.connectWebSocket(), 3000);
+            };
+
+            this.ws.onmessage = (event) => {
+                const msg = JSON.parse(event.data);
+                this.handleMessage(msg);
+            };
+        },
+
+        handleMessage(msg) {
+            switch (msg.type) {
+                case 'narrative':
+                    this.addNarrative(
+                        msg.data.source || '守密人',
+                        msg.data.content,
+                        msg.data.type || 'narration'
+                    );
+                    break;
+                case 'narrative_chunk':
+                    this.isStreaming = true;
+                    const chunkNpc = msg.data.npc_name || null;
+                    const chunkSource = chunkNpc || '守密人';
+                    const chunkType = chunkNpc ? 'npc_dialogue' : 'narration';
+                    // 追加到最后一条同类型叙事
+                    if (this.narrativeLog.length > 0) {
+                        const last = this.narrativeLog[this.narrativeLog.length - 1];
+                        if (last.type === chunkType && last.source === chunkSource) {
+                            last.content += msg.data.chunk;
+                            return;
+                        }
+                    }
+                    this.addNarrative(chunkSource, msg.data.chunk, chunkType);
+                    break;
+                case 'dice_result':
+                    this.addNarrative('系统', JSON.stringify(msg.data), 'dice_roll');
+                    break;
+                case 'player_list':
+                    this.onlinePlayers = msg.data.players || [];
+                    break;
+                case 'system_message':
+                    this.addNarrative('系统', msg.data.content, 'system');
+                    break;
+                case 'character_sheet':
+                    this.currentCharacter = this.normalizeCharacterPayload(
+                        JSON.parse(JSON.stringify(msg.data || {})),
+                    );
+                    break;
+                case 'state_update':
+                    if (msg.data.phase) this.phase = msg.data.phase;
+                    break;
+                case 'catch_up':
+                    // 以服务端 narrative_log 为准重建左侧记录（进房/刷新/重连统一走此消息）
+                    {
+                        this.isStreaming = false;
+                        const entries = msg.data.entries || [];
+                        this.narrativeLog = entries.map((e) => ({
+                            source: e.source || '守密人',
+                            content: e.content,
+                            type: e.type || 'narration',
+                        }));
+                        this.addNarrative('系统', '已连接到游戏会话', 'system');
+                        if (!this._historyBootstrapped) {
+                            this._historyBootstrapped = true;
+                            this.requestOpening();
+                        }
+                    }
+                    break;
+            }
+        },
+
+        addNarrative(source, content, type) {
+            this.isStreaming = false;
+            this.narrativeLog.push({source, content, type});
+            this.$nextTick(() => {
+                const log = this.$refs.narrativeLog;
+                if (log) log.scrollTop = log.scrollHeight;
+            });
+        },
+
+        sendAction() {
+            if (!this.actionText.trim() || !this.ws) return;
+            this.ws.send(JSON.stringify({
+                type: 'player_action',
+                data: {text: this.actionText},
+            }));
+            this.actionText = '';
+        },
+
+        async loadCharacter() {
+            try {
+                const res = await fetch(`/api/character/session/${this.sessionId}`);
+                const characters = await res.json();
+                let mine = characters.find(c => c.player_id === this.playerId);
+                if (!mine && Array.isArray(characters) && characters.length === 1) {
+                    mine = characters[0];
+                }
+                if (mine) this.currentCharacter = this.normalizeCharacterPayload(mine);
+            } catch (e) {
+                console.log('尚无角色');
+            }
+        },
+
+        async quickCreateCharacter() {
+            const res = await fetch('/api/character/quick-create', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    session_id: this.sessionId,
+                    player_id: this.playerId,
+                    name: this.playerId + '的调查员',
+                    age: 30,
+                    gender: '男',
+                    occupation: '私家侦探',
+                }),
+            });
+            this.currentCharacter = this.normalizeCharacterPayload(await res.json());
+            this.addNarrative('系统', `调查员「${this.currentCharacter.name}」已创建`, 'system');
+        },
+    };
+}
+</script>
+{% endblock %}
