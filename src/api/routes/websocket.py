@@ -22,6 +22,17 @@ from ...middleware.game_loop import get_game_loop
 from ...storage.repositories import (
     SessionRepository, NarrativeRepository, InvestigatorRepository,
 )
+from ...config.settings import get_settings
+
+
+def _resolve_use_graph(data: dict) -> bool:
+    """解析本轮是否使用 LangGraph 状态机。
+
+    单条消息的 data.use_graph 优先级高于全局 settings.agents.use_graph。
+    """
+    if isinstance(data, dict) and "use_graph" in data:
+        return bool(data.get("use_graph"))
+    return bool(get_settings().agents.use_graph)
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -468,6 +479,7 @@ async def _handle_player_action(session_id: str, player_id: str, data: dict):
     action_text = data.get("text", "").strip()
     if not action_text:
         return
+    use_graph = _resolve_use_graph(data)
 
     # 如果当前有活跃的结构化回合，将行动记录到回合管理器
     if turn_manager.has_active_turn(session_id):
@@ -512,9 +524,10 @@ async def _handle_player_action(session_id: str, player_id: str, data: dict):
                     },
                 ))
                 try:
-                    async for event in game_loop.process_action_stream(
+                    async for event in game_loop.process_action(
                         player_id=pid,
                         action_text=act,
+                        use_graph=use_graph,
                     ):
                         await _handle_game_event(session_id, event)
                 except Exception as e:
@@ -556,9 +569,10 @@ async def _handle_player_action(session_id: str, player_id: str, data: dict):
     game_loop = get_game_loop(session_id)
 
     try:
-        async for event in game_loop.process_action_stream(
+        async for event in game_loop.process_action(
             player_id=player_id,
             action_text=action_text,
+            use_graph=use_graph,
         ):
             await _handle_game_event(session_id, event)
     except Exception as e:
@@ -587,6 +601,7 @@ async def _handle_combat_action(session_id: str, player_id: str, data: dict):
         return
 
     action_text = data.get("text", "战斗行动")
+    use_graph = _resolve_use_graph(data)
 
     # 找到该玩家对应的参与者（player_id 可能是玩家ID而非调查员ID）
     investigator_repo = InvestigatorRepository()
@@ -634,9 +649,10 @@ async def _handle_combat_action(session_id: str, player_id: str, data: dict):
                     },
                 ))
                 try:
-                    async for event in game_loop.process_action_stream(
+                    async for event in game_loop.process_action(
                         player_id=pid,
                         action_text=act,
+                        use_graph=use_graph,
                     ):
                         await _handle_game_event(session_id, event)
                 except Exception as e:
@@ -661,9 +677,10 @@ async def _handle_combat_action(session_id: str, player_id: str, data: dict):
 
     game_loop = get_game_loop(session_id)
     try:
-        async for event in game_loop.process_action_stream(
+        async for event in game_loop.process_action(
             player_id=player_id,
             action_text=action_text,
+            use_graph=use_graph,
         ):
             await _handle_game_event(session_id, event)
     except Exception as e:

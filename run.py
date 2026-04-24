@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 from src.config import get_settings
 
-load_dotenv()
+load_dotenv(override=True)
 
 if __name__ == "__main__":
     s = get_settings()

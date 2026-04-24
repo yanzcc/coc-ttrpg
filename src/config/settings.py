@@ -51,6 +51,11 @@ class AgentsConfig(BaseModel):
     keeper_supervisor_enabled: bool = False
     keeper_supervisor_model: str = "claude-haiku-4-5-20251001"
     keeper_supervisor_max_tokens: int = 256
+    # 是否走 LangGraph 状态机处理玩家行动（复杂场景/战斗轮推荐）
+    # False = 走 process_action_stream 的流式直调路径
+    # True  = 走 process_action_graph 通过 LangGraph 执行完整节点流程
+    # 客户端也可以在单条消息的 data.use_graph 里临时覆盖本开关
+    use_graph: bool = False
 
 
 class ContextConfig(BaseModel):

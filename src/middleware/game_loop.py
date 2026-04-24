@@ -32,6 +32,7 @@ from ..rules.combat_rules import (
     MELEE_WEAPONS, RANGED_WEAPONS, FumbleEffect,
 )
 from ..rules.skill_check import check_skill, Difficulty, SuccessLevel
+from ..rules.skill_list import resolve_skill
 from ..rules.sanity import check_sanity
 from ..storage.repositories import (
     SessionRepository, InvestigatorRepository, NarrativeRepository, ModuleRepository,
@@ -62,6 +63,45 @@ COMBAT_PATTERN = re.compile(r'【进入战斗】')
 SCENE_CHANGE_PATTERN = re.compile(r'【场景转换：([^/】]+)(?:/([^】]+))?】')
 MODULE_END_PATTERN = re.compile(r'【模组结束】')
 NPC_SPEECH_PATTERN = re.compile(r'【NPC发言：([^】]+)】')
+
+# B4：场景守密人应是纯旁白。若它违规写出日式「」或 "" 对白，
+# 会与 NPC 守密人随后生成的台词重复（复读 bug）。
+# 这两个正则用于从场景段剥离所有引号对白与「某某说/道/喊道：XXX」式直接引语。
+_QUOTE_STRIP = re.compile(r'[「『"\u201c][^」』"\u201d\n]{0,500}[」』"\u201d]')
+_DIALOGUE_VERB_STRIP = re.compile(
+    r'[^\s，。；！？\n]{1,12}(?:说道|说|道|喊道|喊|答道|答|回答|低声道|低声说|开口道|嘟囔|问道|问|嘀咕)[：:][^\n。！？]{1,300}[。！？]'
+)
+
+
+# B5：从玩家行动文本里提取显式指定的技能名
+# 支持：「使用侦查技能」「用心理学鉴定」「进行图书馆使用检定」等
+_EXPLICIT_SKILL_RE = re.compile(
+    r'(?:使用|用|做|进行|来|发起|触发)[一下]?'
+    r'([\u4e00-\u9fff（）()/]{2,12})'
+    r'(?:技能|鉴定|检定|判定)'
+)
+
+
+def _extract_explicit_skill(action_text: str) -> str | None:
+    if not action_text:
+        return None
+    m = _EXPLICIT_SKILL_RE.search(action_text)
+    if not m:
+        return None
+    name = m.group(1).strip()
+    # 常见把"技能"合在一起的误匹配
+    if name in ("这", "那", "这个", "那个", "某", "一个"):
+        return None
+    return name
+
+
+def _strip_scene_dialogue(text: str) -> str:
+    """把场景守密人可能泄漏的直接引语删掉，只保留纯旁白。"""
+    if not text:
+        return text
+    out = _QUOTE_STRIP.sub("……", text)
+    out = _DIALOGUE_VERB_STRIP.sub("", out)
+    return out
 
 # 需要立即停止流式输出的标记（LLM 在标记后应停下，但不一定服从，代码强制截断）
 _STOP_MARKER = re.compile(
@@ -163,6 +203,19 @@ class GameLoop:
 
         routed_npc = await self.kp.route_player_action(action_text, session, recent)
 
+        # B5：若玩家在行动文本里显式指定了某项技能/鉴定，在传给场景守密人时
+        # 把它包装为**强制指令**，避免 LLM 认为「不需要检定」而忽略。
+        _explicit_skill = _extract_explicit_skill(action_text)
+        if _explicit_skill and not routed_npc:
+            action_text_for_kp = (
+                f"{action_text}\n\n"
+                f"【系统强制指令】玩家明确要求使用【{_explicit_skill}】技能，"
+                f"你**必须**在本次回应中写出 `【技能检定：{_explicit_skill}】` 标记，"
+                f"然后立即停下等待掷骰。"
+            )
+        else:
+            action_text_for_kp = action_text
+
         # ���取模组上下文（���续注入守密人）
         module_context = await self._get_module_context(session)
         if module_context:
@@ -186,7 +239,7 @@ class GameLoop:
         # =====================================================================
         full_text = ""              # 本轮所有输出的累积
         unsaved_text = ""           # 尚未保存到数据库的叙事文本
-        current_action = action_text
+        current_action = action_text_for_kp
         is_continuation = False     # 是否是检定后的续写
         MAX_ROUNDS = 5              # 防止无限循环
 
@@ -259,7 +312,9 @@ class GameLoop:
             if npc_markers and unsaved_text.strip():
                 _clean_scene = NPC_SPEECH_PATTERN.sub('', unsaved_text)
                 _clean_scene = SKILL_CHECK_PATTERN.sub('', _clean_scene)
-                _clean_scene = SANITY_CHECK_PATTERN.sub('', _clean_scene).strip()
+                _clean_scene = SANITY_CHECK_PATTERN.sub('', _clean_scene)
+                # B4：若同段里场景守密人已把 NPC 台词写出来，则把对白剥除
+                _clean_scene = _strip_scene_dialogue(_clean_scene).strip()
                 if _clean_scene:
                     await self.narrative_repo.append(
                         self.session_id,
@@ -322,7 +377,13 @@ class GameLoop:
             check_results_summary: list[str] = []
             session = await self._get_session()
 
-            for match in SKILL_CHECK_PATTERN.finditer(segment_text):
+            # 每次叙事段最多处理一个技能检定（B6：禁止一次玩家行动触发多次检定）。
+            # 若 LLM 在同段里写了多个【技能检定】标记，只执行第一个，其余被忽略。
+            _first_skill_match = SKILL_CHECK_PATTERN.search(segment_text)
+            # 额外追踪本轮是否含失败——失败时续写提示要强调不能泄露线索
+            _any_failure = False
+            _any_fumble = False
+            for match in ([_first_skill_match] if _first_skill_match else []):
                 had_check = True
                 async for event in self._process_skill_check(
                     match, investigators, session, segment_text, current_action,
@@ -337,6 +398,9 @@ class GameLoop:
                             extra = "（大成功！结果远超预期）"
                         elif event.get("is_fumble"):
                             extra = "（大失败！事情朝最糟糕的方向发展）"
+                            _any_fumble = True
+                        if not event.get("succeeded"):
+                            _any_failure = True
                         check_results_summary.append(
                             f"{event['skill']}检定：掷出{event['roll']}，"
                             f"目标{event['target']}，结果{lvl}{extra}"
@@ -364,8 +428,21 @@ class GameLoop:
                 summary = "；".join(check_results_summary)
                 # 提供之前的叙事片段作为上下文，防止重复叙事
                 prev_context = segment_text[-800:] if segment_text else ""
+                # B3：失败时必须明确指示不得泄露任何线索/信息
+                failure_directive = ""
+                if _any_fumble:
+                    failure_directive = (
+                        "\n**检定大失败**：不允许描述玩家发现任何有用线索、信息或物品。"
+                        "必须描写灾难性后果——线索被破坏、惊动对手、自伤、产生误判等。"
+                    )
+                elif _any_failure:
+                    failure_directive = (
+                        "\n**检定失败**：玩家**没有**发现任何具体线索、物品或有价值的信息。"
+                        "只允许描写环境氛围、徒劳的尝试、时间流逝或挫败感——"
+                        "不要写「发现」「注意到」「看到了」任何具体有用细节。"
+                    )
                 current_action = (
-                    f"【检定结果续写】{summary}。\n"
+                    f"【检定结果续写】{summary}。{failure_directive}\n"
                     f"你之前已经写到（请勿重复以下内容，直接从检定结果开始继续）：\n"
                     f"「{prev_context}」\n"
                     f"请紧接上文，根据检定结果继续叙事。"
@@ -405,6 +482,9 @@ class GameLoop:
         clean_unsaved = SCENE_CHANGE_PATTERN.sub('', clean_unsaved)
         clean_unsaved = MODULE_END_PATTERN.sub('', clean_unsaved)
         clean_unsaved = NPC_SPEECH_PATTERN.sub('', clean_unsaved).strip()
+        # B4：只对场景守密人输出剥对白（NPC 守密人的「」是合法的）
+        if not routed_npc:
+            clean_unsaved = _strip_scene_dialogue(clean_unsaved).strip()
 
         if clean_unsaved:
             # 如果本轮是NPC直接回应，source记为NPC名字（便于后续路由识别对话延续）
@@ -490,7 +570,27 @@ class GameLoop:
                 yield {"type": "system", "content": f"开场叙述生成失败：{str(e)}"}
                 return
 
-            # --- 处理开场中的 NPC 发言标记 ---
+            # --- 先保存场景守密人旁白（不含 NPC 对白），再逐个处理 NPC 发言 ---
+            # 这样数据库里最新条目是 NPC 发言（source=NPC名字），路由器能识别对话延续
+            scene_clean = SKILL_CHECK_PATTERN.sub('', full_text)
+            scene_clean = SANITY_CHECK_PATTERN.sub('', scene_clean)
+            scene_clean = COMBAT_PATTERN.sub('', scene_clean)
+            scene_clean = SCENE_CHANGE_PATTERN.sub('', scene_clean)
+            scene_clean = MODULE_END_PATTERN.sub('', scene_clean)
+            scene_clean = NPC_SPEECH_PATTERN.sub('', scene_clean)
+            # B4：开场也要剥对白
+            scene_clean = _strip_scene_dialogue(scene_clean).strip()
+            if scene_clean:
+                await self.narrative_repo.append(
+                    self.session_id,
+                    NarrativeEntry(
+                        source="守密人",
+                        content=scene_clean,
+                        entry_type="narration",
+                    ),
+                )
+
+            # 处理开场中的 NPC 发言标记
             for npc_match in NPC_SPEECH_PATTERN.finditer(full_text):
                 npc_name = npc_match.group(1).strip()
                 target_npc = None
@@ -524,23 +624,27 @@ class GameLoop:
                         }
                 except Exception:
                     logger.exception("开场NPC发言生成失败：%s", npc_name)
+                if npc_text.strip():
+                    # 以 NPC 名字为 source 单独保存，便于后续对话延续路由
+                    await self.narrative_repo.append(
+                        self.session_id,
+                        NarrativeEntry(
+                            source=npc_name,
+                            content=npc_text.strip(),
+                            entry_type="narration",
+                        ),
+                    )
                 full_text += "\n" + npc_text
 
             yield {"type": "narrative_end", "full_text": full_text}
 
+            # 用 full_text（含 NPC 对白）做记忆更新
             clean_text = SKILL_CHECK_PATTERN.sub('', full_text)
             clean_text = SANITY_CHECK_PATTERN.sub('', clean_text)
             clean_text = COMBAT_PATTERN.sub('', clean_text)
             clean_text = SCENE_CHANGE_PATTERN.sub('', clean_text)
             clean_text = MODULE_END_PATTERN.sub('', clean_text)
             clean_text = NPC_SPEECH_PATTERN.sub('', clean_text).strip()
-
-            gm_entry = NarrativeEntry(
-                source="守密人",
-                content=clean_text,
-                entry_type="narration",
-            )
-            await self.narrative_repo.append(self.session_id, gm_entry)
 
             session = await self._get_session()
             try:
@@ -1032,17 +1136,12 @@ class GameLoop:
                 except ValueError:
                     penalty_dice = 1
 
-        # 若守密人未指定难度，使用 SkillCheckAgent 推断
+        # 若守密人未指定难度，默认普通
+        # （CoC 7e 官方默认就是普通；困难/极难只有当处境明显苛刻时才用。
+        #  之前让 LLM 推断导致普通场景也被频繁判为困难——现在只有守密人在标记里
+        #  显式写 /困难 或 /极难 时才升级。）
         if not difficulty_str:
-            hint_start = max(0, match.start() - 1000)
-            hint_end = min(len(segment_text), match.end() + 500)
-            scene_hint = segment_text[hint_start:hint_end]
-            try:
-                difficulty_str = await self.skill_narrator.suggest_difficulty(
-                    skill_name, current_action, scene_hint,
-                )
-            except Exception:
-                difficulty_str = "普通"
+            difficulty_str = "普通"
 
         difficulty = {
             "普通": Difficulty.REGULAR,
@@ -1050,8 +1149,11 @@ class GameLoop:
             "极难": Difficulty.EXTREME,
         }.get(difficulty_str, Difficulty.REGULAR)
 
-        skill_val = default_inv.skills.get(skill_name)
-        current_val = skill_val.current if skill_val else 1
+        # 用 resolve_skill 把 LLM 可能写出的任意名字映射到实际技能/属性
+        # （关键修复：灵感→INT、聆听或观察→聆听、不再 fallback=1）
+        resolved_name, current_val = resolve_skill(skill_name, default_inv)
+        skill_name = resolved_name
+        skill_val = default_inv.skills.get(resolved_name)
 
         result = check_skill(
             skill_name=skill_name,

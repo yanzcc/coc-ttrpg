@@ -43,7 +43,8 @@ _SCENE_PIVOT_PHRASES = (
 )
 
 # 与 NPC 口头接话允许的最大字数（中文约 2～3 短句）；超出则默认走场景叙事
-_CONTINUATION_MAX_CHARS = 72
+# B1：收紧到 40 字，避免「我走向 X 家的门」这类 8~20 字的移动描述被误判为接话
+_CONTINUATION_MAX_CHARS = 40
 
 # 玩家文本中明确的行动意图（出现这些词则优先走场景守密人）
 _ACTION_HINTS = (
@@ -110,6 +111,14 @@ def detect_npc_dialogue_target(
                 return None
             if any(p in t for p in _SCENE_PIVOT_PHRASES):
                 return None
+            # B1：若玩家文本明确提到**另一个** NPC 名字（不是 last_npc），
+            # 说明已经转场，不要继续让旧 NPC 回应
+            last_id, last_obj = last_npc
+            for nid, npc in session.npcs.items():
+                if nid == last_id or not npc.name or not npc.is_alive:
+                    continue
+                if npc.name in t:
+                    return None
             return last_npc
 
     return None

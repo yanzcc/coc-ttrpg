@@ -18,7 +18,7 @@ from ..config import get_settings
 from ..storage.database import init_db, close_db
 
 # 加载环境变量
-load_dotenv()
+load_dotenv(override=True)
 
 # 路径
 BASE_DIR = Path(__file__).parent

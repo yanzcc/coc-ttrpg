@@ -42,6 +42,11 @@ agents:
   keeper_supervisor_enabled: true
   keeper_supervisor_model: claude-haiku-4-5-20251001
   keeper_supervisor_max_tokens: 256
+  # 是否让 WebSocket 层把玩家行动走 LangGraph 状态机（game_graph.py）
+  # false = 走 process_action_stream 直接调用各 Agent（默认、低延迟）
+  # true  = 走 process_action_graph 由 LangGraph 编排节点流程
+  # 单条消息也可在 data.use_graph 里临时覆盖
+  use_graph: false
 
 # ---- 上下文窗口与摘要（与守密人 system 外的拼装、历史压缩相关）----
 context:

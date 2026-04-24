@@ -280,6 +280,147 @@ def remove_skill(skills: dict[str, int], name: str) -> None:
     del skills[name]
 
 
+# ============================================================
+# 技能名解析：LLM 可能生成白名单外或带错字的技能名，
+# resolve_skill() 将其映射到 investigator 的实际技能或属性。
+# 绝对不会 fallback 到 value=1——要么模糊匹配，要么归到属性检定。
+# ============================================================
+
+# 属性检定（CoC 7e 中的「灵感=智力」、「幸运=幸运值」等）
+# 键 = LLM 可能写出的名字，值 = 使用的 investigator 属性字段名
+_ATTRIBUTE_CHECK_ALIASES: dict[str, str] = {
+    "灵感": "INT",
+    "智力": "INT",
+    "知识": "EDU",
+    "教育": "EDU",
+    "意志": "POW",
+    "力量": "STR",
+    "敏捷": "DEX",
+    "体质": "CON",
+    "体型": "SIZ",
+    "外貌": "APP",
+    "幸运": "__LUCK__",
+}
+
+# 具象技能的常见别名/错写 → 标准 CoC 7e 技能
+_SKILL_NAME_ALIASES: dict[str, str] = {
+    "聆听或观察": "聆听",
+    "观察": "侦查",
+    "查看": "侦查",
+    "搜查": "侦查",
+    "搜索": "侦查",
+    "查找": "侦查",
+    "察言观色": "心理学",
+    "读心": "心理学",
+    "聆听声音": "聆听",
+    "偷听": "聆听",
+    "追查": "追踪",
+    "翻查": "图书馆使用",
+    "阅读": "图书馆使用",
+    "研究": "图书馆使用",
+    "急救术": "急救",
+    "医术": "医学",
+    "锁匠": "锁匠技术",
+    "开锁": "锁匠技术",
+}
+
+
+def _normalize_skill_name(name: str) -> str:
+    """去掉空白、把全角括号转半角，便于匹配。"""
+    return (
+        name.replace("（", "(")
+        .replace("）", ")")
+        .replace(" ", "")
+        .replace("\u3000", "")
+        .strip()
+    )
+
+
+def resolve_skill(requested: str, investigator) -> tuple[str, int]:
+    """把 LLM 请求的技能名解析为 (规范名, 当前值)。
+
+    解析顺序：
+    1. 属性检定别名（灵感→INT、幸运→LUCK 等）
+    2. 精确匹配 investigator 已有技能
+    3. 规范化括号后再匹配
+    4. 技能名别名表
+    5. 专攻家族回退（射击/格斗/艺术/科学/语言 系列取最高）
+    6. 子串模糊匹配
+    7. CoC 7e 白名单基础值
+    8. 最终兜底：按「灵感」规则用 INT（远好于 value=1）
+
+    Args:
+        requested: LLM 给出的技能名
+        investigator: Investigator 对象
+
+    Returns:
+        (display_name, current_value)
+    """
+    req = (requested or "").strip()
+    if not req:
+        return ("灵感", investigator.characteristics.INT)
+
+    chars = investigator.characteristics
+    derived = investigator.derived
+
+    # 1. 属性检定
+    if req in _ATTRIBUTE_CHECK_ALIASES:
+        attr = _ATTRIBUTE_CHECK_ALIASES[req]
+        if attr == "__LUCK__":
+            return (req, getattr(derived, "luck", 50))
+        return (req, getattr(chars, attr))
+
+    # 2. 精确匹配
+    sk = investigator.skills.get(req)
+    if sk is not None:
+        return (req, sk.current)
+
+    # 3. 括号规范化
+    req_norm = _normalize_skill_name(req)
+    for name, val in investigator.skills.items():
+        if _normalize_skill_name(name) == req_norm:
+            return (name, val.current)
+
+    # 4. 别名表
+    if req in _SKILL_NAME_ALIASES:
+        alt = _SKILL_NAME_ALIASES[req]
+        alt_sk = investigator.skills.get(alt)
+        if alt_sk is not None:
+            return (alt, alt_sk.current)
+        return (alt, COC_7E_SKILLS.get(alt, 10))
+
+    # 5. 专攻家族回退（射击（手枪）/格斗（斗殴）/艺术（摄影）等）
+    _families = ("射击", "格斗", "艺术", "手艺", "科学", "语言", "驾驶", "操作重型机械")
+    for fam in _families:
+        if req.startswith(fam):
+            candidates = [
+                (n, v.current)
+                for n, v in investigator.skills.items()
+                if n.startswith(fam)
+            ]
+            if candidates:
+                candidates.sort(key=lambda x: x[1], reverse=True)
+                return candidates[0]
+
+    # 6. 子串模糊匹配
+    for name, val in investigator.skills.items():
+        if not name:
+            continue
+        if name in req or req in name:
+            return (name, val.current)
+
+    # 7. CoC 白名单基础值
+    if req in COC_7E_SKILLS:
+        return (req, COC_7E_SKILLS[req])
+    # 括号规范化再查一次白名单
+    for wl_name, wl_val in COC_7E_SKILLS.items():
+        if _normalize_skill_name(wl_name) == req_norm:
+            return (wl_name, wl_val)
+
+    # 8. 兜底：灵感（INT）——比永远失败的 value=1 合理得多
+    return (f"{req}（按灵感/智力处理）", chars.INT)
+
+
 def get_module_adjusted_skills(
     era: str,
     extra_skills: dict[str, int] | None = None,
